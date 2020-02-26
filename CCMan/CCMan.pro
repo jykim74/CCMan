@@ -19,7 +19,6 @@ SOURCES += \
     about_dlg.cpp \
     auto_update_service.cpp \
     i18n_helper.cpp \
-    mac_sparkle_support.mm \
     main.cpp \
     mainwindow.cpp \
     man_applet.cpp \
@@ -33,7 +32,6 @@ HEADERS += \
     about_dlg.h \
     auto_update_service.h \
     i18n_helper.h \
-    mac_sparkle_support.h \
     mainwindow.h \
     man_applet.h \
     man_tree_item.h \
@@ -52,3 +50,33 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+INCLUDEPATH += "../../PKILib"
+
+DEFINES += _AUTO_UPDATE
+
+mac {
+    QMAKE_LFLAGS += -Wl,-rpath,@loader_path/../Frameworks
+    HEADERS += mac_sparkle_support.h
+    OBJECTIVE_SOURCES += mac_sparkle_support.mm
+    LIBS += -framework AppKit
+    LIBS += -framework Carbon
+    LIBS += -framework Foundation
+    LIBS += -framework ApplicationServices
+    LIBS += -framework Sparkle
+    INCLUDEPATH += "/usr/local/Sparkle.framework/Headers"
+
+    INCLUDEPATH += "../../PKILib/lib/mac/debug/cmpossl/include"
+    INCLUDEPATH += "/usr/local/include"
+    LIBS += -L"/usr/local/lib" -lltdl
+    LIBS += -L"../../build-PKILib-Desktop_Qt_5_11_3_clang_64bit-Debug" -lPKILib
+    LIBS += -L"../../PKILib/lib/mac/debug/cmpossl/lib" -lcrypto -lssl
+    LIBS += -lldap -llber
+}
+
+win32 {
+    INCLUDEPATH += "../../PKILib/lib/win32/cmpossl-mingw32/include"
+    LIBS += -L"../../PKILib/lib/win32/ltdl/lib" -lltdl
+    LIBS += -L"../../build-PKILib-Desktop_Qt_5_12_2_MinGW_32_bit-Debug/debug" -lPKILib
+    LIBS += -L"../../PKILib/lib/win32/cmpossl-mingw32/lib" -lcrypto -lssl
+}
