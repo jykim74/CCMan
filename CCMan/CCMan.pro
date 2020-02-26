@@ -16,14 +16,37 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    about_dlg.cpp \
+    auto_update_service.cpp \
+    i18n_helper.cpp \
+    mac_sparkle_support.mm \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    man_applet.cpp \
+    man_tree_item.cpp \
+    man_tree_model.cpp \
+    man_tree_view.cpp \
+    settings_dlg.cpp \
+    settings_mgr.cpp
 
 HEADERS += \
-    mainwindow.h
+    about_dlg.h \
+    auto_update_service.h \
+    i18n_helper.h \
+    mac_sparkle_support.h \
+    mainwindow.h \
+    man_applet.h \
+    man_tree_item.h \
+    man_tree_model.h \
+    man_tree_view.h \
+    settings_dlg.h \
+    settings_mgr.h \
+    singleton.h
 
 FORMS += \
-    mainwindow.ui
+    about_dlg.ui \
+    mainwindow.ui \
+    settings_dlg.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
