@@ -1,14 +1,12 @@
 #include "settings_dlg.h"
-#include "ui_settings_dlg.h"
 
 SettingsDlg::SettingsDlg(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::SettingsDlg)
+    QDialog(parent)
 {
-    ui->setupUi(this);
+    setupUi(this);
 }
 
 SettingsDlg::~SettingsDlg()
 {
-    delete ui;
+
 }

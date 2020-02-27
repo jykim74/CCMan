@@ -1,11 +1,15 @@
 #ifndef MANTREEVIEW_H
 #define MANTREEVIEW_H
 
+#include <QTreeView>
 
-class ManTreeView
+class ManTreeView : public QTreeView
 {
+    Q_OBJECT
 public:
-    ManTreeView();
+    ManTreeView( QWidget* parent = nullptr );
+
+
 };
 
 #endif // MANTREEVIEW_H

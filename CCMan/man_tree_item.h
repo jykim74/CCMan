@@ -1,8 +1,9 @@
 #ifndef MANTREEITEM_H
 #define MANTREEITEM_H
 
+#include <QStandardItem>
 
-class ManTreeItem
+class ManTreeItem : public QStandardItem
 {
 public:
     ManTreeItem();

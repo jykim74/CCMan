@@ -17,8 +17,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     about_dlg.cpp \
+    account_info.cpp \
     auto_update_service.cpp \
     i18n_helper.cpp \
+    login_dlg.cpp \
     main.cpp \
     mainwindow.cpp \
     man_applet.cpp \
@@ -30,8 +32,10 @@ SOURCES += \
 
 HEADERS += \
     about_dlg.h \
+    account_info.h \
     auto_update_service.h \
     i18n_helper.h \
+    login_dlg.h \
     mainwindow.h \
     man_applet.h \
     man_tree_item.h \
@@ -43,6 +47,7 @@ HEADERS += \
 
 FORMS += \
     about_dlg.ui \
+    login_dlg.ui \
     mainwindow.ui \
     settings_dlg.ui
 

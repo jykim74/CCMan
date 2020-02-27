@@ -2,12 +2,13 @@
 #define SETTINGS_DLG_H
 
 #include <QDialog>
+#include "ui_settings_dlg.h"
 
 namespace Ui {
 class SettingsDlg;
 }
 
-class SettingsDlg : public QDialog
+class SettingsDlg : public QDialog, public Ui::SettingsDlg
 {
     Q_OBJECT
 
@@ -16,7 +17,7 @@ public:
     ~SettingsDlg();
 
 private:
-    Ui::SettingsDlg *ui;
+
 };
 
 #endif // SETTINGS_DLG_H

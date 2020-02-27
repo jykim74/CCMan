@@ -1,11 +1,13 @@
 #ifndef MANTREEMODEL_H
 #define MANTREEMODEL_H
 
+#include <QStandardItemModel>
 
-class ManTreeModel
+class ManTreeModel : public QStandardItemModel
 {
+    Q_OBJECT
 public:
-    ManTreeModel();
+    ManTreeModel( QObject *parent = nullptr );
 };
 
 #endif // MANTREEMODEL_H

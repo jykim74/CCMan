@@ -13,3 +13,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::showWindow()
+{
+    showNormal();
+    show();
+    raise();
+    activateWindow();
+}
