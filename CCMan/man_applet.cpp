@@ -9,6 +9,7 @@
 #include "settings_mgr.h"
 #include "auto_update_service.h"
 #include "account_info.h"
+#include "login_dlg.h"
 
 ManApplet *manApplet;
 
@@ -36,6 +37,10 @@ ManApplet::~ManApplet()
 
 void ManApplet::start()
 {
+    LoginDlg loginDlg;
+    loginDlg.exec();
+
+
     main_win_->show();
 }
 
@@ -56,7 +61,7 @@ void ManApplet::restartApp()
 
 QString ManApplet::getBrand()
 {
-    return QString::fromUtf8( "CAMan" );
+    return QString::fromUtf8( "CCMan" );
 }
 
 void ManApplet::warningBox(const QString& msg, QWidget *parent)

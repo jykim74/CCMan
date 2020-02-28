@@ -27,6 +27,7 @@ SOURCES += \
     man_tree_item.cpp \
     man_tree_model.cpp \
     man_tree_view.cpp \
+    search_menu.cpp \
     settings_dlg.cpp \
     settings_mgr.cpp
 
@@ -41,6 +42,7 @@ HEADERS += \
     man_tree_item.h \
     man_tree_model.h \
     man_tree_view.h \
+    search_menu.h \
     settings_dlg.h \
     settings_mgr.h \
     singleton.h
