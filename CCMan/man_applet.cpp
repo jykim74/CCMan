@@ -38,8 +38,10 @@ ManApplet::~ManApplet()
 void ManApplet::start()
 {
     LoginDlg loginDlg;
-    loginDlg.exec();
+    int ret = loginDlg.exec();
 
+    if( ret != QDialog::Accepted )
+        return;
 
     main_win_->show();
 }

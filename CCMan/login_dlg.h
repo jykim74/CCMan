@@ -17,7 +17,7 @@ public:
     ~LoginDlg();
 
 private:
-
+    virtual void accept();
 };
 
 #endif // LOGIN_DLG_H
