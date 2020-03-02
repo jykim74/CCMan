@@ -87,3 +87,8 @@ win32 {
     LIBS += -L"../../build-PKILib-Desktop_Qt_5_12_2_MinGW_32_bit-Debug/debug" -lPKILib
     LIBS += -L"../../PKILib/lib/win32/cmpossl-mingw32/lib" -lcrypto -lssl
 }
+
+RESOURCES += \
+    ccman.qrc
+
+TRANSLATIONS += i18n/ccman_ko_KR.ts
