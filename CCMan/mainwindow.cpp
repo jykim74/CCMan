@@ -1,3 +1,5 @@
+#include <QToolBar>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -5,11 +7,15 @@
 #include "man_tree_model.h"
 #include "man_tree_view.h"
 #include "search_menu.h"
+#include "reg_user_dlg.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     initialize();
+
+    createActions();
+    createStatusBar();
 
     setUnifiedTitleAndToolBarOnMac(true);
 }
@@ -57,4 +63,33 @@ void MainWindow::initialize()
     resize(1024, 768);
 
     setCentralWidget(hsplitter_);
+}
+
+void MainWindow::createActions()
+{
+    QMenu *userMenu = menuBar()->addMenu(tr("&User"));
+    QToolBar *userToolBar = addToolBar(tr("User"));
+
+    const QIcon regIcon = QIcon::fromTheme( "reg-user", QIcon(":/images/user_add.png"));
+    QAction *regUserAct = new QAction( regIcon, tr("&RegisterUser"), this );
+    regUserAct->setStatusTip( tr("Register a user"));
+    connect( regUserAct, &QAction::triggered, this, &MainWindow::regUser);
+    userMenu->addAction(regUserAct);
+    userToolBar->addAction(regUserAct);
+}
+
+void MainWindow::createStatusBar()
+{
+    statusBar()->showMessage(tr("Ready"));
+}
+
+void MainWindow::createTableMenu()
+{
+
+}
+
+void MainWindow::regUser()
+{
+    RegUserDlg regUserDlg;
+    regUserDlg.exec();
 }

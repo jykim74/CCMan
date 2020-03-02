@@ -26,6 +26,13 @@ public:
     void showWindow();
     void initialize();
 
+    void createActions();
+    void createStatusBar();
+    void createTableMenu();
+
+public slots:
+    void regUser();
+
 private:
     QSplitter   *hsplitter_;
     QSplitter   *vsplitter_;
