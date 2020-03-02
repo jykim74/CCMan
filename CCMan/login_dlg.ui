@@ -32,7 +32,11 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QComboBox" name="mServerURLCombo"/>
+    <widget class="QComboBox" name="mServerURLCombo">
+     <property name="editable">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
@@ -69,6 +73,11 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mServerURLCombo</tabstop>
+  <tabstop>mUserNameText</tabstop>
+  <tabstop>mPasswordText</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

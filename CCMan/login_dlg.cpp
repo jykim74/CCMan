@@ -14,6 +14,14 @@ LoginDlg::LoginDlg(QWidget *parent) :
     QDialog(parent)
 {
     setupUi(this);
+
+    QString strURL = "http://127.0.0.1:9050";
+    QString strUserName = "admin";
+    QString strPasswd = "admin";
+
+    mServerURLCombo->addItem( strURL );
+    mUserNameText->setText( strUserName );
+    mPasswordText->setText( strPasswd );
 }
 
 LoginDlg::~LoginDlg()
@@ -31,7 +39,7 @@ void LoginDlg::accept()
 
     char    *pReq = NULL;
     char    *pRsp = NULL;
-    char    *pContentType = NULL;
+    const char    *pContentType = "application/json";
     int     nStatusCode = -1;
 
     JCC_AuthReq sAuthReq;
@@ -44,7 +52,6 @@ void LoginDlg::accept()
     QString strPasswd = mPasswordText->text();
     QString strURL = mServerURLCombo->currentText();
 
-    strURL += "/";
     strURL += JS_CC_PATH_AUTH;
 
     JS_CC_setAuthReq( &sAuthReq, strUserName.toStdString().c_str(), strPasswd.toStdString().c_str() );
@@ -57,8 +64,10 @@ void LoginDlg::accept()
     JS_CC_resetAuthReq( &sAuthReq );
     if( pReq ) JS_free( pReq );
     if( pRsp ) JS_free( pRsp );
+    if( pHost ) JS_free( pHost );
+    if( pPath ) JS_free( pPath );
 
-    if( strcasecmp( sAuthRsp.pResCode, "0000" ) == 0 )
+    if( sAuthRsp.pResCode && strcasecmp( sAuthRsp.pResCode, "0000" ) == 0 )
     {
         JS_CC_resetAuthRsp( &sAuthRsp );
         QDialog::accept();
