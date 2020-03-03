@@ -19,6 +19,7 @@ SOURCES += \
     about_dlg.cpp \
     account_info.cpp \
     auto_update_service.cpp \
+    cc_client.cpp \
     i18n_helper.cpp \
     login_dlg.cpp \
     main.cpp \
@@ -36,6 +37,7 @@ HEADERS += \
     about_dlg.h \
     account_info.h \
     auto_update_service.h \
+    cc_client.h \
     i18n_helper.h \
     login_dlg.h \
     mainwindow.h \

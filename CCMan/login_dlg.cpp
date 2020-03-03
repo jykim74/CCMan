@@ -9,6 +9,7 @@
 #include "mainwindow.h"
 #include "man_applet.h"
 #include "account_info.h"
+#include "cc_client.h"
 
 
 LoginDlg::LoginDlg(QWidget *parent) :
@@ -66,7 +67,7 @@ void LoginDlg::accept()
     {
         manApplet->accountInfo()->setToken( sAuthRsp.pToken );
         manApplet->accountInfo()->setPerm( sAuthRsp.pPerm );
-        manApplet->accountInfo()->setBaseUrl( mServerURLCombo->currentText() );
+        manApplet->ccClient()->setBaseUrl( mServerURLCombo->currentText() );
 
         JS_CC_resetAuthRsp( &sAuthRsp );
         QDialog::accept();

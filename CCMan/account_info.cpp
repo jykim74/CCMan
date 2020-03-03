@@ -15,7 +15,3 @@ void AccountInfo::setPerm(const QString strPerm)
     perm_ = strPerm;
 }
 
-void AccountInfo::setBaseUrl(const QString strURL)
-{
-    base_url_ = strURL;
-}

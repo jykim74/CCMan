@@ -6,6 +6,7 @@
 
 #include "reg_user_dlg.h"
 #include "account_info.h"
+#include "cc_client.h"
 
 RegUserDlg::RegUserDlg(QWidget *parent) :
     QDialog(parent)
@@ -36,7 +37,7 @@ void RegUserDlg::accept()
     QString strSSN = mSSNText->text();
     QString strEmail = mEmailText->text();
 
-    QString strURL = manApplet->accountInfo()->baseUrl();
+    QString strURL = manApplet->ccClient()->baseUrl();
     strURL += JS_CC_PATH_USER;
 
     QString strToken = manApplet->accountInfo()->token();
@@ -66,7 +67,7 @@ void RegUserDlg::accept()
     {
         QString strMsg = QString( "The success to register user(%1:%2)")
                 .arg( sRegUserRsp.pRefNum)
-                .arg( sRegUserRsp.pSecretCode );
+                .arg( sRegUserRsp.pAuthCode );
         manApplet->messageBox( strMsg, this );
         JS_CC_resetRegUserRsp( &sRegUserRsp );
         QDialog::accept();
@@ -77,4 +78,6 @@ void RegUserDlg::accept()
         manApplet->warningBox(tr("fail to register user"), this );
         QDialog::reject();
     }
+
+    manApplet->mainWindow()->createRightUserList();
 }

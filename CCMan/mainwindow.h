@@ -30,6 +30,11 @@ public:
     void createStatusBar();
     void createTableMenu();
 
+    void createRightUserList();
+
+private:
+    void removeAllRight();
+
 public slots:
     void regUser();
 

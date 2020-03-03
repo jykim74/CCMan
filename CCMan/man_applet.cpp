@@ -10,6 +10,7 @@
 #include "auto_update_service.h"
 #include "account_info.h"
 #include "login_dlg.h"
+#include "cc_client.h"
 
 ManApplet *manApplet;
 
@@ -18,6 +19,7 @@ ManApplet::ManApplet( QObject *parent ) : QObject(parent)
     main_win_ = new MainWindow;
     settings_mgr_ = new SettingsMgr;
     account_info_ = new AccountInfo;
+    cc_client_ = new CCClient;
 
     in_exit_ = false;
 

@@ -7,6 +7,7 @@
 class MainWindow;
 class SettingsMgr;
 class AccountInfo;
+class CCClient;
 
 class ManApplet : public QObject
 {
@@ -20,6 +21,7 @@ public:
     MainWindow* mainWindow() { return main_win_; };
     SettingsMgr* settingsMgr() { return settings_mgr_; };
     AccountInfo* accountInfo() { return account_info_; };
+    CCClient* ccClient() { return cc_client_; };
 
     void messageBox(const QString& msg, QWidget *parent=0);
     void warningBox(const QString& msg, QWidget *parent=0);
@@ -43,6 +45,7 @@ private:
     MainWindow* main_win_;
     SettingsMgr* settings_mgr_;
     AccountInfo* account_info_;
+    CCClient*   cc_client_;
 
     bool in_exit_;
 };

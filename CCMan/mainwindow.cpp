@@ -88,6 +88,23 @@ void MainWindow::createTableMenu()
 
 }
 
+void MainWindow::createRightUserList()
+{
+    removeAllRight();
+
+    QStringList titleList = { "Num", "Name", "SSN", "Email", "Status", "RefNum", "SecretCode" };
+}
+
+void MainWindow::removeAllRight()
+{
+    right_text_->setText("");
+
+    int rowCnt = right_table_->rowCount();
+
+    for( int i=0; i < rowCnt; i++ )
+        right_table_->removeRow(0);
+}
+
 void MainWindow::regUser()
 {
     RegUserDlg regUserDlg;
