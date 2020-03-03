@@ -8,6 +8,7 @@
 
 #include "mainwindow.h"
 #include "man_applet.h"
+#include "account_info.h"
 
 
 LoginDlg::LoginDlg(QWidget *parent) :
@@ -32,10 +33,6 @@ LoginDlg::~LoginDlg()
 void LoginDlg::accept()
 {
     int ret = 0;
-    char *pHost = NULL;
-    int nPort = -1;
-    char *pPath = NULL;
-    int bSSL = 0;
 
     char    *pReq = NULL;
     char    *pRsp = NULL;
@@ -64,11 +61,13 @@ void LoginDlg::accept()
     JS_CC_resetAuthReq( &sAuthReq );
     if( pReq ) JS_free( pReq );
     if( pRsp ) JS_free( pRsp );
-    if( pHost ) JS_free( pHost );
-    if( pPath ) JS_free( pPath );
 
     if( sAuthRsp.pResCode && strcasecmp( sAuthRsp.pResCode, "0000" ) == 0 )
     {
+        manApplet->accountInfo()->setToken( sAuthRsp.pToken );
+        manApplet->accountInfo()->setPerm( sAuthRsp.pPerm );
+        manApplet->accountInfo()->setBaseUrl( mServerURLCombo->currentText() );
+
         JS_CC_resetAuthRsp( &sAuthRsp );
         QDialog::accept();
     }
