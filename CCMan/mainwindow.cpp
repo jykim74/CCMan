@@ -1,13 +1,20 @@
 #include <QToolBar>
+#include <QTableWidget>
+#include <QtWidgets>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "man_applet.h"
 
 #include "man_tree_item.h"
 #include "man_tree_model.h"
 #include "man_tree_view.h"
 #include "search_menu.h"
 #include "reg_user_dlg.h"
+#include "cc_client.h"
+
+#include "js_db.h"
+#include "js_db_data.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -90,9 +97,40 @@ void MainWindow::createTableMenu()
 
 void MainWindow::createRightUserList()
 {
+    int     i = 0;
+    JDB_UserList    *pDBUserList = NULL;
+    JDB_UserList    *pCurList = NULL;
+
     removeAllRight();
 
     QStringList titleList = { "Num", "Name", "SSN", "Email", "Status", "RefNum", "SecretCode" };
+
+    right_table_->clear();
+    right_table_->horizontalHeader()->setStretchLastSection(true);
+
+    right_table_->setColumnCount(titleList.size());
+    right_table_->setHorizontalHeaderLabels(titleList);
+    right_table_->verticalHeader()->setVisible(false);
+
+
+    manApplet->ccClient()->getUserList( &pDBUserList );
+    pCurList = pDBUserList;
+
+    while( pCurList )
+    {
+        right_table_->insertRow(i);
+
+        right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.nNum )));
+        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pName )));
+        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pSSN )));
+        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pEmail )));
+        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.nStatus )));
+        right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pRefNum )));
+        right_table_->setItem(i,6, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pAuthCode )));
+
+        pCurList = pCurList->pNext;
+        i++;
+    }
 }
 
 void MainWindow::removeAllRight()
