@@ -291,3 +291,8 @@ void MainWindow::modifyUser()
     QTableWidgetItem* item = right_table_->item( row, 0 );
     int nSeq = item->text().toInt();
 }
+
+int MainWindow::rightType()
+{
+    right_table_->type();
+}

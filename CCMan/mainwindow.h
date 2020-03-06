@@ -34,6 +34,7 @@ public:
 
     void createRightList( int nType );
     void createRightUserList();
+    int rightType();
 
 private:
     void removeAllRight();
