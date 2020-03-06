@@ -48,6 +48,15 @@ void SearchMenu::setupUI()
     setLayout( layout );
 }
 
+void SearchMenu::updatePageLabel()
+{
+    int nOffset = cur_page_ * limit_;
+    int nEnd = nOffset + manApplet->mainWindow()->rightCount();
+
+    QString label = QString( "%1-%2 of %3" ).arg( nOffset + 1 ).arg( nEnd ).arg( total_count_ );
+    page_label_->setText( label );
+}
+
 void SearchMenu::setTotalCount( int count )
 {
     total_count_ = count;

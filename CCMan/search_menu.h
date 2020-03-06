@@ -21,6 +21,8 @@ public:
     void setCurPage( int page );
     void setLimit( int limit );
 
+    void updatePageLabel();
+
 private:
     void setupUI();
 

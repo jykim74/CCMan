@@ -129,6 +129,8 @@ void MainWindow::treeMenuClick(QModelIndex index )
 
     if( pItem == NULL ) return;
 
+    right_menu_->setCurPage(0);
+
     nType = pItem->type();
     createRightList( nType );
 }
@@ -224,7 +226,11 @@ void MainWindow::createRightUserList()
     int nLimit = kListCount;
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
+    int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_USER );
+
     right_menu_->setLimit( nLimit );
+    right_menu_->setTotalCount( nTotalCnt );
+
 
     JDB_UserList    *pDBUserList = NULL;
     JDB_UserList    *pCurList = NULL;
@@ -241,7 +247,6 @@ void MainWindow::createRightUserList()
     right_table_->setColumnCount(titleList.size());
     right_table_->setHorizontalHeaderLabels(titleList);
     right_table_->verticalHeader()->setVisible(false);
-
 
     manApplet->ccClient()->getUserList( nOffset, nLimit, &pDBUserList );
     pCurList = pDBUserList;
@@ -261,6 +266,8 @@ void MainWindow::createRightUserList()
         pCurList = pCurList->pNext;
         i++;
     }
+
+    right_menu_->updatePageLabel();
 }
 
 void MainWindow::removeAllRight()
@@ -303,5 +310,10 @@ void MainWindow::modifyUser()
 
 int MainWindow::rightType()
 {
-    right_table_->type();
+    return right_table_->type();
+}
+
+int MainWindow::rightCount()
+{
+    return right_table_->rowCount();
 }

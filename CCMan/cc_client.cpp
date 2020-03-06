@@ -6,6 +6,7 @@
 #include "mainwindow.h"
 #include "man_applet.h"
 #include "account_info.h"
+#include "man_tree_item.h"
 
 
 CCClient::CCClient()
@@ -30,10 +31,14 @@ int CCClient::getCount(int nType)
     memset( &sNameVal, 0x00, sizeof(sNameVal));
 
     QString strToken = manApplet->accountInfo()->token();
+    QString strType;
+
+    if( nType == ITEM_TYPE_USER )
+        strType = "users";
 
 
     strURL = base_url_;
-    strURL += QString( "%1/users" ).arg( JS_CC_PATH_COUNT );
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_COUNT ).arg( strType );
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
