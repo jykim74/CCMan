@@ -23,36 +23,41 @@ int CCClient::getCount(int nType)
     int ret = 0;
     QString strURL;
     JNameValList    *pParamList = NULL;
+    JNameValList    *pHeaderList = NULL;
     char    *pRsp = NULL;
-    JCC_CountRsp sCountRsp;
+    JCC_NameVal     sNameVal;
 
-    memset( &sCountRsp, 0x00, sizeof(sCountRsp));
+    memset( &sNameVal, 0x00, sizeof(sNameVal));
+
+    QString strToken = manApplet->accountInfo()->token();
+
 
     strURL = base_url_;
-    strURL += JS_CC_PATH_COUNT;
+    strURL += QString( "%1/users" ).arg( JS_CC_PATH_COUNT );
 
-    JS_UTIL_createNameValList2( "OP", "COUNT", &pParamList );
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
                 JS_HTTP_METHOD_GET,
                 pParamList,
-                NULL,
+                pHeaderList,
                 NULL,
                 &pRsp );
 
-    JS_CC_decodeCountRsp( pRsp, &sCountRsp );
+    JS_CC_decodeNameVal( pRsp, &sNameVal );
+    int nCount = atoi( sNameVal.pValue );
 
-    int nResCode = atoi( sCountRsp.pResCode );
-    if( nResCode != 0 ) return -1;
+    JS_CC_resetNameVal( &sNameVal );
 
-    return atoi( sCountRsp.pCount );
+    return nCount;
 }
 
-int CCClient::getUserList( JCC_UserList **ppUserList )
+int CCClient::getUserList( int nOffset, int nLimit, JCC_UserList **ppUserList )
 {
     int ret = 0;
     QString strURL;
+    JNameValList    *pParamList = NULL;
     JNameValList    *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
 
@@ -63,10 +68,19 @@ int CCClient::getUserList( JCC_UserList **ppUserList )
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
+    if( nOffset >= 0 && nLimit >= 0 )
+    {
+        QString strOffset = QString( "%1").arg(nOffset);
+        QString strLimit = QString( "%1").arg( nLimit );
+
+        JS_UTIL_createNameValList2( "offset", strOffset.toStdString().c_str(), &pParamList );
+        JS_UTIL_appendNameValList2( pParamList, "limit", strLimit.toStdString().c_str() );
+    }
+
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
                 JS_HTTP_METHOD_GET,
-                NULL,
+                pParamList,
                 pHeaderList,
                 NULL,
                 &pRsp );
@@ -74,6 +88,8 @@ int CCClient::getUserList( JCC_UserList **ppUserList )
     JS_CC_decodeUserList( pRsp, ppUserList );
 
     if( pRsp ) JS_free( pRsp );
+
+    if( pParamList ) JS_UTIL_resetNameValList( &pParamList );
     if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
 
     return 0;

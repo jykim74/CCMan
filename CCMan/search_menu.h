@@ -15,9 +15,11 @@ public:
 
     int curPage() { return cur_page_; };
     int totalCount() { return total_count_; };
+    int limit() { return limit_; };
 
     void setTotalCount( int count );
     void setCurPage( int page );
+    void setLimit( int limit );
 
 private:
     void setupUI();
@@ -43,6 +45,7 @@ private:
 
     int             cur_page_;
     int             total_count_;
+    int             limit_;
 };
 
 #endif // SEARCHMENU_H

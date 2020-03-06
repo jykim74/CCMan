@@ -17,6 +17,8 @@
 #include "js_db.h"
 #include "js_db_data.h"
 
+const int kListCount = 5;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -218,12 +220,19 @@ void MainWindow::createRightList(int nType)
 void MainWindow::createRightUserList()
 {
     int     i = 0;
+
+    int nLimit = kListCount;
+    int nPage = right_menu_->curPage();
+    int nOffset = nPage * nLimit;
+    right_menu_->setLimit( nLimit );
+
     JDB_UserList    *pDBUserList = NULL;
     JDB_UserList    *pCurList = NULL;
 
     removeAllRight();
 
     QStringList titleList = { "Num", "Name", "SSN", "Email", "Status", "RefNum", "SecretCode" };
+
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -234,7 +243,7 @@ void MainWindow::createRightUserList()
     right_table_->verticalHeader()->setVisible(false);
 
 
-    manApplet->ccClient()->getUserList( &pDBUserList );
+    manApplet->ccClient()->getUserList( nOffset, nLimit, &pDBUserList );
     pCurList = pDBUserList;
 
     while( pCurList )

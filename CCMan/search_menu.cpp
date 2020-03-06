@@ -4,7 +4,6 @@
 #include "mainwindow.h"
 #include "man_applet.h"
 
-const int kListCount = 15;
 static QStringList s_condBaseList = {"Page"};
 
 SearchMenu::SearchMenu(QWidget *parent) : QWidget(parent)
@@ -22,6 +21,7 @@ SearchMenu::SearchMenu(QWidget *parent) : QWidget(parent)
 
     cur_page_ = 0;
     total_count_ = 0;
+    limit_ = 0;
 
     connect( left_end_btn_, SIGNAL(clicked()), this, SLOT(leftEndPage()));
     connect( left_btn_, SIGNAL(clicked()), this, SLOT(leftPage()));
@@ -48,6 +48,21 @@ void SearchMenu::setupUI()
     setLayout( layout );
 }
 
+void SearchMenu::setTotalCount( int count )
+{
+    total_count_ = count;
+}
+
+void SearchMenu::setCurPage( int page )
+{
+    cur_page_ = page;
+}
+
+void SearchMenu::setLimit( int limit )
+{
+    limit_ = limit;
+}
+
 void SearchMenu::leftPage()
 {
     int type = manApplet->mainWindow()->rightType();
@@ -66,7 +81,9 @@ void SearchMenu::leftEndPage()
 
 void SearchMenu::rightPage()
 {
-    int end_page = int ( total_count_ / kListCount );
+    if( limit_ <= 0 ) return;
+
+    int end_page = int ( total_count_ / limit_ );
     int type = manApplet->mainWindow()->rightType();
 
     cur_page_ = cur_page_ + 1;
@@ -77,13 +94,17 @@ void SearchMenu::rightPage()
 
 void SearchMenu::rightEndPage()
 {
+    if( limit_ <= 0 ) return;
+
     int type = manApplet->mainWindow()->rightType();
-    cur_page_ = int(total_count_ / kListCount);
+    cur_page_ = int(total_count_ / limit_ );
     manApplet->mainWindow()->createRightList( type );
 }
 
 void SearchMenu::search()
 {
+    if( limit_ <= 0 ) return;
+
     QString strTarget = cond_combo_->currentText();
     QString strWord = input_text_->text();
     int type = manApplet->mainWindow()->rightType();
