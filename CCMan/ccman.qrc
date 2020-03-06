@@ -15,5 +15,23 @@
         <file>images/trash.png</file>
         <file>i18n/ccman_ko_KR.ts</file>
         <file>images/user_add.png</file>
+        <file>images/ca.png</file>
+        <file>images/caman.icns</file>
+        <file>images/caman.png</file>
+        <file>images/cert 2.png</file>
+        <file>images/cert.png</file>
+        <file>images/crl.png</file>
+        <file>images/csr.jpg</file>
+        <file>images/done.png</file>
+        <file>images/im_cert.png</file>
+        <file>images/im_crl.png</file>
+        <file>images/key.jpeg</file>
+        <file>images/man.png</file>
+        <file>images/ocsp_signer.png</file>
+        <file>images/policy.png</file>
+        <file>images/red_cross.png</file>
+        <file>images/reg_signer.png</file>
+        <file>images/revoke.png</file>
+        <file>images/user.jpg</file>
     </qresource>
 </RCC>

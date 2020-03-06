@@ -9,6 +9,7 @@
 #include "man_tree_item.h"
 #include "man_tree_model.h"
 #include "man_tree_view.h"
+#include "man_right_widget.h"
 #include "search_menu.h"
 #include "reg_user_dlg.h"
 #include "cc_client.h"
@@ -23,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     createActions();
     createStatusBar();
+    createTreeMenu();
 
     setUnifiedTitleAndToolBarOnMac(true);
 }
@@ -49,7 +51,8 @@ void MainWindow::initialize()
     left_model_ = new ManTreeModel(this);
     right_menu_ = new SearchMenu;
     right_text_ = new QTextEdit;
-    right_table_ = new QTableWidget;
+//    right_table_ = new QTableWidget;
+    right_table_ = new ManRightWidget;
 
     left_tree_->setModel(left_model_);
 
@@ -70,6 +73,12 @@ void MainWindow::initialize()
     resize(1024, 768);
 
     setCentralWidget(hsplitter_);
+
+    connect( left_tree_, SIGNAL(clicked(QModelIndex)), this, SLOT(treeMenuClick(QModelIndex)));
+    connect( right_table_, SIGNAL(clicked(QModelIndex)), this, SLOT(rightTableClick(QModelIndex)));
+
+    right_table_->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect( right_table_, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showRightMenu(QPoint)));
 }
 
 void MainWindow::createActions()
@@ -95,6 +104,117 @@ void MainWindow::createTableMenu()
 
 }
 
+void MainWindow::showRightMenu(QPoint point)
+{
+//    QTableWidgetItem* item = right_table_->itemAt(point);
+
+    QMenu menu(this);
+
+    if( right_table_->type() == ITEM_TYPE_USER )
+    {
+        menu.addAction( tr("DeleteUser"), this, &MainWindow::deleteUser );
+        menu.addAction( tr("ModifyUser"), this, &MainWindow::modifyUser );
+    }
+
+    menu.exec(QCursor::pos());
+}
+
+void MainWindow::treeMenuClick(QModelIndex index )
+{
+    int nType = -1;
+
+    ManTreeItem *pItem = (ManTreeItem *)left_model_->itemFromIndex(index);
+
+    if( pItem == NULL ) return;
+
+    nType = pItem->type();
+    createRightList( nType );
+}
+
+void MainWindow::rightTableClick(QModelIndex index )
+{
+    int row = index.row();
+    int col = index.column();
+
+    QString strVal;
+
+    strVal = QString( "row: %1 column %2").arg(row).arg(col);
+    QTableWidgetItem* item = right_table_->item(row, 0);
+
+    int nSeq = item->text().toInt();
+
+    right_text_->setText( strVal );
+
+    if( right_table_->type() == ITEM_TYPE_USER )
+    {
+        showRightBottomUser( nSeq );
+    }
+}
+
+void MainWindow::showRightBottomUser( int nSeq )
+{
+    QString strMsg;
+    QString strPart;
+
+    JCC_User sUser;
+    memset( &sUser, 0x00, sizeof(sUser));
+
+    manApplet->ccClient()->getUser( nSeq, &sUser );
+
+    strMsg = "[ User information ]\n";
+
+    strPart = QString( "Num: %1\n").arg( sUser.nNum);
+    strMsg += strPart;
+
+    strPart = QString( "Name: %1\n").arg( sUser.pName );
+    strMsg += strPart;
+
+    strPart = QString( "SSN: %1\n").arg( sUser.pSSN );
+    strMsg += strPart;
+
+    strPart = QString( "Email: %1\n").arg( sUser.pEmail );
+    strMsg += strPart;
+
+    strPart = QString( "Status: %1\n").arg( sUser.nStatus );
+    strMsg += strPart;
+
+    strPart = QString( "RefNum: %1\n").arg( sUser.pRefNum );
+    strMsg += strPart;
+
+    strPart = QString( "AuthCode: %1\n").arg( sUser.pAuthCode );
+    strMsg += strPart;
+
+    JS_DB_resetUser( &sUser );
+    right_text_->setText( strMsg );
+}
+
+void MainWindow::createTreeMenu()
+{
+    left_model_->clear();
+    left_tree_->header()->setVisible(false);
+
+    ManTreeItem *pRootItem = (ManTreeItem *)left_model_->invisibleRootItem();
+
+
+    ManTreeItem *pTopItem = new ManTreeItem( QString( "CertificateAuthority" ) );
+    pTopItem->setIcon(QIcon(":/images/man.png"));
+    pRootItem->insertRow( 0, pTopItem );
+
+    ManTreeItem *pUserItem = new ManTreeItem( QString("User") );
+    pUserItem->setIcon(QIcon(":/images/user.jpg"));
+    pUserItem->setType( ITEM_TYPE_USER );
+    pTopItem->appendRow( pUserItem );
+
+    QModelIndex ri = left_model_->index(0,0);
+    left_tree_->expand(ri);
+}
+
+void MainWindow::createRightList(int nType)
+{
+    if( nType == ITEM_TYPE_USER )
+        createRightUserList();
+}
+
 void MainWindow::createRightUserList()
 {
     int     i = 0;
@@ -107,6 +227,7 @@ void MainWindow::createRightUserList()
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
+    right_table_->setType( ITEM_TYPE_USER );
 
     right_table_->setColumnCount(titleList.size());
     right_table_->setHorizontalHeaderLabels(titleList);
@@ -147,4 +268,26 @@ void MainWindow::regUser()
 {
     RegUserDlg regUserDlg;
     regUserDlg.exec();
+}
+
+void MainWindow::deleteUser()
+{
+    int row = right_table_->currentRow();
+    if( row < 0 ) return;
+
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+    int nSeq = item->text().toInt();
+
+    manApplet->ccClient()->delUser( nSeq );
+
+    createRightUserList();
+}
+
+void MainWindow::modifyUser()
+{
+    int row = right_table_->currentRow();
+    if( row < 0 ) return;
+
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+    int nSeq = item->text().toInt();
 }

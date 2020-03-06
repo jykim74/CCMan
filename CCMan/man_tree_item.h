@@ -3,10 +3,27 @@
 
 #include <QStandardItem>
 
+enum {
+    ITEM_TYPE_USER,
+    ITEM_TYPE_CERT,
+    ITEM_TYPE_CRL,
+    ITEM_TYPE_REVOKE,
+    ITEM_TYPE_SIGNER,
+    ITEM_TYPE_CERT_POLICY,
+    ITEM_TYPE_CRL_POLICY
+};
+
 class ManTreeItem : public QStandardItem
 {
 public:
     ManTreeItem();
+    ManTreeItem( const QString name );
+
+    int type() { return type_; };
+    void setType( int type );
+
+private:
+    int type_;
 };
 
 #endif // MANTREEITEM_H

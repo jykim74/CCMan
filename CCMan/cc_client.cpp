@@ -73,5 +73,72 @@ int CCClient::getUserList( JCC_UserList **ppUserList )
 
     JS_CC_decodeUserList( pRsp, ppUserList );
 
+    if( pRsp ) JS_free( pRsp );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
+int CCClient::getUser( int nNum, JCC_User *pUser )
+{
+    int ret = 0;
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+
+    char *pRsp = NULL;
+
+
+    strURL = base_url_;
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_USER ).arg( nNum );
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                JS_HTTP_METHOD_GET,
+                NULL,
+                pHeaderList,
+                NULL,
+                &pRsp );
+
+    JS_CC_decodeUser( pRsp, pUser );
+    if( pRsp ) JS_free( pRsp );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
+int CCClient::delUser(int nNum)
+{
+    int ret = 0;
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+    JCC_CodeMsg sCodeMsg;
+
+    char *pRsp = NULL;
+
+    memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
+
+    strURL = base_url_;
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_USER ).arg( nNum );
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                JS_HTTP_METHOD_DELETE,
+                NULL,
+                pHeaderList,
+                NULL,
+                &pRsp );
+
+    JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
+
+    JS_CC_resetCodeMsg( &sCodeMsg );
+    if( pRsp ) JS_free( pRsp );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
     return 0;
 }

@@ -18,6 +18,8 @@ public:
     void setBaseUrl( const QString strUrl );
     int getCount( int nType );
     int getUserList( JCC_UserList **ppUserList );
+    int getUser( int nNum, JCC_User *pUser );
+    int delUser( int nNum );
 
 private:
     QString     base_url_;
