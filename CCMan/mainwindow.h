@@ -32,8 +32,12 @@ public:
     void createTableMenu();
 
 
-    void createRightList( int nType );
+    void createRightList( int nItemType );
     void createRightUserList();
+    void createRightCertPolicyList();
+    void createRightCRLPolicyList();
+    void createRightSignerList( int nItemType );
+
     int rightType();
     int rightCount();
 
@@ -46,6 +50,9 @@ public slots:
     void treeMenuClick( QModelIndex index );
     void rightTableClick( QModelIndex index );
     void showRightBottomUser( int nSeq );
+    void showRightBottomCertPolicy( int nNum );
+    void showRightBottomCRLPolicy( int nNum );
+    void showRightBottomSigner( int nNum );
     void showRightMenu(QPoint point);
     void deleteUser();
     void modifyUser();

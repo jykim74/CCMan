@@ -20,7 +20,14 @@ public:
     int getUserList( int nOffset, int nLimit, JCC_UserList **ppUserList );
     int getUser( int nNum, JCC_User *pUser );
     int delUser( int nNum );
-
+    int getCertPolicyList( JCC_CertPolicyList **ppCertPolicyList );
+    int getCertPolicy( int nNum, JCC_CertPolicy *pCertPolicy );
+    int getCertPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicyExtList );
+    int getCRLPolicyList( JCC_CRLPolicyList **ppCRLPolicyList );
+    int getCRLPolicy( int nNum, JCC_CRLPolicy *pCRLPolicy );
+    int getCRLPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicyExtList );
+    int getSigner( int nNum, JCC_Signer *pSigner );
+    int getSignerList( int nType, JCC_SignerList **ppSignerList );
 private:
     QString     base_url_;
 };
