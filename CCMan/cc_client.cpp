@@ -64,6 +64,51 @@ int CCClient::getCount(int nType)
     return nCount;
 }
 
+int CCClient::getNum(int nType)
+{
+    int ret = 0;
+    QString strURL;
+    JNameValList    *pParamList = NULL;
+    JNameValList    *pHeaderList = NULL;
+    char    *pRsp = NULL;
+    JCC_NameVal     sNameVal;
+
+    memset( &sNameVal, 0x00, sizeof(sNameVal));
+
+    QString strToken = manApplet->accountInfo()->token();
+    QString strType;
+
+    if( nType == ITEM_TYPE_USER )
+        strType = "users";
+    else if( nType == ITEM_TYPE_CERT )
+        strType = "certs";
+    else if( nType == ITEM_TYPE_CRL )
+        strType = "crls";
+    else if( nType == ITEM_TYPE_REVOKE )
+        strType = "revokeds";
+
+
+    strURL = base_url_;
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_NUM ).arg( strType );
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                JS_HTTP_METHOD_GET,
+                pParamList,
+                pHeaderList,
+                NULL,
+                &pRsp );
+
+    JS_CC_decodeNameVal( pRsp, &sNameVal );
+    int nNum = atoi( sNameVal.pValue );
+
+    JS_CC_resetNameVal( &sNameVal );
+
+    return nNum;
+}
+
 int CCClient::getUserList( int nOffset, int nLimit, JCC_UserList **ppUserList )
 {
     int ret = 0;
@@ -639,5 +684,45 @@ int CCClient::getRevokedList( int nOffset, int nLimit, JCC_RevokedList **ppRevok
     if( pParamList ) JS_UTIL_resetNameValList( &pParamList );
     if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
 
+    return 0;
+}
+
+int CCClient::addCRLPolicy( JCC_CRLPolicy *pCRLPolicy )
+{
+    return 0;
+}
+
+int CCClient::modCRLPolicy( int nNum, JCC_CRLPolicy *pCRLPolicy )
+{
+    return 0;
+}
+
+int CCClient::delCRLPolicyExts( int nPolicyNum )
+{
+    return 0;
+}
+
+int CCClient::addCRLPolicyExt( JCC_PolicyExt *pPolicyExt )
+{
+    return 0;
+}
+
+int CCClient::addCertPolicy( JCC_CertPolicy *pCertPolicy )
+{
+    return 0;
+}
+
+int CCClient::modCertPolicy( int nNum, JCC_CertPolicy *pCertPolicy )
+{
+    return 0;
+}
+
+int CCClient::delCertPolicyExts( int nPolicyNum )
+{
+    return 0;
+}
+
+int CCClient::addCertPolicyExt( JCC_PolicyExt *pPolicyExt )
+{
     return 0;
 }

@@ -17,6 +17,7 @@ public:
     QString baseUrl() { return base_url_; };
     void setBaseUrl( const QString strUrl );
     int getCount( int nType );
+    int getNum( int nType );
     int getUserList( int nOffset, int nLimit, JCC_UserList **ppUserList );
     int getUser( int nNum, JCC_User *pUser );
     int delUser( int nNum );
@@ -34,6 +35,16 @@ public:
     int getCRLList( int nOffset, int nLimit, JCC_CRLList **ppCRLList );
     int getRevoked( int nSeq, JCC_Revoked *pRevoked );
     int getRevokedList( int nOffset, int nLimit, JCC_RevokedList **ppRevokedList );
+
+    int addCRLPolicy( JCC_CRLPolicy *pCRLPolicy );
+    int modCRLPolicy( int nNum, JCC_CRLPolicy *pCRLPolicy );
+    int delCRLPolicyExts( int nPolicyNum );
+    int addCRLPolicyExt( JCC_PolicyExt *pPolicyExt );
+
+    int addCertPolicy( JCC_CertPolicy *pCertPolicy );
+    int modCertPolicy( int nNum, JCC_CertPolicy *pCertPolicy );
+    int delCertPolicyExts( int nPolicyNum );
+    int addCertPolicyExt( JCC_PolicyExt *pPolicyExt );
 
 private:
     QString     base_url_;

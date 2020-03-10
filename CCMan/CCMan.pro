@@ -24,6 +24,8 @@ SOURCES += \
     login_dlg.cpp \
     main.cpp \
     mainwindow.cpp \
+    make_cert_policy_dlg.cpp \
+    make_crl_policy_dlg.cpp \
     man_applet.cpp \
     man_right_widget.cpp \
     man_tree_item.cpp \
@@ -39,9 +41,12 @@ HEADERS += \
     account_info.h \
     auto_update_service.h \
     cc_client.h \
+    common.h \
     i18n_helper.h \
     login_dlg.h \
     mainwindow.h \
+    make_cert_policy_dlg.h \
+    make_crl_policy_dlg.h \
     man_applet.h \
     man_right_widget.h \
     man_tree_item.h \
@@ -57,6 +62,8 @@ FORMS += \
     about_dlg.ui \
     login_dlg.ui \
     mainwindow.ui \
+    make_cert_policy_dlg.ui \
+    make_crl_policy_dlg.ui \
     reg_user_dlg.ui \
     settings_dlg.ui
 
