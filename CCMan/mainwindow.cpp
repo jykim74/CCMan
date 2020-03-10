@@ -132,6 +132,8 @@ void MainWindow::treeMenuClick(QModelIndex index )
     right_menu_->setCurPage(0);
 
     nType = pItem->type();
+    right_table_->setType(nType);
+
     createRightList( nType );
 }
 
@@ -146,25 +148,26 @@ void MainWindow::rightTableClick(QModelIndex index )
     QTableWidgetItem* item = right_table_->item(row, 0);
 
     int nSeq = item->text().toInt();
+    int nType = right_table_->type();
 
     right_text_->setText( strVal );
 
-    if( right_table_->type() == ITEM_TYPE_USER )
-    {
+    if( nType == ITEM_TYPE_USER )
         showRightBottomUser( nSeq );
-    }
-    else if( right_table_->type() == ITEM_TYPE_CERT_POLICY )
-    {
+    else if( nType == ITEM_TYPE_CERT_POLICY )
         showRightBottomCertPolicy( nSeq );
-    }
-    else if( right_table_->type() == ITEM_TYPE_CRL_POLICY )
-    {
+    else if( nType == ITEM_TYPE_CRL_POLICY )
         showRightBottomCRLPolicy( nSeq );
-    }
-    else if( right_table_->type() == ITEM_TYPE_REG_SIGNER || right_table_->type() == ITEM_TYPE_OCSP_SIGNER )
-    {
+    else if( nType == ITEM_TYPE_REG_SIGNER || nType == ITEM_TYPE_OCSP_SIGNER )
         showRightBottomSigner( nSeq );
-    }
+    else if( nType == ITEM_TYPE_CERT )
+        showRightBottomCert( nSeq );
+    else if( nType == ITEM_TYPE_CRL )
+        showRightBottomCRL( nSeq );
+    else if( nType == ITEM_TYPE_REVOKE )
+        showRightBottomRevoked( nSeq );
+    else if( nType == ITEM_TYPE_CA )
+        showRightBottomCA();
 }
 
 void MainWindow::showRightBottomUser( int nSeq )
@@ -358,6 +361,124 @@ void MainWindow::showRightBottomSigner(int nNum)
     JS_DB_resetSigner( &sSigner );
 }
 
+void MainWindow::showRightBottomCert( int nNum )
+{
+    QString strMsg;
+    QString strPart;
+
+    JCC_Cert    sCert;
+    memset( &sCert, 0x00, sizeof(sCert));
+
+    manApplet->ccClient()->getCert( nNum, &sCert );
+
+    strMsg = "[ Ceritificate information ]\n";
+
+    strPart = QString("Num: %1\n").arg( sCert.nNum );
+    strMsg += strPart;
+
+    strPart = QString( "KeyNum: %1\n").arg( sCert.nKeyNum );
+    strMsg += strPart;
+
+    strPart = QString( "SignAlgorithm: %1\n").arg( sCert.pSignAlg );
+    strMsg += strPart;
+
+    strPart = QString( "Certificate: %1\n").arg( sCert.pCert );
+    strMsg += strPart;
+
+    strPart = QString( "IsCA: %1\n").arg( sCert.bCA );
+    strMsg += strPart;
+
+    strPart = QString( "IsSelf: %1\n").arg( sCert.bSelf );
+    strMsg += strPart;
+
+    strPart = QString( "SubjectDN: %1\n").arg( sCert.pSubjectDN );
+    strMsg += strPart;
+
+    strPart = QString( "IssuerNum: %1\n").arg( sCert.nIssuerNum );
+    strMsg += strPart;
+
+    strPart = QString( "Status: %1\n").arg( sCert.nStatus );
+    strMsg += strPart;
+
+    strPart = QString( "Serial: %1\n").arg( sCert.pSerial );
+    strMsg += strPart;
+
+    strPart = QString( "DNHash: %1\n").arg( sCert.pDNHash );
+    strMsg += strPart;
+
+    strPart = QString( "KeyHash: %1\n").arg( sCert.pKeyHash );
+    strMsg += strPart;
+
+    right_text_->setText( strMsg );
+    JS_DB_resetCert( &sCert );
+}
+
+void MainWindow::showRightBottomCRL( int nNum )
+{
+    QString strMsg;
+    QString strPart;
+
+    JCC_CRL sCRL;
+    memset( &sCRL, 0x00, sizeof(sCRL));
+
+    manApplet->ccClient()->getCRL( nNum, &sCRL );
+
+    strMsg = "[ CRL information ]\n";
+
+    strPart = QString( "Num: %1\n" ).arg( sCRL.nNum );
+    strMsg += strPart;
+
+    strPart = QString( "IssuerNum: %1\n").arg( sCRL.nIssuerNum );
+    strMsg += strPart;
+
+    strPart = QString( "SignAlgorithm: %1\n").arg( sCRL.pSignAlg );
+    strMsg += strPart;
+
+    strPart = QString( "CRL: %1\n").arg( sCRL.pCRL );
+    strMsg += strPart;
+
+
+    right_text_->setText( strMsg );
+}
+
+void MainWindow::showRightBottomRevoked( int nSeq )
+{
+    QString strMsg;
+    QString strPart;
+
+    JCC_Revoked sRevoked;
+    memset( &sRevoked, 0x00, sizeof(sRevoked));
+
+    manApplet->ccClient()->getRevoked( nSeq, &sRevoked );
+
+    strMsg = "[ Revoke information ]\n";
+
+    strPart = QString( "Seq: %1\n").arg( sRevoked.nSeq );
+    strMsg += strPart;
+
+    strPart = QString( "CertNum: %1\n").arg( sRevoked.nCertNum );
+    strMsg += strPart;
+
+    strPart = QString( "IssuerNum: %1\n").arg( sRevoked.nIssuerNum );
+    strMsg += strPart;
+
+    strPart = QString( "Serial: %1\n").arg( sRevoked.pSerial );
+    strMsg += strPart;
+
+    strPart = QString( "RevokeDate: %1\n").arg( sRevoked.nRevokedDate );
+    strMsg += strPart;
+
+    strPart = QString( "Reason: %1\n").arg( sRevoked.nReason );
+    strMsg += strPart;
+
+    right_text_->setText( strMsg );
+}
+
+void MainWindow::showRightBottomCA()
+{
+
+}
+
 void MainWindow::createTreeMenu()
 {
     left_model_->clear();
@@ -395,6 +516,26 @@ void MainWindow::createTreeMenu()
     pOCSPSignerItem->setType( ITEM_TYPE_OCSP_SIGNER );
     pTopItem->appendRow( pOCSPSignerItem );
 
+    ManTreeItem *pCAItem = new ManTreeItem( QString( "CA" ) );
+    pCAItem->setType( ITEM_TYPE_CA );
+    pCAItem->setIcon( QIcon(":/images/ca.png"));
+    pTopItem->appendRow( pCAItem );
+
+    ManTreeItem *pCertItem = new ManTreeItem( QString("Certificate"));
+    pCertItem->setType( ITEM_TYPE_CERT );
+    pCertItem->setIcon(QIcon(":/images/cert.png"));
+    pTopItem->appendRow( pCertItem );
+
+    ManTreeItem *pCRLItem = new ManTreeItem( QString("CRL") );
+    pCRLItem->setType( ITEM_TYPE_CRL );
+    pCRLItem->setIcon(QIcon(":/images/crl.png"));
+    pTopItem->appendRow( pCRLItem );
+
+    ManTreeItem *pRevokeItem = new ManTreeItem( QString("Revoke"));
+    pRevokeItem->setType( ITEM_TYPE_REVOKE );
+    pRevokeItem->setIcon(QIcon(":/images/revoke.png"));
+    pTopItem->appendRow( pRevokeItem );
+
     QModelIndex ri = left_model_->index(0,0);
     left_tree_->expand(ri);
 }
@@ -409,6 +550,14 @@ void MainWindow::createRightList(int nItemType)
         createRightCRLPolicyList();
     else if( nItemType == ITEM_TYPE_REG_SIGNER || nItemType == ITEM_TYPE_OCSP_SIGNER )
         createRightSignerList( nItemType );
+    else if( nItemType == ITEM_TYPE_CERT )
+        createRightCertList();
+    else if( nItemType == ITEM_TYPE_CRL )
+        createRightCRLList();
+    else if( nItemType == ITEM_TYPE_REVOKE )
+        createRightRevokedList();
+    else if( nItemType == ITEM_TYPE_CA )
+        createRightCA();
 }
 
 void MainWindow::createRightUserList()
@@ -582,6 +731,154 @@ void MainWindow::createRightSignerList( int nItemType )
     }
 
     if( pSignerList ) JS_DB_resetSignerList( &pSignerList );
+}
+
+void MainWindow::createRightCertList()
+{
+    removeAllRight();
+
+    int i = 0;
+    int nLimit = kListCount;
+    int nPage = right_menu_->curPage();
+    int nOffset = nPage * nLimit;
+    int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_CERT );
+
+    right_menu_->setLimit( nLimit );
+    right_menu_->setTotalCount( nTotalCnt );
+
+    QStringList titleList = { "Num", "SignAlg", "SubjectDN", "Cert" };
+
+    right_table_->clear();
+    right_table_->horizontalHeader()->setStretchLastSection(true);
+    right_table_->setColumnCount( titleList.size() );
+    right_table_->setHorizontalHeaderLabels( titleList );
+    right_table_->verticalHeader()->setVisible(false);
+
+    JDB_CertList    *pCertList = NULL;
+    JDB_CertList    *pCurList = NULL;
+
+    manApplet->ccClient()->getCertList( nOffset, nLimit, &pCertList );
+
+    pCurList = pCertList;
+
+    while( pCurList )
+    {
+        QString strDNInfo;
+        if( pCurList->sCert.bSelf ) strDNInfo += "[Self]";
+        if( pCurList->sCert.bCA ) strDNInfo += "[CA]";
+        strDNInfo += QString( "[%1] " ).arg( pCurList->sCert.nStatus );
+        strDNInfo += pCurList->sCert.pSubjectDN;
+
+        right_table_->insertRow(i);
+        right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCert.nNum) ));
+        right_table_->setItem( i, 1, new QTableWidgetItem( pCurList->sCert.pSignAlg ));
+        right_table_->setItem( i, 2, new QTableWidgetItem( strDNInfo ));
+        right_table_->setItem( i, 3, new QTableWidgetItem( pCurList->sCert.pCert ));
+
+        pCurList = pCurList->pNext;
+        i++;
+    }
+
+    right_menu_->updatePageLabel();
+    if( pCertList ) JS_DB_resetCertList( &pCertList );
+}
+
+void MainWindow::createRightCRLList()
+{
+    removeAllRight();
+
+    int i = 0;
+    int nLimit = kListCount;
+    int nPage = right_menu_->curPage();
+    int nOffset = nPage * nLimit;
+    int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_CRL );
+
+    right_menu_->setLimit( nLimit );
+    right_menu_->setTotalCount( nTotalCnt );
+
+    QStringList titleList = { "Num", "IssuerNum", "SignAlg", "CRL" };
+
+    right_table_->clear();
+    right_table_->horizontalHeader()->setStretchLastSection(true);
+    right_table_->setColumnCount( titleList.size() );
+    right_table_->setHorizontalHeaderLabels(titleList);
+    right_table_->verticalHeader()->setVisible(false);
+
+    JDB_CRLList     *pCRLList = NULL;
+    JDB_CRLList     *pCurList = NULL;
+
+    manApplet->ccClient()->getCRLList( nOffset, nLimit, &pCRLList );
+
+    pCurList = pCRLList;
+
+    while( pCurList )
+    {
+        right_table_->insertRow(i);
+        right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCRL.nNum )));
+        right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg( pCurList->sCRL.nIssuerNum )));
+        right_table_->setItem( i, 2, new QTableWidgetItem( pCurList->sCRL.pSignAlg ));
+        right_table_->setItem( i, 3, new QTableWidgetItem( pCurList->sCRL.pCRL ));
+
+        pCurList = pCurList->pNext;
+        i++;
+    }
+
+    right_menu_->updatePageLabel();
+    if( pCRLList ) JS_DB_resetCRLList( &pCRLList );
+}
+
+void MainWindow::createRightRevokedList()
+{
+    removeAllRight();
+
+    int i = 0;
+    int nLimit = kListCount;
+    int nPage = right_menu_->curPage();
+    int nOffset = nPage * nLimit;
+    int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_REVOKE );
+
+    right_menu_->setLimit( nLimit );
+    right_menu_->setTotalCount( nTotalCnt );
+
+    QStringList titleList = { "Num", "CertNum", "IssuerNum", "Serial", "RevokedDate", "Reason" };
+
+    right_table_->clear();
+    right_table_->horizontalHeader()->setStretchLastSection(true);
+    right_table_->setColumnCount( titleList.size() );
+    right_table_->setHorizontalHeaderLabels(titleList);
+    right_table_->verticalHeader()->setVisible(false);
+
+    JCC_RevokedList     *pRevokedList = NULL;
+    JCC_RevokedList     *pCurList = NULL;
+
+    manApplet->ccClient()->getRevokedList( nOffset, nLimit, &pRevokedList );
+
+    pCurList = pRevokedList;
+
+    while( pCurList )
+    {
+        right_table_->insertRow(i);
+
+        right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nSeq )));
+        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nCertNum )));
+        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nIssuerNum )));
+        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.pSerial )));
+        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nRevokedDate )));
+        right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nReason )));
+
+        pCurList = pCurList->pNext;
+        i++;
+    }
+
+
+    right_menu_->updatePageLabel();
+    if( pRevokedList ) JS_DB_resetRevokedList( &pRevokedList );
+}
+
+void MainWindow::createRightCA()
+{
+    removeAllRight();
+
 }
 
 void MainWindow::removeAllRight()

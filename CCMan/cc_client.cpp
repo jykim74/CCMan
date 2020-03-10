@@ -35,6 +35,12 @@ int CCClient::getCount(int nType)
 
     if( nType == ITEM_TYPE_USER )
         strType = "users";
+    else if( nType == ITEM_TYPE_CERT )
+        strType = "certs";
+    else if( nType == ITEM_TYPE_CRL )
+        strType = "crls";
+    else if( nType == ITEM_TYPE_REVOKE )
+        strType = "revokeds";
 
 
     strURL = base_url_;
@@ -410,6 +416,223 @@ int CCClient::getSignerList( int nType, JCC_SignerList **ppSignerList )
                 &pRsp );
 
     JS_CC_decodeSignerList( pRsp, ppSignerList );
+
+    if( pRsp ) JS_free( pRsp );
+
+    if( pParamList ) JS_UTIL_resetNameValList( &pParamList );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
+int CCClient::getCert( int nNum, JCC_Cert *pCert )
+{
+    int ret = 0;
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+
+    char *pRsp = NULL;
+
+
+    strURL = base_url_;
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CERT ).arg( nNum );
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                JS_HTTP_METHOD_GET,
+                NULL,
+                pHeaderList,
+                NULL,
+                &pRsp );
+
+    JS_CC_decodeCert( pRsp, pCert );
+    if( pRsp ) JS_free( pRsp );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
+int CCClient::getCertList( int nOffset, int nLimit, JCC_CertList **ppCertList )
+{
+    int ret = 0;
+    QString strURL;
+    JNameValList    *pParamList = NULL;
+    JNameValList    *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+
+    char    *pRsp = NULL;
+
+    strURL = base_url_;
+    strURL += JS_CC_PATH_CERT;
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    if( nOffset >= 0 && nLimit >= 0 )
+    {
+        QString strOffset = QString( "%1").arg(nOffset);
+        QString strLimit = QString( "%1").arg( nLimit );
+
+        JS_UTIL_createNameValList2( "offset", strOffset.toStdString().c_str(), &pParamList );
+        JS_UTIL_appendNameValList2( pParamList, "limit", strLimit.toStdString().c_str() );
+    }
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                JS_HTTP_METHOD_GET,
+                pParamList,
+                pHeaderList,
+                NULL,
+                &pRsp );
+
+    fprintf( stderr, "Rsp : %s\n", pRsp );
+
+    JS_CC_decodeCertList( pRsp, ppCertList );
+
+    if( pRsp ) JS_free( pRsp );
+
+    if( pParamList ) JS_UTIL_resetNameValList( &pParamList );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
+int CCClient::getCRL( int nNum, JCC_CRL *pCRL )
+{
+    int ret = 0;
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+
+    char *pRsp = NULL;
+
+
+    strURL = base_url_;
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CRL ).arg( nNum );
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                JS_HTTP_METHOD_GET,
+                NULL,
+                pHeaderList,
+                NULL,
+                &pRsp );
+
+    JS_CC_decodeCRL( pRsp, pCRL );
+    if( pRsp ) JS_free( pRsp );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+    return 0;
+}
+
+int CCClient::getCRLList( int nOffset, int nLimit, JCC_CRLList **ppCRLList )
+{
+    int ret = 0;
+    QString strURL;
+    JNameValList    *pParamList = NULL;
+    JNameValList    *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+
+    char    *pRsp = NULL;
+
+    strURL = base_url_;
+    strURL += JS_CC_PATH_CRL;
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    if( nOffset >= 0 && nLimit >= 0 )
+    {
+        QString strOffset = QString( "%1").arg(nOffset);
+        QString strLimit = QString( "%1").arg( nLimit );
+
+        JS_UTIL_createNameValList2( "offset", strOffset.toStdString().c_str(), &pParamList );
+        JS_UTIL_appendNameValList2( pParamList, "limit", strLimit.toStdString().c_str() );
+    }
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                JS_HTTP_METHOD_GET,
+                pParamList,
+                pHeaderList,
+                NULL,
+                &pRsp );
+
+    JS_CC_decodeCRLList( pRsp, ppCRLList );
+
+    if( pRsp ) JS_free( pRsp );
+
+    if( pParamList ) JS_UTIL_resetNameValList( &pParamList );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
+int CCClient::getRevoked( int nSeq, JCC_Revoked *pRevoked )
+{
+    int ret = 0;
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+
+    char *pRsp = NULL;
+
+
+    strURL = base_url_;
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_REVOKED ).arg( nSeq );
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                JS_HTTP_METHOD_GET,
+                NULL,
+                pHeaderList,
+                NULL,
+                &pRsp );
+
+    JS_CC_decodeRevoked( pRsp, pRevoked );
+    if( pRsp ) JS_free( pRsp );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
+int CCClient::getRevokedList( int nOffset, int nLimit, JCC_RevokedList **ppRevokedList )
+{
+    int ret = 0;
+    QString strURL;
+    JNameValList    *pParamList = NULL;
+    JNameValList    *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+
+    char    *pRsp = NULL;
+
+    strURL = base_url_;
+    strURL += JS_CC_PATH_REVOKED;
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    if( nOffset >= 0 && nLimit >= 0 )
+    {
+        QString strOffset = QString( "%1").arg(nOffset);
+        QString strLimit = QString( "%1").arg( nLimit );
+
+        JS_UTIL_createNameValList2( "offset", strOffset.toStdString().c_str(), &pParamList );
+        JS_UTIL_appendNameValList2( pParamList, "limit", strLimit.toStdString().c_str() );
+    }
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                JS_HTTP_METHOD_GET,
+                pParamList,
+                pHeaderList,
+                NULL,
+                &pRsp );
+
+    JS_CC_decodeRevokedList( pRsp, ppRevokedList );
 
     if( pRsp ) JS_free( pRsp );
 

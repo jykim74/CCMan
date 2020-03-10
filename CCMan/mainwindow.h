@@ -37,6 +37,10 @@ public:
     void createRightCertPolicyList();
     void createRightCRLPolicyList();
     void createRightSignerList( int nItemType );
+    void createRightCertList();
+    void createRightCRLList();
+    void createRightRevokedList();
+    void createRightCA();
 
     int rightType();
     int rightCount();
@@ -53,6 +57,10 @@ public slots:
     void showRightBottomCertPolicy( int nNum );
     void showRightBottomCRLPolicy( int nNum );
     void showRightBottomSigner( int nNum );
+    void showRightBottomCert( int nNum );
+    void showRightBottomCRL( int nNum );
+    void showRightBottomRevoked( int nSeq );
+    void showRightBottomCA();
     void showRightMenu(QPoint point);
     void deleteUser();
     void modifyUser();

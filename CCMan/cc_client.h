@@ -28,6 +28,13 @@ public:
     int getCRLPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicyExtList );
     int getSigner( int nNum, JCC_Signer *pSigner );
     int getSignerList( int nType, JCC_SignerList **ppSignerList );
+    int getCert( int nNum, JCC_Cert *pCert );
+    int getCertList( int nOffset, int nLimit, JCC_CertList **ppCertList );
+    int getCRL( int nNum, JCC_CRL *pCRL );
+    int getCRLList( int nOffset, int nLimit, JCC_CRLList **ppCRLList );
+    int getRevoked( int nSeq, JCC_Revoked *pRevoked );
+    int getRevokedList( int nOffset, int nLimit, JCC_RevokedList **ppRevokedList );
+
 private:
     QString     base_url_;
 };

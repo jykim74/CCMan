@@ -4,14 +4,15 @@
 #include <QStandardItem>
 
 enum {
-    ITEM_TYPE_USER,
+    ITEM_TYPE_USER = 0,
     ITEM_TYPE_CERT,
     ITEM_TYPE_CRL,
     ITEM_TYPE_REVOKE,
     ITEM_TYPE_REG_SIGNER,
     ITEM_TYPE_OCSP_SIGNER,
     ITEM_TYPE_CERT_POLICY,
-    ITEM_TYPE_CRL_POLICY
+    ITEM_TYPE_CRL_POLICY,
+    ITEM_TYPE_CA
 };
 
 class ManTreeItem : public QStandardItem
