@@ -325,7 +325,7 @@ void MakeCRLPolicyDlg::saveCRLNumUse( int nPolicyNum )
 
     JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mCRLNumCriticalCheck->isChecked(), "crlNumber", strVal.toStdString().c_str() );
 
-    manApplet->ccClient()->addCRLPolicyExt( &sPolicyExt );
+    manApplet->ccClient()->addCRLPolicyExt( nPolicyNum, &sPolicyExt );
     JS_DB_resetPolicyExt( &sPolicyExt );
 }
 
@@ -343,7 +343,7 @@ void MakeCRLPolicyDlg::saveAKIUse( int nPolicyNum )
         strVal += "SERIAL#";
 
     JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mAKICriticalCheck->isChecked(), "authorityKeyIdentifier", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCRLPolicyExt( &sPolicyExt );
+    manApplet->ccClient()->addCRLPolicyExt( nPolicyNum, &sPolicyExt );
     JS_DB_resetPolicyExt( &sPolicyExt );
 }
 
@@ -369,7 +369,7 @@ void MakeCRLPolicyDlg::saveIDPUse( int nPolicyNum )
     }
 
     JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mIDPCriticalCheck->isChecked(), "issuingDistributionPoint", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCRLPolicyExt( &sPolicyExt );
+    manApplet->ccClient()->addCRLPolicyExt( nPolicyNum, &sPolicyExt );
     JS_DB_resetPolicyExt( &sPolicyExt );
 }
 
@@ -395,7 +395,7 @@ void MakeCRLPolicyDlg::saveIANUse( int nPolicyNum )
     }
 
     JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mIANCriticalCheck->isChecked(), "issuerAltName", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCRLPolicyExt( &sPolicyExt );
+    manApplet->ccClient()->addCRLPolicyExt( nPolicyNum, &sPolicyExt );
     JS_DB_resetPolicyExt( &sPolicyExt );
 }
 

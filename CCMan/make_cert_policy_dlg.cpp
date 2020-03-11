@@ -687,7 +687,7 @@ void MakeCertPolicyDlg::saveAIAUse(int nPolicyNum )
     }
 
     JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mAIACriticalCheck->isChecked(), "authorityInfoAccess", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( &sPolicyExt );
+    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
     JS_DB_resetPolicyExt( &sPolicyExt );
 }
 
@@ -702,7 +702,7 @@ void MakeCertPolicyDlg::saveAKIUse(int nPolicyNum )
     if( mAKICertSerialCheck->isChecked() ) strVal += "SERIAL#";
 
     JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mAKICriticalCheck->isChecked(), "authorityKeyIdentifier", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( &sPolicyExt );
+    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
     JS_DB_resetPolicyExt( &sPolicyExt );
 }
 
@@ -726,7 +726,7 @@ void MakeCertPolicyDlg::saveBCUse(int nPolicyNum )
     }
 
     JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mBCCriticalCheck->isChecked(), "basicConstraints", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( &sPolicyExt );
+    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
     JS_DB_resetPolicyExt( &sPolicyExt );
 }
 
@@ -752,7 +752,7 @@ void MakeCertPolicyDlg::saveCRLDPUse(int nPolicyNum )
     }
 
     JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mCRLDPCriticalCheck->isChecked(), "crlDistributionPoints", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( &sPolicyExt );
+    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
     JS_DB_resetPolicyExt( &sPolicyExt );
 }
 
@@ -770,7 +770,7 @@ void MakeCertPolicyDlg::saveEKUUse(int nPolicyNum )
     }
 
     JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mEKUCriticalCheck->isChecked(), "extendedKeyUsage", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( &sPolicyExt );
+    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
     JS_DB_resetPolicyExt( &sPolicyExt );
 }
 
@@ -796,7 +796,7 @@ void MakeCertPolicyDlg::saveIANUse(int nPolicyNum )
     }
 
     JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mIANCriticalCheck->isChecked(), "issuerAltName", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( &sPolicyExt );
+    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
     JS_DB_resetPolicyExt( &sPolicyExt );
 }
 
@@ -814,7 +814,7 @@ void MakeCertPolicyDlg::saveKeyUsageUse(int nPolicyNum )
     }
 
     JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mKeyUsageCriticalCheck->isChecked(), "keyUsage", strValue.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( &sPolicyExt );
+    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
     JS_DB_resetPolicyExt( &sPolicyExt );
 }
 
@@ -852,7 +852,7 @@ void MakeCertPolicyDlg::saveNCUse(int nPolicyNum )
     }
 
     JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mNCCriticalCheck->isChecked(), "nameConstraints", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( &sPolicyExt );
+    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
     JS_DB_resetPolicyExt( &sPolicyExt );
 }
 
@@ -877,7 +877,7 @@ void MakeCertPolicyDlg::savePolicyUse(int nPolicyNum )
     }
 
     JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mPolicyCriticalCheck->isChecked(), "certificatePolicies", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( &sPolicyExt );
+    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
     JS_DB_resetPolicyExt( &sPolicyExt );
 }
 
@@ -903,7 +903,7 @@ void MakeCertPolicyDlg::savePCUse(int nPolicyNum )
     }
 
     JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mPCCriticalCheck->isChecked(), "policyConstraints", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( &sPolicyExt );
+    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
     JS_DB_resetPolicyExt( &sPolicyExt );
 }
 
@@ -929,7 +929,7 @@ void MakeCertPolicyDlg::savePMUse(int nPolicyNum )
     }
 
     JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mPMCriticalCheck->isChecked(), "policyMappings", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( &sPolicyExt );
+    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
     JS_DB_resetPolicyExt( &sPolicyExt );
 }
 
@@ -939,7 +939,7 @@ void MakeCertPolicyDlg::saveSKIUse(int nPolicyNum )
     memset( &sPolicyExt, 0x00, sizeof(sPolicyExt));
 
     JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mSKICriticalCheck->isChecked(), "subjectKeyIdentifier", NULL );
-    manApplet->ccClient()->addCertPolicyExt( &sPolicyExt );
+    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
     JS_DB_resetPolicyExt( &sPolicyExt );
 }
 
@@ -964,7 +964,7 @@ void MakeCertPolicyDlg::saveSANUse(int nPolicyNum)
     }
 
     JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mSANCriticalCheck->isChecked(), "subjectAltName", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( &sPolicyExt );
+    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
     JS_DB_resetPolicyExt( &sPolicyExt );
 }
 
