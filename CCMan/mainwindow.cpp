@@ -16,6 +16,9 @@
 
 #include "js_db.h"
 #include "js_db_data.h"
+#include "make_cert_policy_dlg.h"
+#include "make_crl_policy_dlg.h"
+#include "signer_dlg.h"
 
 const int kListCount = 5;
 
@@ -85,15 +88,24 @@ void MainWindow::initialize()
 
 void MainWindow::createActions()
 {
-    QMenu *userMenu = menuBar()->addMenu(tr("&User"));
-    QToolBar *userToolBar = addToolBar(tr("User"));
+    QMenu *toolsMenu = menuBar()->addMenu(tr("&Tools"));
+    QToolBar *toolsToolBar = addToolBar(tr("Tools"));
 
     const QIcon regIcon = QIcon::fromTheme( "reg-user", QIcon(":/images/user_add.png"));
     QAction *regUserAct = new QAction( regIcon, tr("&RegisterUser"), this );
     regUserAct->setStatusTip( tr("Register a user"));
     connect( regUserAct, &QAction::triggered, this, &MainWindow::regUser);
-    userMenu->addAction(regUserAct);
-    userToolBar->addAction(regUserAct);
+    toolsMenu->addAction(regUserAct);
+    toolsToolBar->addAction(regUserAct);
+
+    QAction *makeCertPolicyAct = toolsMenu->addAction(tr("&MakeCertPolicy"), this, &MainWindow::makeCertPolicy);
+    makeCertPolicyAct->setStatusTip(tr( "Make certificate policy"));
+
+    QAction *makeCRLPolicyAct = toolsMenu->addAction(tr("&MakeCRLPolicy"), this, &MainWindow::makeCRLPolicy);
+    makeCRLPolicyAct->setStatusTip(tr( "Make CRL Policy"));
+
+    QAction *regSignerAct = toolsMenu->addAction(tr("&RegSigner"), this, &MainWindow::regSigner);
+    regSignerAct->setStatusTip(tr("Register Signer"));
 }
 
 void MainWindow::createStatusBar()
@@ -917,6 +929,30 @@ void MainWindow::modifyUser()
 
     QTableWidgetItem* item = right_table_->item( row, 0 );
     int nSeq = item->text().toInt();
+}
+
+void MainWindow::makeCertPolicy()
+{
+    MakeCertPolicyDlg makeCertPolicyDlg;
+    makeCertPolicyDlg.exec();
+}
+
+void MainWindow::makeCRLPolicy()
+{
+    MakeCRLPolicyDlg makeCRLPolicyDlg;
+    makeCRLPolicyDlg.exec();
+}
+
+void MainWindow::regSigner()
+{
+    SignerDlg signerDlg;
+
+    if( rightType() == ITEM_TYPE_OCSP_SIGNER )
+        signerDlg.setType(1);
+    else
+        signerDlg.setType(0);
+
+    signerDlg.exec();
 }
 
 int MainWindow::rightType()

@@ -36,6 +36,18 @@ void ManTreeView::showContextMenu(QPoint point)
     {
         menu.addAction(tr("RegUser"), manApplet->mainWindow(), &MainWindow::regUser);
     }
+    else if( item->type() == ITEM_TYPE_CERT_POLICY )
+    {
+        menu.addAction(tr("MakeCertPolicy"), manApplet->mainWindow(), &MainWindow::makeCertPolicy );
+    }
+    else if( item->type() == ITEM_TYPE_CRL_POLICY )
+    {
+        menu.addAction(tr("MakeCRLPolicy"), manApplet->mainWindow(), &MainWindow::makeCRLPolicy );
+    }
+    else if( item->type() == ITEM_TYPE_REG_SIGNER || item->type() == ITEM_TYPE_OCSP_SIGNER )
+    {
+        menu.addAction(tr("RegSigner"), manApplet->mainWindow(), &MainWindow::regSigner );
+    }
 
     menu.exec(QCursor::pos());
 }

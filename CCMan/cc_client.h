@@ -46,6 +46,8 @@ public:
     int delCertPolicyExts( int nPolicyNum );
     int addCertPolicyExt( int nPolicyNum, JCC_PolicyExt *pPolicyExt );
 
+    int addSigner( JCC_Signer *pSigner );
+
 private:
     QString     base_url_;
 };

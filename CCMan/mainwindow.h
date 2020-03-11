@@ -42,6 +42,15 @@ public:
     void createRightRevokedList();
     void createRightCA();
 
+    void showRightBottomUser( int nSeq );
+    void showRightBottomCertPolicy( int nNum );
+    void showRightBottomCRLPolicy( int nNum );
+    void showRightBottomSigner( int nNum );
+    void showRightBottomCert( int nNum );
+    void showRightBottomCRL( int nNum );
+    void showRightBottomRevoked( int nSeq );
+    void showRightBottomCA();
+
     int rightType();
     int rightCount();
 
@@ -53,17 +62,13 @@ public slots:
     void regUser();
     void treeMenuClick( QModelIndex index );
     void rightTableClick( QModelIndex index );
-    void showRightBottomUser( int nSeq );
-    void showRightBottomCertPolicy( int nNum );
-    void showRightBottomCRLPolicy( int nNum );
-    void showRightBottomSigner( int nNum );
-    void showRightBottomCert( int nNum );
-    void showRightBottomCRL( int nNum );
-    void showRightBottomRevoked( int nSeq );
-    void showRightBottomCA();
+
     void showRightMenu(QPoint point);
     void deleteUser();
     void modifyUser();
+    void makeCertPolicy();
+    void makeCRLPolicy();
+    void regSigner();
 
 private:
     QSplitter   *hsplitter_;

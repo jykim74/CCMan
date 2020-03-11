@@ -986,3 +986,41 @@ int CCClient::addCertPolicyExt( int nPolicyNum, JCC_PolicyExt *pPolicyExt )
 
     return 0;
 }
+
+int CCClient::addSigner(JCC_Signer *pSigner)
+{
+    int ret = 0;
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+    JCC_CodeMsg sCodeMsg;
+
+    char *pRsp = NULL;
+    char *pReq = NULL;
+
+    memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
+
+    strURL = base_url_;
+    strURL += JS_CC_PATH_SIGNER;
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    JS_CC_encodeSigner( pSigner, &pReq );
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                JS_HTTP_METHOD_POST,
+                NULL,
+                pHeaderList,
+                pReq,
+                &pRsp );
+
+    JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
+
+    JS_CC_resetCodeMsg( &sCodeMsg );
+    if( pRsp ) JS_free( pRsp );
+    if( pReq ) JS_free( pReq );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}

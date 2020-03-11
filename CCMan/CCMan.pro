@@ -34,7 +34,8 @@ SOURCES += \
     reg_user_dlg.cpp \
     search_menu.cpp \
     settings_dlg.cpp \
-    settings_mgr.cpp
+    settings_mgr.cpp \
+    signer_dlg.cpp
 
 HEADERS += \
     about_dlg.h \
@@ -56,6 +57,7 @@ HEADERS += \
     search_menu.h \
     settings_dlg.h \
     settings_mgr.h \
+    signer_dlg.h \
     singleton.h
 
 FORMS += \
@@ -65,7 +67,8 @@ FORMS += \
     make_cert_policy_dlg.ui \
     make_crl_policy_dlg.ui \
     reg_user_dlg.ui \
-    settings_dlg.ui
+    settings_dlg.ui \
+    signer_dlg.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
