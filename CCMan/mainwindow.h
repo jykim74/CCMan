@@ -69,6 +69,13 @@ public slots:
     void makeCertPolicy();
     void makeCRLPolicy();
     void regSigner();
+    void modifyCertPolicy();
+    void modifyCRLPolicy();
+    void deleteCertPolicy();
+    void deleteCRLPolicy();
+    void deleteSigner();
+    void revokeCert();
+    void deleteRevoke();
 
 private:
     QSplitter   *hsplitter_;

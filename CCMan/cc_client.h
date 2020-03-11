@@ -39,14 +39,20 @@ public:
     int addCRLPolicy( JCC_CRLPolicy *pCRLPolicy );
     int modCRLPolicy( int nNum, JCC_CRLPolicy *pCRLPolicy );
     int delCRLPolicyExts( int nPolicyNum );
+    int delCRLPolicy( int nNum );
     int addCRLPolicyExt( int nPolicyNum, JCC_PolicyExt *pPolicyExt );
 
     int addCertPolicy( JCC_CertPolicy *pCertPolicy );
     int modCertPolicy( int nNum, JCC_CertPolicy *pCertPolicy );
     int delCertPolicyExts( int nPolicyNum );
+    int delCertPolicy( int nNum );
     int addCertPolicyExt( int nPolicyNum, JCC_PolicyExt *pPolicyExt );
 
     int addSigner( JCC_Signer *pSigner );
+    int delSigner( int nNum );
+
+    int addRevoked( JCC_Revoked *pRevoked );
+    int delRevoked( int nSeq );
 
 private:
     QString     base_url_;

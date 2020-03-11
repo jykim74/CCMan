@@ -86,6 +86,12 @@ int CCClient::getNum(int nType)
         strType = "crls";
     else if( nType == ITEM_TYPE_REVOKE )
         strType = "revokeds";
+    else if( nType == ITEM_TYPE_CERT_POLICY )
+        strType = "cert_policies";
+    else if( nType == ITEM_TYPE_CRL_POLICY )
+        strType = "crl_policies";
+    else
+        strType = "none";
 
 
     strURL = base_url_;
@@ -776,7 +782,7 @@ int CCClient::delCRLPolicyExts( int nPolicyNum )
     memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
 
     strURL = base_url_;
-    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CERT_POLICY ).arg( nPolicyNum );
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CRL_POLICY ).arg( nPolicyNum );
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
     JS_UTIL_createNameValList2( "mode", "extonly", &pParamList );
@@ -795,6 +801,42 @@ int CCClient::delCRLPolicyExts( int nPolicyNum )
     if( pRsp ) JS_free( pRsp );
     if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
     if( pParamList ) JS_UTIL_resetNameValList( &pParamList );
+
+    return 0;
+}
+
+int CCClient::delCRLPolicy( int nNum )
+{
+    int ret = 0;
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+
+    QString strToken = manApplet->accountInfo()->token();
+    JCC_CodeMsg sCodeMsg;
+
+    char *pRsp = NULL;
+
+    memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
+
+    strURL = base_url_;
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CRL_POLICY ).arg( nNum );
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                JS_HTTP_METHOD_DELETE,
+                NULL,
+                pHeaderList,
+                NULL,
+                &pRsp );
+
+    JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
+
+    JS_CC_resetCodeMsg( &sCodeMsg );
+    if( pRsp ) JS_free( pRsp );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
 
     return 0;
 }
@@ -912,6 +954,42 @@ int CCClient::modCertPolicy( int nNum, JCC_CertPolicy *pCertPolicy )
     return 0;
 }
 
+int CCClient::delCertPolicy( int nNum )
+{
+    int ret = 0;
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+
+    QString strToken = manApplet->accountInfo()->token();
+    JCC_CodeMsg sCodeMsg;
+
+    char *pRsp = NULL;
+
+    memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
+
+    strURL = base_url_;
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CERT_POLICY ).arg( nNum );
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                JS_HTTP_METHOD_DELETE,
+                NULL,
+                pHeaderList,
+                NULL,
+                &pRsp );
+
+    JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
+
+    JS_CC_resetCodeMsg( &sCodeMsg );
+    if( pRsp ) JS_free( pRsp );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
 int CCClient::delCertPolicyExts( int nPolicyNum )
 {
     int ret = 0;
@@ -926,7 +1004,7 @@ int CCClient::delCertPolicyExts( int nPolicyNum )
     memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
 
     strURL = base_url_;
-    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CRL_POLICY ).arg( nPolicyNum );
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CERT_POLICY ).arg( nPolicyNum );
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
     JS_UTIL_createNameValList2( "mode", "extonly", &pParamList );
@@ -1020,6 +1098,116 @@ int CCClient::addSigner(JCC_Signer *pSigner)
     JS_CC_resetCodeMsg( &sCodeMsg );
     if( pRsp ) JS_free( pRsp );
     if( pReq ) JS_free( pReq );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
+int CCClient::delSigner(int nNum)
+{
+    int ret = 0;
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+
+    QString strToken = manApplet->accountInfo()->token();
+    JCC_CodeMsg sCodeMsg;
+
+    char *pRsp = NULL;
+
+    memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
+
+    strURL = base_url_;
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_SIGNER ).arg( nNum );
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                JS_HTTP_METHOD_DELETE,
+                NULL,
+                pHeaderList,
+                NULL,
+                &pRsp );
+
+    JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
+
+    JS_CC_resetCodeMsg( &sCodeMsg );
+    if( pRsp ) JS_free( pRsp );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
+int CCClient::addRevoked(JCC_Revoked *pRevoked)
+{
+    int ret = 0;
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+    JCC_CodeMsg sCodeMsg;
+
+    char *pRsp = NULL;
+    char *pReq = NULL;
+
+    memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
+
+    strURL = base_url_;
+    strURL += JS_CC_PATH_REVOKED;
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    JS_CC_encodeRevoked( pRevoked, &pReq );
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                JS_HTTP_METHOD_POST,
+                NULL,
+                pHeaderList,
+                pReq,
+                &pRsp );
+
+    JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
+
+    JS_CC_resetCodeMsg( &sCodeMsg );
+    if( pRsp ) JS_free( pRsp );
+    if( pReq ) JS_free( pReq );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
+int CCClient::delRevoked(int nSeq)
+{
+    int ret = 0;
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+
+    QString strToken = manApplet->accountInfo()->token();
+    JCC_CodeMsg sCodeMsg;
+
+    char *pRsp = NULL;
+
+    memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
+
+    strURL = base_url_;
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_REVOKED ).arg( nSeq );
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                JS_HTTP_METHOD_DELETE,
+                NULL,
+                pHeaderList,
+                NULL,
+                &pRsp );
+
+    JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
+
+    JS_CC_resetCodeMsg( &sCodeMsg );
+    if( pRsp ) JS_free( pRsp );
     if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
 
     return 0;

@@ -19,6 +19,7 @@
 #include "make_cert_policy_dlg.h"
 #include "make_crl_policy_dlg.h"
 #include "signer_dlg.h"
+#include "revoke_cert_dlg.h"
 
 const int kListCount = 5;
 
@@ -128,6 +129,28 @@ void MainWindow::showRightMenu(QPoint point)
     {
         menu.addAction( tr("DeleteUser"), this, &MainWindow::deleteUser );
         menu.addAction( tr("ModifyUser"), this, &MainWindow::modifyUser );
+    }
+    else if( right_table_->type() == ITEM_TYPE_CERT_POLICY )
+    {
+        menu.addAction( tr("ModifyCertPolicy"), this, &MainWindow::modifyCertPolicy );
+        menu.addAction( tr("DeleteCertPolicy"), this, &MainWindow::deleteCertPolicy );
+    }
+    else if( rightType() == ITEM_TYPE_CRL_POLICY )
+    {
+        menu.addAction( tr("ModifyCRLPolicy"), this, &MainWindow::modifyCRLPolicy );
+        menu.addAction( tr("DeleteCRLPolicy"), this, &MainWindow::deleteCRLPolicy );
+    }
+    else if( rightType() == ITEM_TYPE_REG_SIGNER || rightType() == ITEM_TYPE_OCSP_SIGNER )
+    {
+        menu.addAction( tr("DeleteSigner"), this, &MainWindow::deleteSigner );
+    }
+    else if( rightType() == ITEM_TYPE_CERT )
+    {
+        menu.addAction( tr("RevokeCert"), this, &MainWindow::revokeCert );
+    }
+    else if( rightType() == ITEM_TYPE_REVOKE )
+    {
+        menu.addAction( tr("DeleteRevoke"), this, &MainWindow::deleteRevoke );
     }
 
     menu.exec(QCursor::pos());
@@ -953,6 +976,90 @@ void MainWindow::regSigner()
         signerDlg.setType(0);
 
     signerDlg.exec();
+}
+
+void MainWindow::modifyCertPolicy()
+{
+    int row = right_table_->currentRow();
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+
+    int num = item->text().toInt();
+
+    MakeCertPolicyDlg makeCertPolicyDlg;
+    makeCertPolicyDlg.setEdit(true);
+    makeCertPolicyDlg.setPolicyNum(num);
+
+    makeCertPolicyDlg.exec();
+}
+
+void MainWindow::modifyCRLPolicy()
+{
+    int row = right_table_->currentRow();
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+
+    int num = item->text().toInt();
+
+    MakeCRLPolicyDlg makeCRLPolicyDlg;
+    makeCRLPolicyDlg.setEdit(true);
+    makeCRLPolicyDlg.setPolicyNum(num);
+    makeCRLPolicyDlg.exec();
+}
+
+void MainWindow::deleteCertPolicy()
+{
+    int row = right_table_->currentRow();
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+
+    int num = item->text().toInt();
+
+    manApplet->ccClient()->delCertPolicy( num );
+    createRightCertPolicyList();
+}
+
+void MainWindow::deleteCRLPolicy()
+{
+    int row = right_table_->currentRow();
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+
+    int num = item->text().toInt();
+
+    manApplet->ccClient()->delCRLPolicy( num );
+    createRightCRLPolicyList();
+}
+
+void MainWindow::deleteSigner()
+{
+    int row = right_table_->currentRow();
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+
+    int num = item->text().toInt();
+
+    manApplet->ccClient()->delSigner( num );
+    createRightSignerList( rightType() );
+}
+
+void MainWindow::revokeCert()
+{
+    int row = right_table_->currentRow();
+    if( row < 0 ) return;
+
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+    int num = item->text().toInt();
+
+    RevokeCertDlg revokeCertDlg;
+    revokeCertDlg.setCertNum(num);
+    revokeCertDlg.exec();
+}
+
+void MainWindow::deleteRevoke()
+{
+    int row = right_table_->currentRow();
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+
+    int num = item->text().toInt();
+
+    manApplet->ccClient()->delRevoked( num );
+    createRightRevokedList();
 }
 
 int MainWindow::rightType()

@@ -32,6 +32,7 @@ SOURCES += \
     man_tree_model.cpp \
     man_tree_view.cpp \
     reg_user_dlg.cpp \
+    revoke_cert_dlg.cpp \
     search_menu.cpp \
     settings_dlg.cpp \
     settings_mgr.cpp \
@@ -54,6 +55,7 @@ HEADERS += \
     man_tree_model.h \
     man_tree_view.h \
     reg_user_dlg.h \
+    revoke_cert_dlg.h \
     search_menu.h \
     settings_dlg.h \
     settings_mgr.h \
@@ -67,6 +69,7 @@ FORMS += \
     make_cert_policy_dlg.ui \
     make_crl_policy_dlg.ui \
     reg_user_dlg.ui \
+    revoke_cert_dlg.ui \
     settings_dlg.ui \
     signer_dlg.ui
 
