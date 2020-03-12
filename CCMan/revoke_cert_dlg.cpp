@@ -3,7 +3,6 @@
 #include "man_applet.h"
 #include "cc_client.h"
 #include "js_cc.h"
-#include "js_cc_data.h"
 #include "js_db.h"
 #include "js_db_data.h"
 #include "common.h"

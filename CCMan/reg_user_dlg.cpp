@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "man_applet.h"
 #include "js_cc.h"
-#include "js_cc_data.h"
 #include "js_http.h"
 
 #include "reg_user_dlg.h"

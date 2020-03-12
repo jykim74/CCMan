@@ -1,6 +1,5 @@
 #include "login_dlg.h"
 #include "js_cc.h"
-#include "js_cc_data.h"
 #include "js_ssl.h"
 #include "js_net.h"
 #include "js_util.h"

@@ -4,7 +4,6 @@
 #include <QDialog>
 #include "ui_make_crl_policy_dlg.h"
 #include "js_cc.h"
-#include "js_cc_data.h"
 
 class PolicyExtRec;
 

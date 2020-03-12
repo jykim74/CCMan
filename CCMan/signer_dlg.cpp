@@ -7,7 +7,6 @@
 #include "js_bin.h"
 #include "js_pki_x509.h"
 #include "js_cc.h"
-#include "js_cc_data.h"
 #include "js_db.h"
 #include "js_db_data.h"
 #include "cc_client.h"

@@ -2,7 +2,7 @@
 #define CCCLIENT_H
 
 #include <QString>
-#include "js_cc_data.h"
+#include "js_cc.h"
 
 enum {
     CLIENT_TYPE_USER,

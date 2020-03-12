@@ -1,7 +1,6 @@
 #include "cc_client.h"
 #include "js_http.h"
 #include "js_cc.h"
-#include "js_cc_data.h"
 
 #include "mainwindow.h"
 #include "man_applet.h"
