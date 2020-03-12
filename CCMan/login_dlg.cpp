@@ -63,7 +63,7 @@ void LoginDlg::accept()
     if( pReq ) JS_free( pReq );
     if( pRsp ) JS_free( pRsp );
 
-    if( sAuthRsp.pResCode && strcasecmp( sAuthRsp.pResCode, "0000" ) == 0 )
+    if( nStatusCode == JS_HTTP_STATUS_OK )
     {
         manApplet->accountInfo()->setToken( sAuthRsp.pToken );
         manApplet->accountInfo()->setPerm( sAuthRsp.pPerm );

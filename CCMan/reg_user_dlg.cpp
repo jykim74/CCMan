@@ -62,7 +62,7 @@ void RegUserDlg::accept()
     if( pReq ) JS_free( pReq );
     if( pRsp ) JS_free( pRsp );
 
-    if( sRegUserRsp.pResCode && strcasecmp( sRegUserRsp.pResCode, "0000" ) == 0 )
+    if( nStatusCode == JS_HTTP_STATUS_OK )
     {
         QString strMsg = QString( "The success to register user(%1:%2)")
                 .arg( sRegUserRsp.pRefNum)
