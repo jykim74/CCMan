@@ -21,6 +21,7 @@ void CCClient::setBaseUrl(const QString strUrl)
 int CCClient::getCount(int nType)
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList    *pParamList = NULL;
     JNameValList    *pHeaderList = NULL;
@@ -53,6 +54,7 @@ int CCClient::getCount(int nType)
                 pParamList,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeNameVal( pRsp, &sNameVal );
@@ -66,6 +68,7 @@ int CCClient::getCount(int nType)
 int CCClient::getNum(int nType)
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList    *pParamList = NULL;
     JNameValList    *pHeaderList = NULL;
@@ -104,6 +107,7 @@ int CCClient::getNum(int nType)
                 pParamList,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeNameVal( pRsp, &sNameVal );
@@ -117,6 +121,7 @@ int CCClient::getNum(int nType)
 int CCClient::getUserList( int nOffset, int nLimit, JCC_UserList **ppUserList )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList    *pParamList = NULL;
     JNameValList    *pHeaderList = NULL;
@@ -144,6 +149,7 @@ int CCClient::getUserList( int nOffset, int nLimit, JCC_UserList **ppUserList )
                 pParamList,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeUserList( pRsp, ppUserList );
@@ -159,6 +165,7 @@ int CCClient::getUserList( int nOffset, int nLimit, JCC_UserList **ppUserList )
 int CCClient::getUser( int nNum, JCC_User *pUser )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -177,6 +184,7 @@ int CCClient::getUser( int nNum, JCC_User *pUser )
                 NULL,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeUser( pRsp, pUser );
@@ -189,6 +197,7 @@ int CCClient::getUser( int nNum, JCC_User *pUser )
 int CCClient::delUser(int nNum)
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -209,6 +218,7 @@ int CCClient::delUser(int nNum)
                 NULL,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -223,6 +233,7 @@ int CCClient::delUser(int nNum)
 int CCClient::getCertPolicyList( JCC_CertPolicyList **ppCertPolicyList )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
 
     JNameValList    *pHeaderList = NULL;
@@ -242,6 +253,7 @@ int CCClient::getCertPolicyList( JCC_CertPolicyList **ppCertPolicyList )
                 NULL,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCertPolicyList( pRsp, ppCertPolicyList );
@@ -255,6 +267,7 @@ int CCClient::getCertPolicyList( JCC_CertPolicyList **ppCertPolicyList )
 int CCClient::getCertPolicy(int nNum, JCC_CertPolicy *pCertPolicy)
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -273,6 +286,7 @@ int CCClient::getCertPolicy(int nNum, JCC_CertPolicy *pCertPolicy)
                 NULL,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCertPolicy( pRsp, pCertPolicy );
@@ -285,6 +299,8 @@ int CCClient::getCertPolicy(int nNum, JCC_CertPolicy *pCertPolicy)
 int CCClient::getCertPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicyExtList )
 {
     int ret = 0;
+    int status = 0;
+
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -303,6 +319,7 @@ int CCClient::getCertPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicy
                 NULL,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodePolicyExtList( pRsp, ppPolicyExtList );
@@ -316,6 +333,7 @@ int CCClient::getCertPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicy
 int CCClient::getCRLPolicyList( JCC_CRLPolicyList **ppCRLPolicyList )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
 
     JNameValList    *pHeaderList = NULL;
@@ -335,6 +353,7 @@ int CCClient::getCRLPolicyList( JCC_CRLPolicyList **ppCRLPolicyList )
                 NULL,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCRLPolicyList( pRsp, ppCRLPolicyList );
@@ -348,6 +367,7 @@ int CCClient::getCRLPolicyList( JCC_CRLPolicyList **ppCRLPolicyList )
 int CCClient::getCRLPolicy(int nNum, JCC_CRLPolicy *pCRLPolicy)
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -366,6 +386,7 @@ int CCClient::getCRLPolicy(int nNum, JCC_CRLPolicy *pCRLPolicy)
                 NULL,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCRLPolicy( pRsp, pCRLPolicy );
@@ -378,6 +399,7 @@ int CCClient::getCRLPolicy(int nNum, JCC_CRLPolicy *pCRLPolicy)
 int CCClient::getCRLPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicyExtList )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -396,6 +418,7 @@ int CCClient::getCRLPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicyE
                 NULL,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodePolicyExtList( pRsp, ppPolicyExtList );
@@ -408,6 +431,7 @@ int CCClient::getCRLPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicyE
 int CCClient::getSigner( int nNum, JCC_Signer *pSigner )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -426,6 +450,7 @@ int CCClient::getSigner( int nNum, JCC_Signer *pSigner )
                 NULL,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeSigner( pRsp, pSigner );
@@ -438,6 +463,7 @@ int CCClient::getSigner( int nNum, JCC_Signer *pSigner )
 int CCClient::getSignerList( int nType, JCC_SignerList **ppSignerList )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList    *pParamList = NULL;
     JNameValList    *pHeaderList = NULL;
@@ -463,6 +489,7 @@ int CCClient::getSignerList( int nType, JCC_SignerList **ppSignerList )
                 pParamList,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeSignerList( pRsp, ppSignerList );
@@ -478,6 +505,7 @@ int CCClient::getSignerList( int nType, JCC_SignerList **ppSignerList )
 int CCClient::getCert( int nNum, JCC_Cert *pCert )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -496,6 +524,7 @@ int CCClient::getCert( int nNum, JCC_Cert *pCert )
                 NULL,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCert( pRsp, pCert );
@@ -508,6 +537,7 @@ int CCClient::getCert( int nNum, JCC_Cert *pCert )
 int CCClient::getCertList( int nOffset, int nLimit, JCC_CertList **ppCertList )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList    *pParamList = NULL;
     JNameValList    *pHeaderList = NULL;
@@ -535,6 +565,7 @@ int CCClient::getCertList( int nOffset, int nLimit, JCC_CertList **ppCertList )
                 pParamList,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     fprintf( stderr, "Rsp : %s\n", pRsp );
@@ -552,6 +583,7 @@ int CCClient::getCertList( int nOffset, int nLimit, JCC_CertList **ppCertList )
 int CCClient::getCRL( int nNum, JCC_CRL *pCRL )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -570,6 +602,7 @@ int CCClient::getCRL( int nNum, JCC_CRL *pCRL )
                 NULL,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCRL( pRsp, pCRL );
@@ -581,6 +614,7 @@ int CCClient::getCRL( int nNum, JCC_CRL *pCRL )
 int CCClient::getCRLList( int nOffset, int nLimit, JCC_CRLList **ppCRLList )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList    *pParamList = NULL;
     JNameValList    *pHeaderList = NULL;
@@ -608,6 +642,7 @@ int CCClient::getCRLList( int nOffset, int nLimit, JCC_CRLList **ppCRLList )
                 pParamList,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCRLList( pRsp, ppCRLList );
@@ -623,6 +658,7 @@ int CCClient::getCRLList( int nOffset, int nLimit, JCC_CRLList **ppCRLList )
 int CCClient::getRevoked( int nSeq, JCC_Revoked *pRevoked )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -641,6 +677,7 @@ int CCClient::getRevoked( int nSeq, JCC_Revoked *pRevoked )
                 NULL,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeRevoked( pRsp, pRevoked );
@@ -653,6 +690,7 @@ int CCClient::getRevoked( int nSeq, JCC_Revoked *pRevoked )
 int CCClient::getRevokedList( int nOffset, int nLimit, JCC_RevokedList **ppRevokedList )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList    *pParamList = NULL;
     JNameValList    *pHeaderList = NULL;
@@ -680,6 +718,7 @@ int CCClient::getRevokedList( int nOffset, int nLimit, JCC_RevokedList **ppRevok
                 pParamList,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeRevokedList( pRsp, ppRevokedList );
@@ -695,6 +734,7 @@ int CCClient::getRevokedList( int nOffset, int nLimit, JCC_RevokedList **ppRevok
 int CCClient::addCRLPolicy( JCC_CRLPolicy *pCRLPolicy )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -718,6 +758,7 @@ int CCClient::addCRLPolicy( JCC_CRLPolicy *pCRLPolicy )
                 NULL,
                 pHeaderList,
                 pReq,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -732,6 +773,7 @@ int CCClient::addCRLPolicy( JCC_CRLPolicy *pCRLPolicy )
 int CCClient::modCRLPolicy( int nNum, JCC_CRLPolicy *pCRLPolicy )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -755,6 +797,7 @@ int CCClient::modCRLPolicy( int nNum, JCC_CRLPolicy *pCRLPolicy )
                 NULL,
                 pHeaderList,
                 pReq,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -770,6 +813,7 @@ int CCClient::modCRLPolicy( int nNum, JCC_CRLPolicy *pCRLPolicy )
 int CCClient::delCRLPolicyExts( int nPolicyNum )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList *pHeaderList = NULL;
     JNameValList *pParamList = NULL;
@@ -792,6 +836,7 @@ int CCClient::delCRLPolicyExts( int nPolicyNum )
                 pParamList,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -807,6 +852,7 @@ int CCClient::delCRLPolicyExts( int nPolicyNum )
 int CCClient::delCRLPolicy( int nNum )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList *pHeaderList = NULL;
 
@@ -829,6 +875,7 @@ int CCClient::delCRLPolicy( int nNum )
                 NULL,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -843,6 +890,7 @@ int CCClient::delCRLPolicy( int nNum )
 int CCClient::addCRLPolicyExt( int nPolicyNum, JCC_PolicyExt *pPolicyExt )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -866,6 +914,7 @@ int CCClient::addCRLPolicyExt( int nPolicyNum, JCC_PolicyExt *pPolicyExt )
                 NULL,
                 pHeaderList,
                 pReq,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -881,6 +930,8 @@ int CCClient::addCRLPolicyExt( int nPolicyNum, JCC_PolicyExt *pPolicyExt )
 int CCClient::addCertPolicy( JCC_CertPolicy *pCertPolicy )
 {
     int ret = 0;
+    int status = 0;
+
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -904,6 +955,7 @@ int CCClient::addCertPolicy( JCC_CertPolicy *pCertPolicy )
                 NULL,
                 pHeaderList,
                 pReq,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -918,6 +970,7 @@ int CCClient::addCertPolicy( JCC_CertPolicy *pCertPolicy )
 int CCClient::modCertPolicy( int nNum, JCC_CertPolicy *pCertPolicy )
 {
     int ret = 0;
+    int status = 0;
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -941,6 +994,7 @@ int CCClient::modCertPolicy( int nNum, JCC_CertPolicy *pCertPolicy )
                 NULL,
                 pHeaderList,
                 pReq,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -956,6 +1010,8 @@ int CCClient::modCertPolicy( int nNum, JCC_CertPolicy *pCertPolicy )
 int CCClient::delCertPolicy( int nNum )
 {
     int ret = 0;
+    int status = 0;
+
     QString strURL;
     JNameValList *pHeaderList = NULL;
 
@@ -978,6 +1034,7 @@ int CCClient::delCertPolicy( int nNum )
                 NULL,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -992,6 +1049,8 @@ int CCClient::delCertPolicy( int nNum )
 int CCClient::delCertPolicyExts( int nPolicyNum )
 {
     int ret = 0;
+    int status = 0;
+
     QString strURL;
     JNameValList *pHeaderList = NULL;
     JNameValList *pParamList = NULL;
@@ -1014,6 +1073,7 @@ int CCClient::delCertPolicyExts( int nPolicyNum )
                 pParamList,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -1029,6 +1089,8 @@ int CCClient::delCertPolicyExts( int nPolicyNum )
 int CCClient::addCertPolicyExt( int nPolicyNum, JCC_PolicyExt *pPolicyExt )
 {
     int ret = 0;
+    int status = 0;
+
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -1052,6 +1114,7 @@ int CCClient::addCertPolicyExt( int nPolicyNum, JCC_PolicyExt *pPolicyExt )
                 NULL,
                 pHeaderList,
                 pReq,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -1067,6 +1130,8 @@ int CCClient::addCertPolicyExt( int nPolicyNum, JCC_PolicyExt *pPolicyExt )
 int CCClient::addSigner(JCC_Signer *pSigner)
 {
     int ret = 0;
+    int status = 0;
+
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -1090,6 +1155,7 @@ int CCClient::addSigner(JCC_Signer *pSigner)
                 NULL,
                 pHeaderList,
                 pReq,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -1105,6 +1171,8 @@ int CCClient::addSigner(JCC_Signer *pSigner)
 int CCClient::delSigner(int nNum)
 {
     int ret = 0;
+    int status = 0;
+
     QString strURL;
     JNameValList *pHeaderList = NULL;
 
@@ -1127,6 +1195,7 @@ int CCClient::delSigner(int nNum)
                 NULL,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -1141,6 +1210,8 @@ int CCClient::delSigner(int nNum)
 int CCClient::addRevoked(JCC_Revoked *pRevoked)
 {
     int ret = 0;
+    int status = 0;
+
     QString strURL;
     JNameValList *pHeaderList = NULL;
     QString strToken = manApplet->accountInfo()->token();
@@ -1164,6 +1235,7 @@ int CCClient::addRevoked(JCC_Revoked *pRevoked)
                 NULL,
                 pHeaderList,
                 pReq,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -1179,6 +1251,8 @@ int CCClient::addRevoked(JCC_Revoked *pRevoked)
 int CCClient::delRevoked(int nSeq)
 {
     int ret = 0;
+    int status = 0;
+
     QString strURL;
     JNameValList *pHeaderList = NULL;
 
@@ -1201,6 +1275,7 @@ int CCClient::delRevoked(int nSeq)
                 NULL,
                 pHeaderList,
                 NULL,
+                &status,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );

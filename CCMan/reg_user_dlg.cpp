@@ -51,9 +51,9 @@ void RegUserDlg::accept()
     ret = JS_HTTP_requestTokenPost(
                 strURL.toStdString().c_str(),
                 pReq,
-                &nStatusCode,
                 pContentType,
                 strToken.toStdString().c_str(),
+                &nStatusCode,
                 &pRsp );
 
     JS_CC_decodeRegUserRsp( pRsp, &sRegUserRsp );

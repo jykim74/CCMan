@@ -34,6 +34,7 @@ void LoginDlg::accept()
 {
     int ret = 0;
 
+
     char    *pReq = NULL;
     char    *pRsp = NULL;
     const char    *pContentType = "application/json";
@@ -54,7 +55,7 @@ void LoginDlg::accept()
     JS_CC_setAuthReq( &sAuthReq, strUserName.toStdString().c_str(), strPasswd.toStdString().c_str() );
     JS_CC_encodeAuthReq( &sAuthReq, &pReq );
 
-    ret = JS_HTTP_requestPost( strURL.toStdString().c_str(), pReq, &nStatusCode, pContentType, &pRsp );
+    ret = JS_HTTP_requestPost( strURL.toStdString().c_str(), pReq, pContentType, &nStatusCode, &pRsp );
 
     JS_CC_decodeAuthRsp( pRsp, &sAuthRsp );
 
