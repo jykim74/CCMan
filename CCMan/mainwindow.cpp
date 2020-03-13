@@ -20,6 +20,7 @@
 #include "make_crl_policy_dlg.h"
 #include "signer_dlg.h"
 #include "revoke_cert_dlg.h"
+#include "issue_cert_dlg.h"
 
 const int kListCount = 5;
 
@@ -107,6 +108,9 @@ void MainWindow::createActions()
 
     QAction *regSignerAct = toolsMenu->addAction(tr("&RegSigner"), this, &MainWindow::regSigner);
     regSignerAct->setStatusTip(tr("Register Signer"));
+
+    QAction *issueCertAct = toolsMenu->addAction(tr("&IssueCert"), this, &MainWindow::issueCert);
+    issueCertAct->setStatusTip(tr("Issue certificate") );
 }
 
 void MainWindow::createStatusBar()
@@ -577,6 +581,18 @@ void MainWindow::createTreeMenu()
 
 void MainWindow::createRightList(int nItemType)
 {
+    if( nItemType == ITEM_TYPE_CERT_POLICY ||
+            nItemType == ITEM_TYPE_CRL_POLICY ||
+            nItemType == ITEM_TYPE_REG_SIGNER ||
+            nItemType == ITEM_TYPE_OCSP_SIGNER )
+    {
+        right_menu_->hide();
+    }
+    else
+    {
+        right_menu_->show();
+    }
+
     if( nItemType == ITEM_TYPE_USER )
         createRightUserList();
     else if( nItemType == ITEM_TYPE_CERT_POLICY )
@@ -1070,4 +1086,10 @@ int MainWindow::rightType()
 int MainWindow::rightCount()
 {
     return right_table_->rowCount();
+}
+
+void MainWindow::issueCert()
+{
+    IssueCertDlg issueCertDlg;
+    issueCertDlg.exec();
 }

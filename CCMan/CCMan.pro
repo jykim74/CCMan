@@ -21,6 +21,7 @@ SOURCES += \
     auto_update_service.cpp \
     cc_client.cpp \
     i18n_helper.cpp \
+    issue_cert_dlg.cpp \
     login_dlg.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -45,6 +46,7 @@ HEADERS += \
     cc_client.h \
     common.h \
     i18n_helper.h \
+    issue_cert_dlg.h \
     login_dlg.h \
     mainwindow.h \
     make_cert_policy_dlg.h \
@@ -64,6 +66,7 @@ HEADERS += \
 
 FORMS += \
     about_dlg.ui \
+    issue_cert_dlg.ui \
     login_dlg.ui \
     mainwindow.ui \
     make_cert_policy_dlg.ui \

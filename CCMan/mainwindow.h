@@ -76,6 +76,7 @@ public slots:
     void deleteSigner();
     void revokeCert();
     void deleteRevoke();
+    void issueCert();
 
 private:
     QSplitter   *hsplitter_;

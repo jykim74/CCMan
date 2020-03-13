@@ -1,6 +1,7 @@
 #include "cc_client.h"
 #include "js_http.h"
 #include "js_cc.h"
+#include "js_cc_client.h"
 
 #include "mainwindow.h"
 #include "man_applet.h"
@@ -1285,4 +1286,15 @@ int CCClient::delRevoked(int nSeq)
     if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
 
     return 0;
+}
+
+int CCClient::issueCert( const JCC_IssueCertReq *pReq, JCC_IssueCertRsp *pRsp )
+{
+    QString strToken = manApplet->accountInfo()->token();
+
+    return JS_CC_clientIssueCert(
+                base_url_.toStdString().c_str(),
+                strToken.toStdString().c_str(),
+                pReq,
+                pRsp );
 }

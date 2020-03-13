@@ -35,6 +35,7 @@ void ManTreeView::showContextMenu(QPoint point)
     if( item->type() == ITEM_TYPE_USER )
     {
         menu.addAction(tr("RegUser"), manApplet->mainWindow(), &MainWindow::regUser);
+        menu.addAction(tr("IssueCert"), manApplet->mainWindow(), &MainWindow::issueCert );
     }
     else if( item->type() == ITEM_TYPE_CERT_POLICY )
     {

@@ -5,6 +5,18 @@
 
 const int   kListCount = 15;
 
+const QStringList kMechList = { "RSA", "EC" };
+const QStringList kRSAOptionList = { "1024", "2048", "3072", "4096" };
+const QStringList kECCOptionList = {
+    "secp112r1", "secp112r2", "secp128r1", "secp128r2", "secp160k1",
+    "secp160r1", "secp160r2", "secp192k1", "secp224k1", "secp224r1",
+    "secp256k1", "secp384r1", "secp521r1", "sect113r1", "sect113r2",
+    "sect131r1", "sect131r2", "sect163k1", "sect163r1", "sect163r2",
+    "sect193r1", "sect193r2", "sect233k1", "sect233r1", "sect239k1",
+    "sect283k1", "sect283r1", "sect409k1", "sect409r1", "sect571k1",
+    "sect571r1"
+};
+
 const QString kExtNameAIA = "authorityInfoAccess";
 const QString kExtNameAKI = "authorityKeyIdentifier";
 const QString kExtNameBC = "basicConstraints";
