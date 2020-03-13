@@ -1,4 +1,5 @@
 #include <QFileDialog>
+#include <QDir>
 
 #include "issue_cert_dlg.h"
 #include "common.h"
@@ -58,6 +59,7 @@ void IssueCertDlg::accept()
 
     BIN binCSR = {0,0};
     char *pHex = NULL;
+    BIN binPri = {0,0};
 
     if( mUseCSRCheck->isChecked() )
     {
@@ -70,7 +72,6 @@ void IssueCertDlg::accept()
         int nAlg = 0;
         BIN binPub = {0,0};
         BIN binPub2 = {0,0};
-        BIN binPri = {0,0};
 
         QString strSubjectDn = mSubjectDNText->text();
 
@@ -106,14 +107,44 @@ void IssueCertDlg::accept()
                            strCSR.toStdString().c_str() );
 
     ret = manApplet->ccClient()->issueCert( &sIssueCertReq, &sIssueCertRsp );
+    if( ret == 0 )
+    {
+        QString strPath = QDir::homePath();
+        strPath += "/CCMan/";
+        strPath += sIssueCertRsp.pSubjectDN;
+
+        BIN binCA = {0,0};
+        BIN binCert = {0,0};
+
+        JS_BIN_decodeHex( sIssueCertRsp.pCert, &binCert );
+        JS_BIN_decodeHex( sIssueCertRsp.pCACert, &binCA  );
+
+        QDir dir;
+        dir.mkpath( strPath );
+
+        QString strCAPath = strPath + "/ca_cert.der";
+        QString strCertPath = strPath + "/cert.der";
+        QString strPriPath = strPath + "/prikey.der";
+
+        JS_BIN_fileWrite( &binCert, strCertPath.toStdString().c_str() );
+        JS_BIN_fileWrite( &binCA , strCAPath.toStdString().c_str() );
+
+        if( binPri.nLen > 0 ) JS_BIN_fileWrite( &binPri, strPriPath.toStdString().c_str() );
+
+        JS_BIN_reset( &binCert );
+        JS_BIN_reset( &binCA );
+    }
 
     JS_BIN_reset( &binCSR );
     if( pHex ) JS_free( pHex );
     JS_CC_resetIssueCertReq( &sIssueCertReq );
     JS_CC_resetIssueCertRsp( &sIssueCertRsp );
+    JS_BIN_reset( &binPri );
 
     if( ret == 0 )
+    {
         QDialog::accept();
+    }
 }
 
 void IssueCertDlg::algChanged( int index )

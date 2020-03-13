@@ -95,8 +95,10 @@ void SearchMenu::rightPage()
     int end_page = int ( total_count_ / limit_ );
     int type = manApplet->mainWindow()->rightType();
 
+    fprintf( stderr, "cur_page : %d, end_page : %d\n", cur_page_, end_page );
+
     cur_page_ = cur_page_ + 1;
-    if( cur_page_ > end_page ) cur_page_ = end_page;
+    if( cur_page_ >= end_page ) cur_page_ =  ( end_page - 1 );
 
     manApplet->mainWindow()->createRightList( type );
 }
@@ -106,7 +108,7 @@ void SearchMenu::rightEndPage()
     if( limit_ <= 0 ) return;
 
     int type = manApplet->mainWindow()->rightType();
-    cur_page_ = int(total_count_ / limit_ );
+    cur_page_ = int( (total_count_ / limit_) - 1 );
     manApplet->mainWindow()->createRightList( type );
 }
 
