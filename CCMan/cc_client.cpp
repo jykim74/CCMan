@@ -1298,3 +1298,14 @@ int CCClient::issueCert( const JCC_IssueCertReq *pReq, JCC_IssueCertRsp *pRsp )
                 pReq,
                 pRsp );
 }
+
+int CCClient::issueCRL( const JCC_IssueCRLReq *pReq, JCC_IssueCRLRsp *pRsp )
+{
+    QString strToken = manApplet->accountInfo()->token();
+
+    return JS_CC_clientIssueCRL(
+                base_url_.toStdString().c_str(),
+                strToken.toStdString().c_str(),
+                pReq,
+                pRsp );
+}

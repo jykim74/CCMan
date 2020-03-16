@@ -77,6 +77,7 @@ public slots:
     void revokeCert();
     void deleteRevoke();
     void issueCert();
+    void issueCRL();
 
 private:
     QSplitter   *hsplitter_;

@@ -49,6 +49,10 @@ void ManTreeView::showContextMenu(QPoint point)
     {
         menu.addAction(tr("RegigerSigner"), manApplet->mainWindow(), &MainWindow::regSigner );
     }
+    else if( item->type() == ITEM_TYPE_CRL )
+    {
+        menu.addAction(tr("IssueCRL"), manApplet->mainWindow(), &MainWindow::issueCRL );
+    }
 
     menu.exec(QCursor::pos());
 }

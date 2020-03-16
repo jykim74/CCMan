@@ -21,6 +21,7 @@
 #include "signer_dlg.h"
 #include "revoke_cert_dlg.h"
 #include "issue_cert_dlg.h"
+#include "issue_crl_dlg.h"
 
 const int kListCount = 5;
 
@@ -1092,4 +1093,10 @@ void MainWindow::issueCert()
 {
     IssueCertDlg issueCertDlg;
     issueCertDlg.exec();
+}
+
+void MainWindow::issueCRL()
+{
+    IssueCRLDlg issueCRLDlg;
+    issueCRLDlg.exec();
 }

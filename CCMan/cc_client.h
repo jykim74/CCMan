@@ -55,6 +55,7 @@ public:
     int delRevoked( int nSeq );
 
     int issueCert( const JCC_IssueCertReq *pReq, JCC_IssueCertRsp *pRsp );
+    int issueCRL( const JCC_IssueCRLReq *pReq, JCC_IssueCRLRsp *pRsp );
 
 private:
     QString     base_url_;

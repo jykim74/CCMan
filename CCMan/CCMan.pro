@@ -22,6 +22,7 @@ SOURCES += \
     cc_client.cpp \
     i18n_helper.cpp \
     issue_cert_dlg.cpp \
+    issue_crl_dlg.cpp \
     login_dlg.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -47,6 +48,7 @@ HEADERS += \
     common.h \
     i18n_helper.h \
     issue_cert_dlg.h \
+    issue_crl_dlg.h \
     login_dlg.h \
     mainwindow.h \
     make_cert_policy_dlg.h \
@@ -67,6 +69,7 @@ HEADERS += \
 FORMS += \
     about_dlg.ui \
     issue_cert_dlg.ui \
+    issue_crl_dlg.ui \
     login_dlg.ui \
     mainwindow.ui \
     make_cert_policy_dlg.ui \
