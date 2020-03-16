@@ -22,6 +22,9 @@
 #include "revoke_cert_dlg.h"
 #include "issue_cert_dlg.h"
 #include "issue_crl_dlg.h"
+#include "js_pki.h"
+#include "js_pki_x509.h"
+#include "js_pki_ext.h"
 
 const int kListCount = 5;
 
@@ -207,7 +210,7 @@ void MainWindow::rightTableClick(QModelIndex index )
     else if( nType == ITEM_TYPE_REVOKE )
         showRightBottomRevoked( nSeq );
     else if( nType == ITEM_TYPE_CA )
-        showRightBottomCA();
+        showRightBottomCA( row );
 }
 
 void MainWindow::showRightBottomUser( int nSeq )
@@ -514,9 +517,19 @@ void MainWindow::showRightBottomRevoked( int nSeq )
     right_text_->setText( strMsg );
 }
 
-void MainWindow::showRightBottomCA()
+void MainWindow::showRightBottomCA( int row )
 {
+    QString strVal;
+    QString strPart;
 
+    QTableWidgetItem* leftItem = right_table_->item(row, 0);
+    QTableWidgetItem* rightItem = right_table_->item(row, 1);
+
+    strVal = leftItem->text();
+    strVal += "\n\n";
+    strVal += rightItem->text();
+
+    right_text_->setText( strVal );
 }
 
 void MainWindow::createTreeMenu()
@@ -929,8 +942,101 @@ void MainWindow::createRightRevokedList()
 
 void MainWindow::createRightCA()
 {
+    int     i = 0;
     removeAllRight();
 
+    QStringList titleList = { "Name", "Values" };
+
+    right_table_->clear();
+    right_table_->horizontalHeader()->setStretchLastSection(true);
+    right_table_->setColumnCount(titleList.size());
+    right_table_->setHorizontalHeaderLabels( titleList );
+    right_table_->verticalHeader()->setVisible(false);
+
+    BIN     binCert = {0,0};
+    JCertInfo   sCertInfo;
+    JExtensionInfoList  *pExtInfoList = NULL;
+    JExtensionInfoList  *pCurList = NULL;
+
+    JCC_NameVal sNameVal;
+    memset( &sNameVal, 0x00, sizeof(sNameVal));
+    memset( &sCertInfo, 0x00, sizeof(sCertInfo));
+
+    manApplet->ccClient()->getCA( &sNameVal );
+    JS_BIN_decodeHex( sNameVal.pValue, &binCert );
+
+    JS_PKI_getCertInfo( &binCert, &sCertInfo, &pExtInfoList );
+
+    right_table_->insertRow(i);
+    right_table_->setItem( i, 0, new QTableWidgetItem( "Version" ));
+    right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.nVersion)));
+
+    i++;
+    right_table_->insertRow(i);
+    right_table_->setItem( i, 0, new QTableWidgetItem( "Serial"));
+    right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSerial)));
+
+    i++;
+    right_table_->insertRow(i);
+    right_table_->setItem( i, 0, new QTableWidgetItem( "SignAlgorithm"));
+    right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSignAlgorithm)));
+
+    i++;
+    right_table_->insertRow(i);
+    right_table_->setItem( i, 0, new QTableWidgetItem( "IssuerName"));
+    right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pIssuerName)));
+
+    i++;
+    right_table_->insertRow(i);
+    right_table_->setItem( i, 0, new QTableWidgetItem( "SubjectName"));
+    right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSubjectName)));
+
+    i++;
+    right_table_->insertRow(i);
+    right_table_->setItem( i, 0, new QTableWidgetItem( "NotBefore"));
+    right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.uNotBefore)));
+
+    i++;
+    right_table_->insertRow(i);
+    right_table_->setItem( i, 0, new QTableWidgetItem( "NotAfter"));
+    right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.uNotAfter)));
+
+    i++;
+    right_table_->insertRow(i);
+    right_table_->setItem( i, 0, new QTableWidgetItem( "PublicKey"));
+    right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pPublicKey)));
+
+    i++;
+    right_table_->insertRow(i);
+    right_table_->setItem( i, 0, new QTableWidgetItem( "DNHash"));
+    right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pDNHash)));
+
+    i++;
+    right_table_->insertRow(i);
+    right_table_->setItem( i, 0, new QTableWidgetItem( "Signature"));
+    right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSignature)));
+
+    pCurList = pExtInfoList;
+
+    while( pCurList )
+    {
+        JDB_PolicyExt   sDBExt;
+
+        memset( &sDBExt, 0x00, sizeof(sDBExt));
+
+        JS_PKI_getExtensionToDB( &pCurList->sExtensionInfo, &sDBExt );
+        i++;
+        right_table_->insertRow(i);
+        right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( sDBExt.pSN )));
+        right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( sDBExt.pValue )));
+
+        pCurList = pCurList->pNext;
+        JS_DB_resetPolicyExt( &sDBExt );
+    }
+
+    JS_CC_resetNameVal( &sNameVal );
+    JS_PKI_resetCertInfo( &sCertInfo );
+    if( pExtInfoList ) JS_PKI_resetExtensionInfoList( &pExtInfoList );
 }
 
 void MainWindow::removeAllRight()

@@ -1309,3 +1309,13 @@ int CCClient::issueCRL( const JCC_IssueCRLReq *pReq, JCC_IssueCRLRsp *pRsp )
                 pReq,
                 pRsp );
 }
+
+int CCClient::getCA(JCC_NameVal *pRsp)
+{
+    QString strToken = manApplet->accountInfo()->token();
+
+    return JS_CC_clientGetCA(
+                base_url_.toStdString().c_str(),
+                strToken.toStdString().c_str(),
+                pRsp );
+}

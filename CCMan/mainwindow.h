@@ -49,7 +49,7 @@ public:
     void showRightBottomCert( int nNum );
     void showRightBottomCRL( int nNum );
     void showRightBottomRevoked( int nSeq );
-    void showRightBottomCA();
+    void showRightBottomCA( int row );
 
     int rightType();
     int rightCount();
