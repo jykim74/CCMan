@@ -4,6 +4,8 @@
 #include <QObject>
 #include "singleton.h"
 
+#define STR(s)          #s
+#define STRINGIZE(x)    STR(x)
 
 
 class AutoUpdateAdapter;

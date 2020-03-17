@@ -8,6 +8,8 @@ IssueCRLDlg::IssueCRLDlg(QWidget *parent) :
     QDialog(parent)
 {
     setupUi(this);
+
+    initialize();
 }
 
 IssueCRLDlg::~IssueCRLDlg()
@@ -39,7 +41,11 @@ void IssueCRLDlg::accept()
     JS_CC_resetIssueCRLReq( &sIssueReq );
     JS_CC_resetIssueCRLRsp( &sIssueRsp );
 
-    if( ret == 0 ) QDialog::accept();
+    if( ret == 0 )
+    {
+        manApplet->mainWindow()->createRightCRLList();
+        QDialog::accept();
+    }
 }
 
 void IssueCRLDlg::clickDownload()

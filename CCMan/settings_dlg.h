@@ -16,8 +16,13 @@ public:
     explicit SettingsDlg(QWidget *parent = nullptr);
     ~SettingsDlg();
 
-private:
+private slots:
+    void updateSettings();
+    virtual void accept();
+    void initialize();
 
+private:
+    Q_DISABLE_COPY(SettingsDlg)
 };
 
 #endif // SETTINGS_DLG_H

@@ -143,6 +143,7 @@ void IssueCertDlg::accept()
 
     if( ret == 0 )
     {
+        manApplet->mainWindow()->createRightCertList();
         QDialog::accept();
     }
 }

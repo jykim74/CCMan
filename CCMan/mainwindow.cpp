@@ -13,6 +13,9 @@
 #include "search_menu.h"
 #include "reg_user_dlg.h"
 #include "cc_client.h"
+#include "settings_dlg.h"
+#include "about_dlg.h"
+#include "settings_mgr.h"
 
 #include "js_db.h"
 #include "js_db_data.h"
@@ -26,7 +29,6 @@
 #include "js_pki_x509.h"
 #include "js_pki_ext.h"
 
-const int kListCount = 5;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -115,6 +117,15 @@ void MainWindow::createActions()
 
     QAction *issueCertAct = toolsMenu->addAction(tr("&IssueCert"), this, &MainWindow::issueCert);
     issueCertAct->setStatusTip(tr("Issue certificate") );
+
+    QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
+    QToolBar *helpToolBar = addToolBar(tr("Help"));
+
+    QAction *aboutAct = helpMenu->addAction(tr("About"), this, &MainWindow::about );
+    aboutAct->setStatusTip( tr("About CCMan"));
+
+    QAction *settingsAct = helpMenu->addAction(tr("Settings"), this, &MainWindow::settings );
+    settingsAct->setStatusTip(tr("Settings CCMan"));
 }
 
 void MainWindow::createStatusBar()
@@ -633,7 +644,7 @@ void MainWindow::createRightList(int nItemType)
 void MainWindow::createRightUserList()
 {
     int i = 0;
-    int nLimit = kListCount;
+    int nLimit = manApplet->settingsMgr()->listCount();
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
     int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_USER );
@@ -808,7 +819,7 @@ void MainWindow::createRightCertList()
     removeAllRight();
 
     int i = 0;
-    int nLimit = kListCount;
+    int nLimit = manApplet->settingsMgr()->listCount();
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
     int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_CERT );
@@ -858,7 +869,7 @@ void MainWindow::createRightCRLList()
     removeAllRight();
 
     int i = 0;
-    int nLimit = kListCount;
+    int nLimit = manApplet->settingsMgr()->listCount();
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
     int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_CRL );
@@ -902,7 +913,7 @@ void MainWindow::createRightRevokedList()
     removeAllRight();
 
     int i = 0;
-    int nLimit = kListCount;
+    int nLimit = manApplet->settingsMgr()->listCount();
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
     int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_REVOKE );
@@ -1236,4 +1247,16 @@ void MainWindow::publishLDAP()
     }
 
     JS_CC_resetCodeMsg( &sCodeMsg );
+}
+
+void MainWindow::about()
+{
+    AboutDlg aboutDlg;
+    aboutDlg.exec();
+}
+
+void MainWindow::settings()
+{
+    SettingsDlg settingsDlg;
+    settingsDlg.exec();
 }
