@@ -53,6 +53,10 @@ void ManTreeView::showContextMenu(QPoint point)
     {
         menu.addAction(tr("IssueCRL"), manApplet->mainWindow(), &MainWindow::issueCRL );
     }
+    else if( item->type() == ITEM_TYPE_CA )
+    {
+        menu.addAction(tr("PublishCACert"), manApplet->mainWindow(), &MainWindow::publishLDAP );
+    }
 
     menu.exec(QCursor::pos());
 }

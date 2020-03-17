@@ -1319,3 +1319,23 @@ int CCClient::getCA(JCC_NameVal *pRsp)
                 strToken.toStdString().c_str(),
                 pRsp );
 }
+
+int CCClient::publishClient( int nItemType, int nNum, JCC_CodeMsg *pCodeMsg )
+{
+    QString strType;
+    QString strToken = manApplet->accountInfo()->token();
+
+    if( nItemType == ITEM_TYPE_CA )
+        strType = "cacert";
+    else if( nItemType == ITEM_TYPE_CRL )
+        strType = "crl";
+    else if( nItemType == ITEM_TYPE_CERT )
+        strType = "cert";
+
+    return JS_CC_clientPublishLDAP(
+                base_url_.toStdString().c_str(),
+                strToken.toStdString().c_str(),
+                strType.toStdString().c_str(),
+                nNum,
+                pCodeMsg );
+}

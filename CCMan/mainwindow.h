@@ -78,6 +78,7 @@ public slots:
     void deleteRevoke();
     void issueCert();
     void issueCRL();
+    void publishLDAP();
 
 private:
     QSplitter   *hsplitter_;

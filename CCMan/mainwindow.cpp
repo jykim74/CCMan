@@ -155,6 +155,11 @@ void MainWindow::showRightMenu(QPoint point)
     else if( rightType() == ITEM_TYPE_CERT )
     {
         menu.addAction( tr("RevokeCert"), this, &MainWindow::revokeCert );
+        menu.addAction( tr("PublishCert"), this, &MainWindow::publishLDAP );
+    }
+    else if( rightType() == ITEM_TYPE_CRL )
+    {
+        menu.addAction( tr("PublishCRL"), this, &MainWindow::publishLDAP );
     }
     else if( rightType() == ITEM_TYPE_REVOKE )
     {
@@ -1205,4 +1210,30 @@ void MainWindow::issueCRL()
 {
     IssueCRLDlg issueCRLDlg;
     issueCRLDlg.exec();
+}
+
+void MainWindow::publishLDAP()
+{
+    int ret = 0;
+    int num = -1;
+    int nItemType = rightType();
+    JCC_CodeMsg sCodeMsg;
+
+    memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
+
+    if( nItemType == ITEM_TYPE_CRL || nItemType == ITEM_TYPE_CERT )
+    {
+        int row = right_table_->currentRow();
+        QTableWidgetItem* item = right_table_->item( row, 0 );
+
+        num = item->text().toInt();
+    }
+
+    ret = manApplet->ccClient()->publishClient( nItemType, num, &sCodeMsg );
+    if( ret == 0 && sCodeMsg.nCode == 0 )
+    {
+        manApplet->messageBox( "success to publish ldap\n" );
+    }
+
+    JS_CC_resetCodeMsg( &sCodeMsg );
 }
