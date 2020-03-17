@@ -468,6 +468,9 @@ void MainWindow::showRightBottomCert( int nNum )
     strPart = QString( "KeyHash: %1\n").arg( sCert.pKeyHash );
     strMsg += strPart;
 
+    strPart = QString( "CRLDP: %1\n").arg( sCert.pCRLDP );
+    strMsg += strPart;
+
     right_text_->setText( strMsg );
     JS_DB_resetCert( &sCert );
 }
@@ -528,6 +531,9 @@ void MainWindow::showRightBottomRevoked( int nSeq )
     strMsg += strPart;
 
     strPart = QString( "Reason: %1\n").arg( sRevoked.nReason );
+    strMsg += strPart;
+
+    strPart = QString( "CRLDP: %1\n").arg( sRevoked.pCRLDP );
     strMsg += strPart;
 
     right_text_->setText( strMsg );
@@ -827,7 +833,7 @@ void MainWindow::createRightCertList()
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
 
-    QStringList titleList = { "Num", "SignAlg", "SubjectDN", "Cert" };
+    QStringList titleList = { "Num", "SignAlg", "SubjectDN", "Cert", "CRLDP" };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -855,6 +861,7 @@ void MainWindow::createRightCertList()
         right_table_->setItem( i, 1, new QTableWidgetItem( pCurList->sCert.pSignAlg ));
         right_table_->setItem( i, 2, new QTableWidgetItem( strDNInfo ));
         right_table_->setItem( i, 3, new QTableWidgetItem( pCurList->sCert.pCert ));
+        right_table_->setItem( i, 4, new QTableWidgetItem( pCurList->sCert.pCRLDP ));
 
         pCurList = pCurList->pNext;
         i++;
@@ -921,7 +928,7 @@ void MainWindow::createRightRevokedList()
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
 
-    QStringList titleList = { "Num", "CertNum", "IssuerNum", "Serial", "RevokedDate", "Reason" };
+    QStringList titleList = { "Num", "CertNum", "IssuerNum", "Serial", "RevokedDate", "Reason", "CRLDP" };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -946,6 +953,7 @@ void MainWindow::createRightRevokedList()
         right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.pSerial )));
         right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nRevokedDate )));
         right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nReason )));
+        right_table_->setItem(i,6, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.pCRLDP )));
 
         pCurList = pCurList->pNext;
         i++;

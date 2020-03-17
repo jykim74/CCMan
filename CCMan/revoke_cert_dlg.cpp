@@ -61,7 +61,7 @@ void RevokeCertDlg::accept()
 
     int nReason = mReasonCombo->currentIndex();
 
-    JS_DB_setRevoked( &sRevoked, -1, cert_num_, sCert.nIssuerNum, sCert.pSerial, mRevokeDateTime->dateTime().toTime_t(), nReason );
+    JS_DB_setRevoked( &sRevoked, -1, cert_num_, sCert.nIssuerNum, sCert.pSerial, mRevokeDateTime->dateTime().toTime_t(), nReason, sCert.pCRLDP );
     manApplet->ccClient()->addRevoked( &sRevoked );
 
     JS_DB_resetCert( &sCert );
