@@ -952,7 +952,7 @@ void MainWindow::createRightRevokedList()
         right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nIssuerNum )));
         right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.pSerial )));
         right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nRevokedDate )));
-        right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nReason )));
+        right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( JS_PKI_getRevokeReasonName( pCurList->sRevoked.nReason ))));
         right_table_->setItem(i,6, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.pCRLDP )));
 
         pCurList = pCurList->pNext;
