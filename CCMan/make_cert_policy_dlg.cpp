@@ -957,7 +957,7 @@ void MakeCertPolicyDlg::saveSANUse(int nPolicyNum)
     memset( &sPolicyExt, 0x00, sizeof(sPolicyExt));
 
     QString strVal = "";
-    for( int i=0; mSANTable->rowCount(); i++ )
+    for( int i=0; i < mSANTable->rowCount(); i++ )
     {
         QString strType;
         QString strData;
