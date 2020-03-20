@@ -237,11 +237,17 @@ void MainWindow::showRightBottomUser( int nSeq )
     JCC_User sUser;
     memset( &sUser, 0x00, sizeof(sUser));
 
+    char sRegTime[64];
+
     manApplet->ccClient()->getUser( nSeq, &sUser );
 
     strMsg = "[ User information ]\n";
 
     strPart = QString( "Num: %1\n").arg( sUser.nNum);
+    strMsg += strPart;
+
+    JS_UTIL_getDateTime( sUser.nRegTime, sRegTime );
+    strPart = QString( "RegTime: %1\n").arg(sRegTime);
     strMsg += strPart;
 
     strPart = QString( "Name: %1\n").arg( sUser.pName );
@@ -428,11 +434,17 @@ void MainWindow::showRightBottomCert( int nNum )
     JCC_Cert    sCert;
     memset( &sCert, 0x00, sizeof(sCert));
 
+    char    sRegTime[64];
+
     manApplet->ccClient()->getCert( nNum, &sCert );
 
     strMsg = "[ Ceritificate information ]\n";
 
     strPart = QString("Num: %1\n").arg( sCert.nNum );
+    strMsg += strPart;
+
+    JS_UTIL_getDateTime( sCert.nRegTime, sRegTime );
+    strPart = QString("RegTime: %1\n").arg( sRegTime );
     strMsg += strPart;
 
     strPart = QString( "KeyNum: %1\n").arg( sCert.nKeyNum );
@@ -483,11 +495,17 @@ void MainWindow::showRightBottomCRL( int nNum )
     JCC_CRL sCRL;
     memset( &sCRL, 0x00, sizeof(sCRL));
 
+    char    sRegTime[64];
+
     manApplet->ccClient()->getCRL( nNum, &sCRL );
 
     strMsg = "[ CRL information ]\n";
 
     strPart = QString( "Num: %1\n" ).arg( sCRL.nNum );
+    strMsg += strPart;
+
+    JS_UTIL_getDateTime( sCRL.nRegTime, sRegTime );
+    strPart = QString( "RegTime: %1\n" ).arg( sRegTime );
     strMsg += strPart;
 
     strPart = QString( "IssuerNum: %1\n").arg( sCRL.nIssuerNum );
@@ -664,7 +682,7 @@ void MainWindow::createRightUserList()
 
     removeAllRight();
 
-    QStringList titleList = { "Num", "Name", "SSN", "Email", "Status", "RefNum", "SecretCode" };
+    QStringList titleList = { "Num", "RegTime", "Name", "SSN", "Email", "Status", "RefNum", "SecretCode" };
 
 
     right_table_->clear();
@@ -680,15 +698,19 @@ void MainWindow::createRightUserList()
 
     while( pCurList )
     {
+        char sRegTime[64];
         right_table_->insertRow(i);
 
+        JS_UTIL_getDateTime( pCurList->sUser.nRegTime, sRegTime );
+
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.nNum )));
-        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pName )));
-        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pSSN )));
-        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pEmail )));
-        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.nStatus )));
-        right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pRefNum )));
-        right_table_->setItem(i,6, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pAuthCode )));
+        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( sRegTime )));
+        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pName )));
+        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pSSN )));
+        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pEmail )));
+        right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.nStatus )));
+        right_table_->setItem(i,6, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pRefNum )));
+        right_table_->setItem(i,7, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pAuthCode )));
 
         pCurList = pCurList->pNext;
         i++;
@@ -829,11 +851,12 @@ void MainWindow::createRightCertList()
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
     int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_CERT );
+    char    sRegTime[64];
 
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
 
-    QStringList titleList = { "Num", "SignAlg", "SubjectDN", "Cert", "CRLDP" };
+    QStringList titleList = { "Num", "RegTime", "Serial", "SignAlg", "SubjectDN" };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -856,12 +879,13 @@ void MainWindow::createRightCertList()
         strDNInfo += QString( "[%1] " ).arg( pCurList->sCert.nStatus );
         strDNInfo += pCurList->sCert.pSubjectDN;
 
+        JS_UTIL_getDateTime( pCurList->sCert.nRegTime, sRegTime );
         right_table_->insertRow(i);
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCert.nNum) ));
-        right_table_->setItem( i, 1, new QTableWidgetItem( pCurList->sCert.pSignAlg ));
-        right_table_->setItem( i, 2, new QTableWidgetItem( strDNInfo ));
-        right_table_->setItem( i, 3, new QTableWidgetItem( pCurList->sCert.pCert ));
-        right_table_->setItem( i, 4, new QTableWidgetItem( pCurList->sCert.pCRLDP ));
+        right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( sRegTime ) ));
+        right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg(pCurList->sCert.pSerial)));
+        right_table_->setItem( i, 3, new QTableWidgetItem( pCurList->sCert.pSignAlg ));
+        right_table_->setItem( i, 4, new QTableWidgetItem( strDNInfo ));
 
         pCurList = pCurList->pNext;
         i++;
@@ -880,11 +904,12 @@ void MainWindow::createRightCRLList()
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
     int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_CRL );
+    char    sRegTime[64];
 
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
 
-    QStringList titleList = { "Num", "IssuerNum", "SignAlg", "CRL" };
+    QStringList titleList = { "Num", "RegTime", "IssuerNum", "SignAlg", "CRL" };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -901,11 +926,14 @@ void MainWindow::createRightCRLList()
 
     while( pCurList )
     {
+        JS_UTIL_getDateTime( pCurList->sCRL.nRegTime, sRegTime );
+
         right_table_->insertRow(i);
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCRL.nNum )));
-        right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg( pCurList->sCRL.nIssuerNum )));
-        right_table_->setItem( i, 2, new QTableWidgetItem( pCurList->sCRL.pSignAlg ));
-        right_table_->setItem( i, 3, new QTableWidgetItem( pCurList->sCRL.pCRL ));
+        right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( sRegTime )));
+        right_table_->setItem( i, 2, new QTableWidgetItem(QString("%1").arg( pCurList->sCRL.nIssuerNum )));
+        right_table_->setItem( i, 3, new QTableWidgetItem( pCurList->sCRL.pSignAlg ));
+        right_table_->setItem( i, 4, new QTableWidgetItem( pCurList->sCRL.pCRL ));
 
         pCurList = pCurList->pNext;
         i++;
