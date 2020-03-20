@@ -56,6 +56,7 @@ void SignerDlg::accept()
 
     char *pCert = NULL;
     JCC_Signer  sSigner;
+    time_t now_t = time(NULL);
 
 
     memset( &sCertInfo, 0x00, sizeof(sCertInfo));
@@ -70,7 +71,7 @@ void SignerDlg::accept()
 
     int nType = mTypeCombo->currentIndex();
 
-    JS_DB_setSigner( &sSigner, -1, nType, sCertInfo.pSubjectName, sCertInfo.pDNHash, mStatusText->text().toInt(), pCert, mDescText->toPlainText().toStdString().c_str() );
+    JS_DB_setSigner( &sSigner, -1, now_t, nType, sCertInfo.pSubjectName, sCertInfo.pDNHash, mStatusText->text().toInt(), pCert, mDescText->toPlainText().toStdString().c_str() );
     manApplet->ccClient()->addSigner( &sSigner );
 
     if( pCert ) JS_free( pCert );

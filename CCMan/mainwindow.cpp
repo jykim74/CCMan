@@ -396,11 +396,17 @@ void MainWindow::showRightBottomSigner(int nNum)
     JCC_Signer  sSigner;
     memset( &sSigner, 0x00, sizeof(sSigner));
 
+    char    sRegTime[64];
+
     manApplet->ccClient()->getSigner( nNum, &sSigner );
 
     strMsg = "[ Signer information ]\n";
 
     strPart = QString( "Num: %1\n").arg( sSigner.nNum);
+    strMsg += strPart;
+
+    JS_UTIL_getDateTime( sSigner.nRegTime, sRegTime );
+    strPart = QString( "RegTime: %1\n").arg( sRegTime );
     strMsg += strPart;
 
     strPart = QString( "Type: %1\n").arg( sSigner.nType );
@@ -811,7 +817,7 @@ void MainWindow::createRightSignerList( int nItemType )
 
     removeAllRight();
 
-    QStringList titleList = { "Num", "Type", "DN", "Status", "Cert" };
+    QStringList titleList = { "Num", "RegTime", "Type", "DN", "Status", "Cert" };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -827,13 +833,17 @@ void MainWindow::createRightSignerList( int nItemType )
 
     while( pCurList )
     {
+        char sRegTime[64];
         right_table_->insertRow(i);
 
+        JS_UTIL_getDateTime( pCurList->sSigner.nRegTime, sRegTime );
+
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sSigner.nNum )));
-        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( pCurList->sSigner.nType )));
-        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( pCurList->sSigner.pDN )));
-        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sSigner.nStatus )));
-        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sSigner.pCert )));
+        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( sRegTime )));
+        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( pCurList->sSigner.nType )));
+        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sSigner.pDN )));
+        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sSigner.nStatus )));
+        right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sSigner.pCert )));
 
         pCurList = pCurList->pNext;
         i++;
