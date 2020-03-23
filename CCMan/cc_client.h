@@ -58,6 +58,7 @@ public:
     int issueCRL( const JCC_IssueCRLReq *pReq, JCC_IssueCRLRsp *pRsp );
     int getCA( JCC_NameVal *pRsp );
     int publishClient( int nItemType, int nNum, JCC_CodeMsg *pCodeMsg );
+    int getCRLDPList( JCC_NameValList **ppCRLDPList );
 
 private:
     QString     base_url_;

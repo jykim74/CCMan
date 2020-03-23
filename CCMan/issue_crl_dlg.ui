@@ -14,24 +14,24 @@
    <string>Issue CRL dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>CRL Policy</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="mCRLPolicyCombo"/>
-   </item>
-   <item row="2" column="0">
-    <widget class="QCheckBox" name="mCRLDownloadCheck">
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>CRL Download</string>
+      <string>CRLDP</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="5" column="0" colspan="2">
+    <widget class="QComboBox" name="mCRLDPCombo"/>
+   </item>
+   <item row="6" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -44,7 +44,17 @@
      </property>
     </spacer>
    </item>
-   <item row="4" column="1">
+   <item row="2" column="1">
+    <widget class="QComboBox" name="mCRLPolicyCombo"/>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>CRL Information</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -54,10 +64,10 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QLabel" name="label">
+   <item row="1" column="0">
+    <widget class="QCheckBox" name="mCRLDownloadCheck">
      <property name="text">
-      <string>CRL Information</string>
+      <string>CRL Download</string>
      </property>
     </widget>
    </item>

@@ -34,7 +34,9 @@ void IssueCRLDlg::accept()
     QVariant data = mCRLPolicyCombo->currentData();
     nPolicyNum = data.toInt();
 
-    JS_CC_setIssueCRLReq( &sIssueReq, nPolicyNum, bDownload );
+    QString strCRLPD = mCRLDPCombo->currentText();
+
+    JS_CC_setIssueCRLReq( &sIssueReq, nPolicyNum, bDownload, strCRLPD.toStdString().c_str() );
 
     ret = manApplet->ccClient()->issueCRL( &sIssueReq, &sIssueRsp );
 
@@ -59,6 +61,8 @@ void IssueCRLDlg::initialize()
 
     JCC_CRLPolicyList   *pPolicyList = NULL;
     JCC_CRLPolicyList   *pCurList = NULL;
+    JCC_NameValList     *pCRLDPList = NULL;
+    JCC_NameValList     *pList = NULL;
 
     manApplet->ccClient()->getCRLPolicyList( &pPolicyList );
 
@@ -72,5 +76,16 @@ void IssueCRLDlg::initialize()
         pCurList = pCurList->pNext;
     }
 
+    manApplet->ccClient()->getCRLDPList( &pCRLDPList );
+
+    pList = pCRLDPList;
+
+    while( pList )
+    {
+        mCRLDPCombo->addItem( pList->sNameVal.pValue );
+        pList = pList->pNext;
+    }
+
     if( pPolicyList ) JS_DB_resetCRLPolicyList( &pPolicyList );
+    if( pCRLDPList ) JS_UTIL_resetNameValList( &pCRLDPList );
 }

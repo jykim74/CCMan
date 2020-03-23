@@ -1339,3 +1339,13 @@ int CCClient::publishClient( int nItemType, int nNum, JCC_CodeMsg *pCodeMsg )
                 nNum,
                 pCodeMsg );
 }
+
+int CCClient::getCRLDPList( JCC_NameValList **ppCRLDPList )
+{
+    QString strToken = manApplet->accountInfo()->token();
+
+    return JS_CC_clientGetCRLDPList(
+                base_url_.toStdString().c_str(),
+                strToken.toStdString().c_str(),
+                ppCRLDPList );
+}

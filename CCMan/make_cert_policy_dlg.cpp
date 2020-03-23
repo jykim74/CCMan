@@ -68,6 +68,7 @@ void MakeCertPolicyDlg::loadPolicy()
     mVersionCombo->setCurrentIndex( sCertPolicy.nVersion );
     mHashCombo->setCurrentText( sCertPolicy.pHash );
     mSubjectDNText->setText( sCertPolicy.pDNTemplate );
+    mDivideNumText->setText( QString("%1").arg(sCertPolicy.nDivideNum));
 
     if( sCertPolicy.nNotBefore == 0 )
     {
@@ -251,7 +252,8 @@ void MakeCertPolicyDlg::accept()
                          nNotBefore,
                          nNotAfter,
                          mHashCombo->currentText().toStdString().c_str(),
-                         strSubjectDN.toStdString().c_str() );
+                         strSubjectDN.toStdString().c_str(),
+                         mDivideNumText->text().toInt() );
 
     if( is_edit_ )
     {
