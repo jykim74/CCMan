@@ -82,6 +82,8 @@ void MakeCertPolicyDlg::loadPolicy()
         mNotAfterDateTime->setDateTime( notAfter );
     }
 
+    clickUseDays();
+
     JCC_PolicyExtList   *pPolicyExtList = NULL;
     JCC_PolicyExtList   *pCurList = NULL;
 

@@ -520,6 +520,9 @@ void MainWindow::showRightBottomCRL( int nNum )
     strPart = QString( "SignAlgorithm: %1\n").arg( sCRL.pSignAlg );
     strMsg += strPart;
 
+    strPart = QString( "CRLDP: %1\n").arg( sCRL.pCRLDP );
+    strMsg += strPart;
+
     strPart = QString( "CRL: %1\n").arg( sCRL.pCRL );
     strMsg += strPart;
 
@@ -919,7 +922,7 @@ void MainWindow::createRightCRLList()
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
 
-    QStringList titleList = { "Num", "RegTime", "IssuerNum", "SignAlg", "CRL" };
+    QStringList titleList = { "Num", "RegTime", "IssuerNum", "SignAlg", "CRLDP" };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -943,7 +946,7 @@ void MainWindow::createRightCRLList()
         right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( sRegTime )));
         right_table_->setItem( i, 2, new QTableWidgetItem(QString("%1").arg( pCurList->sCRL.nIssuerNum )));
         right_table_->setItem( i, 3, new QTableWidgetItem( pCurList->sCRL.pSignAlg ));
-        right_table_->setItem( i, 4, new QTableWidgetItem( pCurList->sCRL.pCRL ));
+        right_table_->setItem( i, 4, new QTableWidgetItem( pCurList->sCRL.pCRLDP ));
 
         pCurList = pCurList->pNext;
         i++;
@@ -1086,7 +1089,7 @@ void MainWindow::createRightCA()
 
         memset( &sDBExt, 0x00, sizeof(sDBExt));
 
-        JS_PKI_getExtensionToDB( &pCurList->sExtensionInfo, &sDBExt );
+        JS_PKI_transExtensionToDBRec( &pCurList->sExtensionInfo, &sDBExt );
         i++;
         right_table_->insertRow(i);
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( sDBExt.pSN )));
