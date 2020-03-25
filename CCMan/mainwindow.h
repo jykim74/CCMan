@@ -83,6 +83,7 @@ public slots:
     void settings();
     void certInfo();
     void crlInfo();
+    void certStatus();
 
 private:
     QSplitter   *hsplitter_;

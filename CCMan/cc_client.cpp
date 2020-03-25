@@ -1349,3 +1349,14 @@ int CCClient::getCRLDPList( JCC_NameValList **ppCRLDPList )
                 strToken.toStdString().c_str(),
                 ppCRLDPList );
 }
+
+int CCClient::getCertStatus( const char *pSerial, JCC_CertStatus *pCertStatus )
+{
+    QString strToken = manApplet->accountInfo()->token();
+
+    return JS_CC_clientCertStatus(
+                base_url_.toStdString().c_str(),
+                strToken.toStdString().c_str(),
+                pSerial,
+                pCertStatus );
+}

@@ -170,6 +170,7 @@ void MainWindow::showRightMenu(QPoint point)
         menu.addAction( tr("RevokeCert"), this, &MainWindow::revokeCert );
         menu.addAction( tr("PublishCert"), this, &MainWindow::publishLDAP );
         menu.addAction( tr("CertInfo"), this, &MainWindow::certInfo );
+        menu.addAction( tr("CertStatus"), this, &MainWindow::certStatus );
     }
     else if( rightType() == ITEM_TYPE_CRL )
     {
@@ -969,6 +970,7 @@ void MainWindow::createRightRevokedList()
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
     int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_REVOKE );
+    char    sDateTime[64];
 
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
@@ -992,11 +994,13 @@ void MainWindow::createRightRevokedList()
     {
         right_table_->insertRow(i);
 
+        JS_UTIL_getDateTime( pCurList->sRevoked.nRevokedDate, sDateTime );
+
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nSeq )));
         right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nCertNum )));
         right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nIssuerNum )));
         right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.pSerial )));
-        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nRevokedDate )));
+        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( sDateTime )));
         right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( JS_PKI_getRevokeReasonName( pCurList->sRevoked.nReason ))));
         right_table_->setItem(i,6, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.pCRLDP )));
 
@@ -1026,6 +1030,9 @@ void MainWindow::createRightCA()
     JCertInfo   sCertInfo;
     JExtensionInfoList  *pExtInfoList = NULL;
     JExtensionInfoList  *pCurList = NULL;
+
+    char    sNotBefore[64];
+    char    sNotAfter[64];
 
     JCC_NameVal sNameVal;
     memset( &sNameVal, 0x00, sizeof(sNameVal));
@@ -1061,14 +1068,16 @@ void MainWindow::createRightCA()
     right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSubjectName)));
 
     i++;
+    JS_UTIL_getDateTime( sCertInfo.uNotBefore, sNotBefore );
     right_table_->insertRow(i);
     right_table_->setItem( i, 0, new QTableWidgetItem( "NotBefore"));
-    right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.uNotBefore)));
+    right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sNotBefore)));
 
     i++;
+    JS_UTIL_getDateTime( sCertInfo.uNotAfter, sNotAfter );
     right_table_->insertRow(i);
     right_table_->setItem( i, 0, new QTableWidgetItem( "NotAfter"));
-    right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.uNotAfter)));
+    right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sNotAfter)));
 
     i++;
     right_table_->insertRow(i);
@@ -1338,4 +1347,54 @@ void MainWindow::crlInfo()
     CRLInfoDlg crlInfoDlg;
     crlInfoDlg.setCRLNum( num );
     crlInfoDlg.exec();
+}
+
+void MainWindow::certStatus()
+{
+    int ret = 0;
+    JCC_Cert    sCert;
+    JCC_CertStatus  sCertStatus;
+    QString strStatus;
+    char    sRevokedDate[64];
+    const char  *pReason = NULL;
+
+    memset( &sCert, 0x00, sizeof(sCert));
+    memset( &sCertStatus, 0x00, sizeof(sCertStatus));
+
+    int row = right_table_->currentRow();
+    if( row < 0 ) return;
+
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+    int num = item->text().toInt();
+
+    ret = manApplet->ccClient()->getCert( num, &sCert );
+    if( ret != 0 )
+    {
+        manApplet->warningBox( tr("fail to get certificate information" ), this );
+        goto end;
+    }
+
+    ret = manApplet->ccClient()->getCertStatus( sCert.pSerial, &sCertStatus );
+    if( ret != 0 )
+    {
+        manApplet->warningBox( tr("fail to get certificate status"), this );
+        goto end;
+    }
+
+    if( sCertStatus.nStatus == 0 )
+    {
+        strStatus = "Good";
+    }
+    else
+    {
+        JS_UTIL_getDateTime( sCertStatus.nRevokedDate, sRevokedDate );
+        pReason = JS_PKI_getRevokeReasonName( sCertStatus.nReason );
+        strStatus = QString( "Revoked Reason:%1 RevokedDate: %2" ).arg( pReason ).arg( sRevokedDate );
+    }
+
+    manApplet->messageBox( strStatus, this );
+
+end :
+    JS_DB_resetCert( &sCert );
+    JS_CC_resetCertStatus( &sCertStatus );
 }

@@ -59,6 +59,7 @@ public:
     int getCA( JCC_NameVal *pRsp );
     int publishClient( int nItemType, int nNum, JCC_CodeMsg *pCodeMsg );
     int getCRLDPList( JCC_NameValList **ppCRLDPList );
+    int getCertStatus( const char *pSerial, JCC_CertStatus *pCertStatus );
 
 private:
     QString     base_url_;

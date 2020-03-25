@@ -131,6 +131,8 @@ void MakeCertPolicyDlg::defaultPolicy()
     int rowCnt = 0;
     mNameText->setText("");
 
+    mVersionCombo->setCurrentIndex(2);
+    mHashCombo->setCurrentIndex(2);
 
     mAIAText->setText("");
 
@@ -203,6 +205,14 @@ void MakeCertPolicyDlg::defaultPolicy()
         mSANTable->removeRow(0);
     mSANUseCheck->setChecked(false);
     mSANCriticalCheck->setChecked(false);
+
+    mUseCSRCheck->setChecked(true);
+    clickUseCSR();
+
+    mUseDaysCheck->setChecked(true);
+    clickUseDays();
+
+    mDaysText->setText("365");
 }
 
 void MakeCertPolicyDlg::accept()

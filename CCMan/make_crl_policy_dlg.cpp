@@ -136,6 +136,13 @@ void MakeCRLPolicyDlg::defaultPolicy()
     mIANUseCheck->setChecked(false);
     mIANCriticalCheck->setChecked(false);
     mIANText->setText("");
+
+    mVersionCombo->setCurrentIndex(1);
+    mHashCombo->setCurrentIndex(2);
+
+    mUseFromNowCheck->setChecked(true);
+    clickUseFromNow();
+    mValidDaysText->setText("10");
 }
 
 void MakeCRLPolicyDlg::accept()
