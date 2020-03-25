@@ -83,6 +83,8 @@ void MakeCRLPolicyDlg::loadPolicy()
         mNextUpdateDateTime->setDateTime(nextUpdate );
     }
 
+    clickUseFromNow();
+
     JCC_PolicyExtList   *pPolicyExtList = NULL;
     JCC_PolicyExtList   *pCurList = NULL;
 
@@ -212,6 +214,12 @@ void MakeCRLPolicyDlg::initUI()
     mIDPCombo->addItems(sTypeList);
     mIANCombo->addItems(sTypeList);
     mVersionCombo->addItems(sVersionList);
+
+    QDateTime   now;
+    now.setTime_t(time(NULL));
+
+    mLastUpdateDateTime->setDateTime(now);
+    mNextUpdateDateTime->setDateTime(now);
 }
 
 void MakeCRLPolicyDlg::connectExtends()
@@ -220,6 +228,7 @@ void MakeCRLPolicyDlg::connectExtends()
     connect( mAKIUseCheck, SIGNAL(clicked()), this, SLOT(clickAKI()));
     connect( mIDPUseCheck, SIGNAL(clicked()), this, SLOT(clickIDP()));
     connect( mIANUseCheck, SIGNAL(clicked()), this, SLOT(clickIAN()));
+    connect( mUseFromNowCheck, SIGNAL(clicked()), this, SLOT(clickUseFromNow()));
 
     connect( mIDPAddBtn, SIGNAL(clicked()), this, SLOT(addIDP()));
     connect( mIANAddBtn, SIGNAL(clicked()), this, SLOT(addIAN()));
@@ -289,6 +298,15 @@ void MakeCRLPolicyDlg::clickIAN()
     mIANCombo->setEnabled(bStatus);
     mIANTable->setEnabled(bStatus);
     mIANAddBtn->setEnabled(bStatus);
+}
+
+void MakeCRLPolicyDlg::clickUseFromNow()
+{
+    bool bStatus = mUseFromNowCheck->isChecked();
+
+    mValidDaysText->setEnabled( bStatus );
+    mLastUpdateDateTime->setEnabled( !bStatus );
+    mNextUpdateDateTime->setEnabled( !bStatus );
 }
 
 void MakeCRLPolicyDlg::addIDP()

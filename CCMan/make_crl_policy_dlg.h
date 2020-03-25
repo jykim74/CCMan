@@ -32,6 +32,7 @@ private slots:
     void clickAKI();
     void clickIDP();
     void clickIAN();
+    void clickUseFromNow();
 
     void addIDP();
     void addIAN();
