@@ -16,6 +16,8 @@
 #include "settings_dlg.h"
 #include "about_dlg.h"
 #include "settings_mgr.h"
+#include "cert_info_dlg.h"
+#include "crl_info_dlg.h"
 
 #include "js_db.h"
 #include "js_db_data.h"
@@ -167,10 +169,12 @@ void MainWindow::showRightMenu(QPoint point)
     {
         menu.addAction( tr("RevokeCert"), this, &MainWindow::revokeCert );
         menu.addAction( tr("PublishCert"), this, &MainWindow::publishLDAP );
+        menu.addAction( tr("CertInfo"), this, &MainWindow::certInfo );
     }
     else if( rightType() == ITEM_TYPE_CRL )
     {
         menu.addAction( tr("PublishCRL"), this, &MainWindow::publishLDAP );
+        menu.addAction( tr("CRLInfo"), this, &MainWindow::crlInfo );
     }
     else if( rightType() == ITEM_TYPE_REVOKE )
     {
@@ -1308,4 +1312,30 @@ void MainWindow::settings()
 {
     SettingsDlg settingsDlg;
     settingsDlg.exec();
+}
+
+void MainWindow::certInfo()
+{
+    int row = right_table_->currentRow();
+    if( row < 0 ) return;
+
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+    int num = item->text().toInt();
+
+    CertInfoDlg certInfoDlg;
+    certInfoDlg.setCertNum( num );
+    certInfoDlg.exec();
+}
+
+void MainWindow::crlInfo()
+{
+    int row = right_table_->currentRow();
+    if( row < 0 ) return;
+
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+    int num = item->text().toInt();
+
+    CRLInfoDlg crlInfoDlg;
+    crlInfoDlg.setCRLNum( num );
+    crlInfoDlg.exec();
 }

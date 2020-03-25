@@ -23,6 +23,8 @@ SOURCES += \
     account_info.cpp \
     auto_update_service.cpp \
     cc_client.cpp \
+    cert_info_dlg.cpp \
+    crl_info_dlg.cpp \
     i18n_helper.cpp \
     issue_cert_dlg.cpp \
     issue_crl_dlg.cpp \
@@ -48,7 +50,9 @@ HEADERS += \
     account_info.h \
     auto_update_service.h \
     cc_client.h \
+    cert_info_dlg.h \
     common.h \
+    crl_info_dlg.h \
     i18n_helper.h \
     issue_cert_dlg.h \
     issue_crl_dlg.h \
@@ -71,6 +75,8 @@ HEADERS += \
 
 FORMS += \
     about_dlg.ui \
+    cert_info_dlg.ui \
+    crl_info_dlg.ui \
     issue_cert_dlg.ui \
     issue_crl_dlg.ui \
     login_dlg.ui \

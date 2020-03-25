@@ -81,6 +81,8 @@ public slots:
     void publishLDAP();
     void about();
     void settings();
+    void certInfo();
+    void crlInfo();
 
 private:
     QSplitter   *hsplitter_;
