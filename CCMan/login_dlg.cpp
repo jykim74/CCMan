@@ -23,6 +23,8 @@ LoginDlg::LoginDlg(QWidget *parent) :
     mServerURLCombo->addItem( strURL );
     mUserNameText->setText( strUserName );
     mPasswordText->setText( strPasswd );
+
+    mPasswordText->setEchoMode(QLineEdit::Password);
 }
 
 LoginDlg::~LoginDlg()
