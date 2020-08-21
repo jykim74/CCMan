@@ -9,11 +9,15 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
 
     QCoreApplication::setOrganizationName( "JS" );
     QCoreApplication::setOrganizationDomain( "jssoft.com");
     QCoreApplication::setApplicationName( "CCMan" );
+
+    QFile qss(":/ccman.qss");
+    qss.open( QFile::ReadOnly );
+    app.setStyleSheet(qss.readAll());
 
     I18NHelper::getInstance()->init();
 
@@ -21,5 +25,5 @@ int main(int argc, char *argv[])
     manApplet = &mApplet;
     manApplet->start();
 
-    return a.exec();
+    return app.exec();
 }

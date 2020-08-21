@@ -33,5 +33,12 @@
         <file>images/reg_signer.png</file>
         <file>images/revoke.png</file>
         <file>images/user.jpg</file>
+        <file>i18n/ccman_ko_KR.qm</file>
+        <file>ccman.qss</file>
+        <file>images/branch-closed.png</file>
+        <file>images/branch-end.png</file>
+        <file>images/branch-more.png</file>
+        <file>images/branch-open.png</file>
+        <file>images/vline.png</file>
     </qresource>
 </RCC>

@@ -117,10 +117,21 @@ mac {
 }
 
 win32 {
-    INCLUDEPATH += "../../PKILib/lib/win32/cmpossl-mingw32/include"
-    LIBS += -L"../../PKILib/lib/win32/ltdl/lib" -lltdl
-    LIBS += -L"../../build-PKILib-Desktop_Qt_5_12_2_MinGW_32_bit-Debug/debug" -lPKILib
-    LIBS += -L"../../PKILib/lib/win32/cmpossl-mingw32/lib" -lcrypto -lssl
+    DEFINES += _AUTO_UPDATE
+    RC_ICONS = ccman.ico
+    INCLUDEPATH += "../../PKILib/lib/win32/winsparkle/include"
+    INCLUDEPATH += "C:\msys64\mingw32\include"
+
+    Debug {
+        LIBS += -L"../../build-PKILib-Desktop_Qt_5_13_2_MinGW_32_bit-Debug/debug" -lPKILib
+        LIBS += -L"../../PKILib/lib/win32/debug/cmpossl/lib" -lcrypto -lssl
+    } else {
+        LIBS += -L"../../build-PKILib-Desktop_Qt_5_13_2_MinGW_32_bit-Release/release" -lPKILib
+        LIBS += -L"../../PKILib/lib/win32/cmpossl/lib" -lcrypto -lssl
+    }
+
+    LIBS += -L"C:\msys64\mingw32\lib" -lltdl -lldap -llber
+    LIBS += -L"../../PKILib/lib/win32/winsparkle/Release" -lWinSparkle -lws2_32
 }
 
 RESOURCES += \
