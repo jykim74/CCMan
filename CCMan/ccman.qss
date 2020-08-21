@@ -21,3 +21,5 @@ ManTreeView::branch:open:has-children:has-siblings  {
         border-image: none;
         image: url(:/images/branch-open.png);
 }
+
+QHeaderView::section {background-color:#404040;color:#FFFFFF;}

@@ -598,6 +598,11 @@ void MainWindow::createTreeMenu()
     pTopItem->setIcon(QIcon(":/images/man.png"));
     pRootItem->insertRow( 0, pTopItem );
 
+    ManTreeItem *pAdminItem = new ManTreeItem( QString("Admin") );
+    pAdminItem->setIcon(QIcon(":/images/admin.png"));
+    pAdminItem->setType( ITEM_TYPE_ADMIN );
+    pTopItem->appendRow( pAdminItem );
+
     ManTreeItem *pUserItem = new ManTreeItem( QString("User") );
     pUserItem->setIcon(QIcon(":/images/user.jpg"));
     pUserItem->setType( ITEM_TYPE_USER );

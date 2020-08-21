@@ -40,5 +40,6 @@
         <file>images/branch-more.png</file>
         <file>images/branch-open.png</file>
         <file>images/vline.png</file>
+        <file>images/admin.png</file>
     </qresource>
 </RCC>

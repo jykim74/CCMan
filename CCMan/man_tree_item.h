@@ -5,6 +5,7 @@
 
 enum {
     ITEM_TYPE_USER = 0,
+    ITEM_TYPE_ADMIN,
     ITEM_TYPE_CERT,
     ITEM_TYPE_CRL,
     ITEM_TYPE_REVOKE,
