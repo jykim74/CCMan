@@ -31,8 +31,8 @@ SOURCES += \
     login_dlg.cpp \
     main.cpp \
     mainwindow.cpp \
-    make_cert_policy_dlg.cpp \
-    make_crl_policy_dlg.cpp \
+    make_cert_profile_dlg.cpp \
+    make_crl_profile_dlg.cpp \
     man_applet.cpp \
     man_right_widget.cpp \
     man_tree_item.cpp \
@@ -58,8 +58,8 @@ HEADERS += \
     issue_crl_dlg.h \
     login_dlg.h \
     mainwindow.h \
-    make_cert_policy_dlg.h \
-    make_crl_policy_dlg.h \
+    make_cert_profile_dlg.h \
+    make_crl_profile_dlg.h \
     man_applet.h \
     man_right_widget.h \
     man_tree_item.h \
@@ -81,8 +81,8 @@ FORMS += \
     issue_crl_dlg.ui \
     login_dlg.ui \
     mainwindow.ui \
-    make_cert_policy_dlg.ui \
-    make_crl_policy_dlg.ui \
+    make_cert_profile_dlg.ui \
+    make_crl_profile_dlg.ui \
     reg_user_dlg.ui \
     revoke_cert_dlg.ui \
     settings_dlg.ui \
@@ -119,19 +119,38 @@ mac {
 win32 {
     DEFINES += _AUTO_UPDATE
     RC_ICONS = ccman.ico
-    INCLUDEPATH += "../../PKILib/lib/win32/winsparkle/include"
-    INCLUDEPATH += "C:\msys64\mingw32\include"
 
-    Debug {
-        LIBS += -L"../../build-PKILib-Desktop_Qt_5_13_2_MinGW_32_bit-Debug/debug" -lPKILib
-        LIBS += -L"../../PKILib/lib/win32/debug/cmpossl/lib" -lcrypto -lssl
+    contains(QT_ARCH, i386) {
+        message( "cc_man 32bit" )
+        INCLUDEPATH += "../../PKILib/lib/win32/winsparkle/include"
+        INCLUDEPATH += "C:\msys64\mingw32\include"
+
+        Debug {
+            LIBS += -L"../../build-PKILib-Desktop_Qt_5_13_2_MinGW_32_bit-Debug/debug" -lPKILib
+            LIBS += -L"../../PKILib/lib/win32/debug/cmpossl/lib" -lcrypto -lssl
+        } else {
+            LIBS += -L"../../build-PKILib-Desktop_Qt_5_13_2_MinGW_32_bit-Release/release" -lPKILib
+            LIBS += -L"../../PKILib/lib/win32/cmpossl/lib" -lcrypto -lssl
+        }
+
+        LIBS += -L"C:\msys64\mingw32\lib" -lltdl -lldap -llber
+        LIBS += -L"../../PKILib/lib/win32/winsparkle/Release" -lWinSparkle -lws2_32
     } else {
-        LIBS += -L"../../build-PKILib-Desktop_Qt_5_13_2_MinGW_32_bit-Release/release" -lPKILib
-        LIBS += -L"../../PKILib/lib/win32/cmpossl/lib" -lcrypto -lssl
-    }
+        message( "cc_man 64bit" )
+        INCLUDEPATH += "../../PKILib/lib/win64/winsparkle/include"
+        INCLUDEPATH += "C:\msys64\mingw64\include"
 
-    LIBS += -L"C:\msys64\mingw32\lib" -lltdl -lldap -llber
-    LIBS += -L"../../PKILib/lib/win32/winsparkle/Release" -lWinSparkle -lws2_32
+        Debug {
+            LIBS += -L"../../build-PKILib-Desktop_Qt_5_13_2_MinGW_64_bit-Debug/debug" -lPKILib
+            LIBS += -L"../../PKILib/lib/win64/debug/cmpossl/lib" -lcrypto -lssl
+        } else {
+            LIBS += -L"../../build-PKILib-Desktop_Qt_5_13_2_MinGW_64_bit-Release/release" -lPKILib
+            LIBS += -L"../../PKILib/lib/win64/cmpossl/lib" -lcrypto -lssl
+        }
+
+        LIBS += -L"C:\msys64\mingw64\lib" -lltdl -lldap -llber
+        LIBS += -L"../../PKILib/lib/win64/winsparkle/x64/Release" -lWinSparkle -lws2_32
+    }
 }
 
 RESOURCES += \

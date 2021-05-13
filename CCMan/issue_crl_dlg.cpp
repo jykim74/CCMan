@@ -20,7 +20,7 @@ IssueCRLDlg::~IssueCRLDlg()
 void IssueCRLDlg::accept()
 {
     int     ret = 0;
-    int     nPolicyNum = -1;
+    int     nProfileNum = -1;
     int     bDownload = 0;
 
     JCC_IssueCRLReq     sIssueReq;
@@ -31,12 +31,12 @@ void IssueCRLDlg::accept()
 
     bDownload = mCRLDownloadCheck->isChecked();
 
-    QVariant data = mCRLPolicyCombo->currentData();
-    nPolicyNum = data.toInt();
+    QVariant data = mCRLProfileCombo->currentData();
+    nProfileNum = data.toInt();
 
     QString strCRLPD = mCRLDPCombo->currentText();
 
-    JS_CC_setIssueCRLReq( &sIssueReq, nPolicyNum, bDownload, strCRLPD.toStdString().c_str() );
+    JS_CC_setIssueCRLReq( &sIssueReq, nProfileNum, bDownload, strCRLPD.toStdString().c_str() );
 
     ret = manApplet->ccClient()->issueCRL( &sIssueReq, &sIssueRsp );
 
@@ -59,19 +59,19 @@ void IssueCRLDlg::initialize()
 {
     connect( mCRLDownloadCheck, SIGNAL(clicked()), this, SLOT(clickDownload()));
 
-    JCC_CRLPolicyList   *pPolicyList = NULL;
-    JCC_CRLPolicyList   *pCurList = NULL;
+    JCC_CRLProfileList   *pProfileList = NULL;
+    JCC_CRLProfileList   *pCurList = NULL;
     JCC_NameValList     *pCRLDPList = NULL;
     JCC_NameValList     *pList = NULL;
 
-    manApplet->ccClient()->getCRLPolicyList( &pPolicyList );
+    manApplet->ccClient()->getCRLProfileList( &pProfileList );
 
-    pCurList = pPolicyList;
+    pCurList = pProfileList;
 
     while( pCurList )
     {
-        QVariant data = pCurList->sCRLPolicy.nNum;
-        mCRLPolicyCombo->addItem( pCurList->sCRLPolicy.pName, data );
+        QVariant data = pCurList->sCRLProfile.nNum;
+        mCRLProfileCombo->addItem( pCurList->sCRLProfile.pName, data );
 
         pCurList = pCurList->pNext;
     }
@@ -86,6 +86,6 @@ void IssueCRLDlg::initialize()
         pList = pList->pNext;
     }
 
-    if( pPolicyList ) JS_DB_resetCRLPolicyList( &pPolicyList );
+    if( pProfileList ) JS_DB_resetCRLProfileList( &pProfileList );
     if( pCRLDPList ) JS_UTIL_resetNameValList( &pCRLDPList );
 }

@@ -1,4 +1,4 @@
-#include "make_cert_policy_dlg.h"
+#include "make_cert_profile_dlg.h"
 #include "mainwindow.h"
 #include "man_applet.h"
 #include "common.h"
@@ -8,7 +8,7 @@
 #include "man_tree_item.h"
 
 
-MakeCertPolicyDlg::MakeCertPolicyDlg(QWidget *parent) :
+MakeCertProfileDlg::MakeCertProfileDlg(QWidget *parent) :
     QDialog(parent)
 {
     setupUi(this);
@@ -19,64 +19,64 @@ MakeCertPolicyDlg::MakeCertPolicyDlg(QWidget *parent) :
     setTableMenus();
 
     is_edit_ = false;
-    policy_num_ = -1;
+    profile_num_ = -1;
 }
 
-MakeCertPolicyDlg::~MakeCertPolicyDlg()
+MakeCertProfileDlg::~MakeCertProfileDlg()
 {
 
 }
 
-void MakeCertPolicyDlg::setEdit(bool is_edit)
+void MakeCertProfileDlg::setEdit(bool is_edit)
 {
     is_edit_ = is_edit;
 }
 
-void MakeCertPolicyDlg::setPolicyNum(int policy_num)
+void MakeCertProfileDlg::setProfileNum(int profile_num)
 {
-    policy_num_ = policy_num;
+    profile_num_ = profile_num;
 }
 
-void MakeCertPolicyDlg::showEvent(QShowEvent *event)
+void MakeCertProfileDlg::showEvent(QShowEvent *event)
 {
     initialize();
 
 
 }
 
-void MakeCertPolicyDlg::initialize()
+void MakeCertProfileDlg::initialize()
 {
     mCertTab->setCurrentIndex(0);
 
     if( is_edit_ )
-        loadPolicy();
+        loadProfile();
     else
-        defaultPolicy();
+        defaultProfile();
 }
 
-void MakeCertPolicyDlg::loadPolicy()
+void MakeCertProfileDlg::loadProfile()
 {
-    JCC_CertPolicy      sCertPolicy;
-    memset( &sCertPolicy, 0x00, sizeof(sCertPolicy));
+    JCC_CertProfile      sCertProfile;
+    memset( &sCertProfile, 0x00, sizeof(sCertProfile));
 
     QDateTime notBefore;
     QDateTime notAfter;
 
-    manApplet->ccClient()->getCertPolicy( policy_num_, &sCertPolicy );
+    manApplet->ccClient()->getCertProfile( profile_num_, &sCertProfile );
 
-    mNameText->setText( sCertPolicy.pName );
-    mVersionCombo->setCurrentIndex( sCertPolicy.nVersion );
-    mHashCombo->setCurrentText( sCertPolicy.pHash );
-    mSubjectDNText->setText( sCertPolicy.pDNTemplate );
+    mNameText->setText( sCertProfile.pName );
+    mVersionCombo->setCurrentIndex( sCertProfile.nVersion );
+    mHashCombo->setCurrentText( sCertProfile.pHash );
+    mSubjectDNText->setText( sCertProfile.pDNTemplate );
 
-    if( sCertPolicy.nNotBefore == 0 )
+    if( sCertProfile.nNotBefore == 0 )
     {
         mUseDaysCheck->setChecked(true);
-        mDaysText->setText( QString("%1").arg(sCertPolicy.nNotAfter));
+        mDaysText->setText( QString("%1").arg(sCertProfile.nNotAfter));
     }
     else {
-        notBefore.setTime_t( sCertPolicy.nNotBefore );
-        notAfter.setTime_t( sCertPolicy.nNotAfter );
+        notBefore.setTime_t( sCertProfile.nNotBefore );
+        notAfter.setTime_t( sCertProfile.nNotAfter );
 
         mNotBeforeDateTime->setDateTime( notBefore );
         mNotAfterDateTime->setDateTime( notAfter );
@@ -84,49 +84,49 @@ void MakeCertPolicyDlg::loadPolicy()
 
     clickUseDays();
 
-    JCC_PolicyExtList   *pPolicyExtList = NULL;
-    JCC_PolicyExtList   *pCurList = NULL;
+    JCC_ProfileExtList   *pProfileExtList = NULL;
+    JCC_ProfileExtList   *pCurList = NULL;
 
-    manApplet->ccClient()->getCertPolicyExtList( policy_num_, &pPolicyExtList );
-    pCurList = pPolicyExtList;
+    manApplet->ccClient()->getCertProfileExtList( profile_num_, &pProfileExtList );
+    pCurList = pProfileExtList;
 
     while( pCurList )
     {
-        if( strcasecmp( pCurList->sPolicyExt.pSN, kExtNameAIA.toStdString().c_str() ) == 0 )
-            setAIAUse( &pCurList->sPolicyExt );
-        else if( strcasecmp( pCurList->sPolicyExt.pSN, kExtNameAKI.toStdString().c_str() ) == 0 )
-            setAKIUse( &pCurList->sPolicyExt );
-        else if( strcasecmp( pCurList->sPolicyExt.pSN, kExtNameBC.toStdString().c_str() ) == 0 )
-            setBCUse( &pCurList->sPolicyExt );
-        else if( strcasecmp( pCurList->sPolicyExt.pSN, kExtNameCRLDP.toStdString().c_str() ) == 0 )
-            setCRLDPUse( &pCurList->sPolicyExt );
-        else if( strcasecmp( pCurList->sPolicyExt.pSN, kExtNameEKU.toStdString().c_str() ) == 0 )
-            setEKUUse( &pCurList->sPolicyExt );
-        else if( strcasecmp( pCurList->sPolicyExt.pSN, kExtNameIAN.toStdString().c_str() ) == 0 )
-            setIANUse( &pCurList->sPolicyExt );
-        else if( strcasecmp( pCurList->sPolicyExt.pSN, kExtNameKeyUsage.toStdString().c_str() ) == 0 )
-            setKeyUsageUse( &pCurList->sPolicyExt );
-        else if( strcasecmp( pCurList->sPolicyExt.pSN, kExtNameNC.toStdString().c_str() ) == 0 )
-            setNCUse( &pCurList->sPolicyExt );
-        else if( strcasecmp( pCurList->sPolicyExt.pSN, kExtNamePolicy.toStdString().c_str() ) == 0 )
-            setPolicyUse( &pCurList->sPolicyExt );
-        else if( strcasecmp( pCurList->sPolicyExt.pSN, kExtNamePC.toStdString().c_str() ) == 0 )
-            setPCUse( &pCurList->sPolicyExt );
-        else if( strcasecmp( pCurList->sPolicyExt.pSN, kExtNamePM.toStdString().c_str() ) == 0 )
-            setPMUse( &pCurList->sPolicyExt );
-        else if( strcasecmp( pCurList->sPolicyExt.pSN, kExtNameSKI.toStdString().c_str() ) == 0 )
-            setSKIUse( &pCurList->sPolicyExt );
-        else if( strcasecmp( pCurList->sPolicyExt.pSN, kExtNameSAN.toStdString().c_str() ) == 0 )
-            setSANUse( &pCurList->sPolicyExt );
+        if( strcasecmp( pCurList->sProfileExt.pSN, kExtNameAIA.toStdString().c_str() ) == 0 )
+            setAIAUse( &pCurList->sProfileExt );
+        else if( strcasecmp( pCurList->sProfileExt.pSN, kExtNameAKI.toStdString().c_str() ) == 0 )
+            setAKIUse( &pCurList->sProfileExt );
+        else if( strcasecmp( pCurList->sProfileExt.pSN, kExtNameBC.toStdString().c_str() ) == 0 )
+            setBCUse( &pCurList->sProfileExt );
+        else if( strcasecmp( pCurList->sProfileExt.pSN, kExtNameCRLDP.toStdString().c_str() ) == 0 )
+            setCRLDPUse( &pCurList->sProfileExt );
+        else if( strcasecmp( pCurList->sProfileExt.pSN, kExtNameEKU.toStdString().c_str() ) == 0 )
+            setEKUUse( &pCurList->sProfileExt );
+        else if( strcasecmp( pCurList->sProfileExt.pSN, kExtNameIAN.toStdString().c_str() ) == 0 )
+            setIANUse( &pCurList->sProfileExt );
+        else if( strcasecmp( pCurList->sProfileExt.pSN, kExtNameKeyUsage.toStdString().c_str() ) == 0 )
+            setKeyUsageUse( &pCurList->sProfileExt );
+        else if( strcasecmp( pCurList->sProfileExt.pSN, kExtNameNC.toStdString().c_str() ) == 0 )
+            setNCUse( &pCurList->sProfileExt );
+        else if( strcasecmp( pCurList->sProfileExt.pSN, kExtNamePolicy.toStdString().c_str() ) == 0 )
+            setPolicyUse( &pCurList->sProfileExt );
+        else if( strcasecmp( pCurList->sProfileExt.pSN, kExtNamePC.toStdString().c_str() ) == 0 )
+            setPCUse( &pCurList->sProfileExt );
+        else if( strcasecmp( pCurList->sProfileExt.pSN, kExtNamePM.toStdString().c_str() ) == 0 )
+            setPMUse( &pCurList->sProfileExt );
+        else if( strcasecmp( pCurList->sProfileExt.pSN, kExtNameSKI.toStdString().c_str() ) == 0 )
+            setSKIUse( &pCurList->sProfileExt );
+        else if( strcasecmp( pCurList->sProfileExt.pSN, kExtNameSAN.toStdString().c_str() ) == 0 )
+            setSANUse( &pCurList->sProfileExt );
 
         pCurList = pCurList->pNext;
     }
 
-    JS_DB_resetCertPolicy( &sCertPolicy );
-    if( pPolicyExtList ) JS_DB_resetPolicyExtList( &pPolicyExtList );
+    JS_DB_resetCertProfile( &sCertProfile );
+    if( pProfileExtList ) JS_DB_resetProfileExtList( &pProfileExtList );
 }
 
-void MakeCertPolicyDlg::defaultPolicy()
+void MakeCertProfileDlg::defaultProfile()
 {
     int rowCnt = 0;
     mNameText->setText("");
@@ -215,7 +215,7 @@ void MakeCertPolicyDlg::defaultPolicy()
     mDaysText->setText("365");
 }
 
-void MakeCertPolicyDlg::accept()
+void MakeCertProfileDlg::accept()
 {
     QString strName = mNameText->text();
 
@@ -233,10 +233,10 @@ void MakeCertPolicyDlg::accept()
         return;
     }
 
-    int nPolicyNum = manApplet->ccClient()->getNum( ITEM_TYPE_CERT_POLICY );
+    int nProfileNum = manApplet->ccClient()->getNum( ITEM_TYPE_CERT_PROFILE );
 
-    JCC_CertPolicy sCertPolicy;
-    memset( &sCertPolicy, 0x00, sizeof(sCertPolicy));
+    JCC_CertProfile sCertProfile;
+    memset( &sCertProfile, 0x00, sizeof(sCertProfile));
     int nNotBefore = 0;
     int nNotAfter = 0;
 
@@ -256,8 +256,8 @@ void MakeCertPolicyDlg::accept()
         nNotAfter = afterTime.toTime_t();
     }
 
-    JS_DB_setCertPolicy( &sCertPolicy,
-                         nPolicyNum,
+    JS_DB_setCertProfile( &sCertProfile,
+                         nProfileNum,
                          strName.toStdString().c_str(),
                          mVersionCombo->currentIndex(),
                          nNotBefore,
@@ -267,37 +267,37 @@ void MakeCertPolicyDlg::accept()
 
     if( is_edit_ )
     {
-        manApplet->ccClient()->modCertPolicy( policy_num_, &sCertPolicy );
-        manApplet->ccClient()->delCertPolicyExts( policy_num_ );
-        nPolicyNum = policy_num_;
+        manApplet->ccClient()->modCertProfile( profile_num_, &sCertProfile );
+        manApplet->ccClient()->delCertProfileExts( profile_num_ );
+        nProfileNum = profile_num_;
     }
     else
     {
-        manApplet->ccClient()->addCertPolicy( &sCertPolicy );
+        manApplet->ccClient()->addCertProfile( &sCertProfile );
     }
 
     /* need to set extend fields here */
-    if( mAIAUseCheck->isChecked() ) saveAIAUse( nPolicyNum );
-    if( mAKIUseCheck->isChecked() ) saveAKIUse( nPolicyNum );
-    if( mBCUseCheck->isChecked() ) saveBCUse( nPolicyNum );
-    if( mCRLDPUseCheck->isChecked() ) saveCRLDPUse( nPolicyNum );
-    if( mEKUUseCheck->isChecked() ) saveEKUUse( nPolicyNum );
-    if( mIANUseCheck->isChecked() ) saveIANUse( nPolicyNum );
-    if( mKeyUsageUseCheck->isChecked() ) saveKeyUsageUse( nPolicyNum );
-    if( mNCUseCheck->isChecked() ) saveNCUse( nPolicyNum );
-    if( mPolicyUseCheck->isChecked() ) savePolicyUse( nPolicyNum );
-    if( mPCUseCheck->isChecked() ) savePCUse( nPolicyNum );
-    if( mPMUseCheck->isChecked() ) savePMUse( nPolicyNum );
-    if( mSKIUseCheck->isChecked() ) saveSKIUse( nPolicyNum );
-    if( mSANUseCheck->isChecked() ) saveSANUse( nPolicyNum );
+    if( mAIAUseCheck->isChecked() ) saveAIAUse( nProfileNum );
+    if( mAKIUseCheck->isChecked() ) saveAKIUse( nProfileNum );
+    if( mBCUseCheck->isChecked() ) saveBCUse( nProfileNum );
+    if( mCRLDPUseCheck->isChecked() ) saveCRLDPUse( nProfileNum );
+    if( mEKUUseCheck->isChecked() ) saveEKUUse( nProfileNum );
+    if( mIANUseCheck->isChecked() ) saveIANUse( nProfileNum );
+    if( mKeyUsageUseCheck->isChecked() ) saveKeyUsageUse( nProfileNum );
+    if( mNCUseCheck->isChecked() ) saveNCUse( nProfileNum );
+    if( mPolicyUseCheck->isChecked() ) savePolicyUse( nProfileNum );
+    if( mPCUseCheck->isChecked() ) savePCUse( nProfileNum );
+    if( mPMUseCheck->isChecked() ) savePMUse( nProfileNum );
+    if( mSKIUseCheck->isChecked() ) saveSKIUse( nProfileNum );
+    if( mSANUseCheck->isChecked() ) saveSANUse( nProfileNum );
     /* ....... */
 
-    manApplet->mainWindow()->createRightCertPolicyList();
-    JS_DB_resetCertPolicy( &sCertPolicy );
+    manApplet->mainWindow()->createRightCertProfileList();
+    JS_DB_resetCertProfile( &sCertProfile );
     QDialog::accept();
 }
 
-void MakeCertPolicyDlg::initUI()
+void MakeCertProfileDlg::initUI()
 {
     mKeyUsageCombo->addItems(kKeyUsageList);
     mEKUCombo->addItems(kExtKeyUsageList);
@@ -320,7 +320,7 @@ void MakeCertPolicyDlg::initUI()
     mNotAfterDateTime->setDateTime(now);
 }
 
-void MakeCertPolicyDlg::setTableMenus()
+void MakeCertProfileDlg::setTableMenus()
 {
     QStringList sPolicyLabels = { "OID", "CPS", "UserNotice" };
     mPolicyTable->setColumnCount(3);
@@ -365,7 +365,7 @@ void MakeCertPolicyDlg::setTableMenus()
     mNCTable->verticalHeader()->setVisible(false);
 }
 
-void MakeCertPolicyDlg::connectExtends()
+void MakeCertProfileDlg::connectExtends()
 {
     connect( mUseCSRCheck, SIGNAL(clicked()), this, SLOT(clickUseCSR()));
     connect( mUseDaysCheck, SIGNAL(clicked()), this, SLOT(clickUseDays()));
@@ -405,7 +405,7 @@ void MakeCertPolicyDlg::connectExtends()
     connect( mNCClearBtn, SIGNAL(clicked()), this, SLOT(clearNC()));
 }
 
-void MakeCertPolicyDlg::clickUseCSR()
+void MakeCertProfileDlg::clickUseCSR()
 {
     bool bStatus = mUseCSRCheck->isChecked();
 
@@ -418,7 +418,7 @@ void MakeCertPolicyDlg::clickUseCSR()
     }
 }
 
-void MakeCertPolicyDlg::clickUseDays()
+void MakeCertProfileDlg::clickUseDays()
 {
     bool bStatus = mUseDaysCheck->isChecked();
 
@@ -427,7 +427,7 @@ void MakeCertPolicyDlg::clickUseDays()
     mNotBeforeDateTime->setEnabled(!bStatus);
 }
 
-void MakeCertPolicyDlg::setExtends()
+void MakeCertProfileDlg::setExtends()
 {
     clickUseCSR();
     clickUseDays();
@@ -448,7 +448,7 @@ void MakeCertPolicyDlg::setExtends()
 }
 
 
-void MakeCertPolicyDlg::clickAIAUse()
+void MakeCertProfileDlg::clickAIAUse()
 {
     bool bStatus = mAIAUseCheck->isChecked();
 
@@ -460,7 +460,7 @@ void MakeCertPolicyDlg::clickAIAUse()
     mAIATable->setEnabled(bStatus);
 }
 
-void MakeCertPolicyDlg::clickAKIUse()
+void MakeCertProfileDlg::clickAKIUse()
 {
     bool bStatus = mAKIUseCheck->isChecked();
 
@@ -469,7 +469,7 @@ void MakeCertPolicyDlg::clickAKIUse()
     mAKICertSerialCheck->setEnabled(bStatus);
 }
 
-void MakeCertPolicyDlg::clickBCUse()
+void MakeCertProfileDlg::clickBCUse()
 {
     bool bStatus = mBCUseCheck->isChecked();
 
@@ -478,7 +478,7 @@ void MakeCertPolicyDlg::clickBCUse()
     mBCPathLenText->setEnabled(bStatus);
 }
 
-void MakeCertPolicyDlg::clickCRLDPUse()
+void MakeCertProfileDlg::clickCRLDPUse()
 {
     bool bStatus = mCRLDPUseCheck->isChecked();
 
@@ -489,7 +489,7 @@ void MakeCertPolicyDlg::clickCRLDPUse()
     mCRLDPTable->setEnabled(bStatus);
 }
 
-void MakeCertPolicyDlg::clickEKUUse()
+void MakeCertProfileDlg::clickEKUUse()
 {
     bool bStatus = mEKUUseCheck->isChecked();
 
@@ -499,7 +499,7 @@ void MakeCertPolicyDlg::clickEKUUse()
     mEKUList->setEnabled(bStatus);
 }
 
-void MakeCertPolicyDlg::clickIANUse()
+void MakeCertProfileDlg::clickIANUse()
 {
     bool bStatus = mIANUseCheck->isChecked();
 
@@ -510,7 +510,7 @@ void MakeCertPolicyDlg::clickIANUse()
     mIANAddBtn->setEnabled(bStatus);
 }
 
-void MakeCertPolicyDlg::clickKeyUsageUse()
+void MakeCertProfileDlg::clickKeyUsageUse()
 {
     bool bStatus = mKeyUsageUseCheck->isChecked();
 
@@ -520,7 +520,7 @@ void MakeCertPolicyDlg::clickKeyUsageUse()
     mKeyUsageList->setEnabled( bStatus );
 }
 
-void MakeCertPolicyDlg::clickNCUse()
+void MakeCertProfileDlg::clickNCUse()
 {
     bool bStatus = mNCUseCheck->isChecked();
 
@@ -534,7 +534,7 @@ void MakeCertPolicyDlg::clickNCUse()
     mNCTable->setEnabled(bStatus);
 }
 
-void MakeCertPolicyDlg::clickPolicyUse()
+void MakeCertProfileDlg::clickPolicyUse()
 {
     bool bStatus = mPolicyUseCheck->isChecked();
 
@@ -546,7 +546,7 @@ void MakeCertPolicyDlg::clickPolicyUse()
     mPolicyTable->setEnabled( bStatus );
 }
 
-void MakeCertPolicyDlg::clickPCUse()
+void MakeCertProfileDlg::clickPCUse()
 {
     bool bStatus = mPCUseCheck->isChecked();
 
@@ -555,7 +555,7 @@ void MakeCertPolicyDlg::clickPCUse()
     mPCExplicitText->setEnabled(bStatus);
 }
 
-void MakeCertPolicyDlg::clickPMUse()
+void MakeCertProfileDlg::clickPMUse()
 {
     bool bStatus = mPMUseCheck->isChecked();
 
@@ -566,14 +566,14 @@ void MakeCertPolicyDlg::clickPMUse()
     mPMTable->setEnabled(bStatus);
 }
 
-void MakeCertPolicyDlg::clickSKIUse()
+void MakeCertProfileDlg::clickSKIUse()
 {
     bool bStatus = mSKIUseCheck->isChecked();
 
     mSKICriticalCheck->setEnabled( bStatus );
 }
 
-void MakeCertPolicyDlg::clickSANUse()
+void MakeCertProfileDlg::clickSANUse()
 {
     bool bStatus = mSANUseCheck->isChecked();
 
@@ -585,14 +585,14 @@ void MakeCertPolicyDlg::clickSANUse()
 }
 
 
-void MakeCertPolicyDlg::addKeyUsage()
+void MakeCertProfileDlg::addKeyUsage()
 {
     QString strVal = mKeyUsageCombo->currentText();
 
     mKeyUsageList->addItem( strVal );
 }
 
-void MakeCertPolicyDlg::addPolicy()
+void MakeCertProfileDlg::addPolicy()
 {
     QString strOID = mPolicyOIDText->text();
     QString strCPS = mPolicyCPSText->text();
@@ -607,14 +607,14 @@ void MakeCertPolicyDlg::addPolicy()
     mPolicyTable->setItem( row, 2, new QTableWidgetItem(strUserNotice));
 }
 
-void MakeCertPolicyDlg::addEKU()
+void MakeCertProfileDlg::addEKU()
 {
     QString strVal = mEKUCombo->currentText();
 
     mEKUList->addItem( strVal );
 }
 
-void MakeCertPolicyDlg::addCRLDP()
+void MakeCertProfileDlg::addCRLDP()
 {
     QString strType = mCRLDPCombo->currentText();
     QString strVal = mCRLDPText->text();
@@ -626,7 +626,7 @@ void MakeCertPolicyDlg::addCRLDP()
     mCRLDPTable->setItem( row, 1, new QTableWidgetItem( strVal ));
 }
 
-void MakeCertPolicyDlg::addAIA()
+void MakeCertProfileDlg::addAIA()
 {
     QString strTarget = mAIATargetCombo->currentText();
     QString strType = mAIATypeCombo->currentText();
@@ -641,7 +641,7 @@ void MakeCertPolicyDlg::addAIA()
     mAIATable->setItem( row, 2, new QTableWidgetItem( strVal ));
 }
 
-void MakeCertPolicyDlg::addSAN()
+void MakeCertProfileDlg::addSAN()
 {
     QString strType = mSANCombo->currentText();
     QString strVal = mSANText->text();
@@ -653,7 +653,7 @@ void MakeCertPolicyDlg::addSAN()
     mSANTable->setItem( row, 1, new QTableWidgetItem(strVal));
 }
 
-void MakeCertPolicyDlg::addIAN()
+void MakeCertProfileDlg::addIAN()
 {
     QString strType = mIANCombo->currentText();
     QString strVal = mIANText->text();
@@ -665,7 +665,7 @@ void MakeCertPolicyDlg::addIAN()
     mIANTable->setItem( row, 1, new QTableWidgetItem(strVal));
 }
 
-void MakeCertPolicyDlg::addPM()
+void MakeCertProfileDlg::addPM()
 {
     QString strIDP = mPMIssuerDomainPolicyText->text();
     QString strSDP = mPMSubjectDomainPolicyText->text();
@@ -679,7 +679,7 @@ void MakeCertPolicyDlg::addPM()
     mPMTable->setItem( row, 3, new QTableWidgetItem( strSDP));
 }
 
-void MakeCertPolicyDlg::addNC()
+void MakeCertProfileDlg::addNC()
 {
     QString strType = mNCTypeCombo->currentText();
     QString strSubType = mNCSubCombo->currentText();
@@ -697,12 +697,12 @@ void MakeCertPolicyDlg::addNC()
     mNCTable->setItem( row, 4, new QTableWidgetItem(strMin));
 }
 
-void MakeCertPolicyDlg::clearKeyUsage()
+void MakeCertProfileDlg::clearKeyUsage()
 {
     mKeyUsageList->clear();
 }
 
-void MakeCertPolicyDlg::clearPolicy()
+void MakeCertProfileDlg::clearPolicy()
 {
     int nCnt = mPolicyTable->rowCount();
 
@@ -710,12 +710,12 @@ void MakeCertPolicyDlg::clearPolicy()
         mPolicyTable->removeRow(0);
 }
 
-void MakeCertPolicyDlg::clearEKU()
+void MakeCertProfileDlg::clearEKU()
 {
     mEKUList->clear();
 }
 
-void MakeCertPolicyDlg::clearCRLDP()
+void MakeCertProfileDlg::clearCRLDP()
 {
     int nCnt = mCRLDPTable->rowCount();
 
@@ -723,7 +723,7 @@ void MakeCertPolicyDlg::clearCRLDP()
         mCRLDPTable->removeRow(0);
 }
 
-void MakeCertPolicyDlg::clearAIA()
+void MakeCertProfileDlg::clearAIA()
 {
     int nCnt = mAIATable->rowCount();
 
@@ -731,7 +731,7 @@ void MakeCertPolicyDlg::clearAIA()
         mAIATable->removeRow(0);
 }
 
-void MakeCertPolicyDlg::clearSAN()
+void MakeCertProfileDlg::clearSAN()
 {
     int nCnt = mSANTable->rowCount();
 
@@ -739,7 +739,7 @@ void MakeCertPolicyDlg::clearSAN()
         mSANTable->removeRow(0);
 }
 
-void MakeCertPolicyDlg::clearIAN()
+void MakeCertProfileDlg::clearIAN()
 {
     int nCnt = mIANTable->rowCount();
 
@@ -747,7 +747,7 @@ void MakeCertPolicyDlg::clearIAN()
         mIANTable->removeRow(0);
 }
 
-void MakeCertPolicyDlg::clearPM()
+void MakeCertProfileDlg::clearPM()
 {
     int nCnt = mPMTable->rowCount();
 
@@ -755,7 +755,7 @@ void MakeCertPolicyDlg::clearPM()
         mPMTable->removeRow(0);
 }
 
-void MakeCertPolicyDlg::clearNC()
+void MakeCertProfileDlg::clearNC()
 {
     int nCnt = mNCTable->rowCount();
 
@@ -763,10 +763,10 @@ void MakeCertPolicyDlg::clearNC()
         mNCTable->removeRow(0);
 }
 
-void MakeCertPolicyDlg::saveAIAUse(int nPolicyNum )
+void MakeCertProfileDlg::saveAIAUse(int nProfileNum )
 {
-    JCC_PolicyExt   sPolicyExt;
-    memset( &sPolicyExt, 0x00, sizeof(sPolicyExt));
+    JCC_ProfileExt   sProfileExt;
+    memset( &sProfileExt, 0x00, sizeof(sProfileExt));
 
     QString strVal = "";
 
@@ -788,30 +788,30 @@ void MakeCertPolicyDlg::saveAIAUse(int nPolicyNum )
         strVal += strData;
     }
 
-    JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mAIACriticalCheck->isChecked(), "authorityInfoAccess", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
-    JS_DB_resetPolicyExt( &sPolicyExt );
+    JS_DB_setProfileExt( &sProfileExt, -1, nProfileNum, mAIACriticalCheck->isChecked(), "authorityInfoAccess", strVal.toStdString().c_str() );
+    manApplet->ccClient()->addCertProfileExt( nProfileNum, &sProfileExt );
+    JS_DB_resetProfileExt( &sProfileExt );
 }
 
-void MakeCertPolicyDlg::saveAKIUse(int nPolicyNum )
+void MakeCertProfileDlg::saveAKIUse(int nProfileNum )
 {
-    JCC_PolicyExt   sPolicyExt;
-    memset( &sPolicyExt, 0x00, sizeof(sPolicyExt));
+    JCC_ProfileExt   sProfileExt;
+    memset( &sProfileExt, 0x00, sizeof(sProfileExt));
 
     QString strVal;
 
     if( mAKICertIssuerCheck->isChecked() ) strVal += "ISSUER#";
     if( mAKICertSerialCheck->isChecked() ) strVal += "SERIAL#";
 
-    JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mAKICriticalCheck->isChecked(), "authorityKeyIdentifier", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
-    JS_DB_resetPolicyExt( &sPolicyExt );
+    JS_DB_setProfileExt( &sProfileExt, -1, nProfileNum, mAKICriticalCheck->isChecked(), "authorityKeyIdentifier", strVal.toStdString().c_str() );
+    manApplet->ccClient()->addCertProfileExt( nProfileNum, &sProfileExt );
+    JS_DB_resetProfileExt( &sProfileExt );
 }
 
-void MakeCertPolicyDlg::saveBCUse(int nPolicyNum )
+void MakeCertProfileDlg::saveBCUse(int nProfileNum )
 {
-    JCC_PolicyExt   sPolicyExt;
-    memset( &sPolicyExt, 0x00, sizeof(sPolicyExt));
+    JCC_ProfileExt   sProfileExt;
+    memset( &sProfileExt, 0x00, sizeof(sProfileExt));
 
     QString strVal;
 
@@ -827,15 +827,15 @@ void MakeCertPolicyDlg::saveBCUse(int nPolicyNum )
         strVal += mBCPathLenText->text();
     }
 
-    JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mBCCriticalCheck->isChecked(), "basicConstraints", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
-    JS_DB_resetPolicyExt( &sPolicyExt );
+    JS_DB_setProfileExt( &sProfileExt, -1, nProfileNum, mBCCriticalCheck->isChecked(), "basicConstraints", strVal.toStdString().c_str() );
+    manApplet->ccClient()->addCertProfileExt( nProfileNum, &sProfileExt );
+    JS_DB_resetProfileExt( &sProfileExt );
 }
 
-void MakeCertPolicyDlg::saveCRLDPUse(int nPolicyNum )
+void MakeCertProfileDlg::saveCRLDPUse(int nProfileNum )
 {
-    JCC_PolicyExt   sPolicyExt;
-    memset( &sPolicyExt, 0x00, sizeof(sPolicyExt));
+    JCC_ProfileExt   sProfileExt;
+    memset( &sProfileExt, 0x00, sizeof(sProfileExt));
 
     QString strVal = "";
 
@@ -853,15 +853,15 @@ void MakeCertPolicyDlg::saveCRLDPUse(int nPolicyNum )
         strVal += strData;
     }
 
-    JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mCRLDPCriticalCheck->isChecked(), "crlDistributionPoints", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
-    JS_DB_resetPolicyExt( &sPolicyExt );
+    JS_DB_setProfileExt( &sProfileExt, -1, nProfileNum, mCRLDPCriticalCheck->isChecked(), "crlDistributionPoints", strVal.toStdString().c_str() );
+    manApplet->ccClient()->addCertProfileExt( nProfileNum, &sProfileExt );
+    JS_DB_resetProfileExt( &sProfileExt );
 }
 
-void MakeCertPolicyDlg::saveEKUUse(int nPolicyNum )
+void MakeCertProfileDlg::saveEKUUse(int nProfileNum )
 {
-    JCC_PolicyExt   sPolicyExt;
-    memset( &sPolicyExt, 0x00, sizeof(sPolicyExt));
+    JCC_ProfileExt   sProfileExt;
+    memset( &sProfileExt, 0x00, sizeof(sProfileExt));
 
     QString strVal = "";
 
@@ -871,15 +871,15 @@ void MakeCertPolicyDlg::saveEKUUse(int nPolicyNum )
         strVal += mEKUList->item(i)->text();
     }
 
-    JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mEKUCriticalCheck->isChecked(), "extendedKeyUsage", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
-    JS_DB_resetPolicyExt( &sPolicyExt );
+    JS_DB_setProfileExt( &sProfileExt, -1, nProfileNum, mEKUCriticalCheck->isChecked(), "extendedKeyUsage", strVal.toStdString().c_str() );
+    manApplet->ccClient()->addCertProfileExt( nProfileNum, &sProfileExt );
+    JS_DB_resetProfileExt( &sProfileExt );
 }
 
-void MakeCertPolicyDlg::saveIANUse(int nPolicyNum )
+void MakeCertProfileDlg::saveIANUse(int nProfileNum )
 {
-    JCC_PolicyExt   sPolicyExt;
-    memset( &sPolicyExt, 0x00, sizeof(sPolicyExt));
+    JCC_ProfileExt   sProfileExt;
+    memset( &sProfileExt, 0x00, sizeof(sProfileExt));
 
     QString strVal;
 
@@ -897,15 +897,15 @@ void MakeCertPolicyDlg::saveIANUse(int nPolicyNum )
         strVal += strData;
     }
 
-    JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mIANCriticalCheck->isChecked(), "issuerAltName", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
-    JS_DB_resetPolicyExt( &sPolicyExt );
+    JS_DB_setProfileExt( &sProfileExt, -1, nProfileNum, mIANCriticalCheck->isChecked(), "issuerAltName", strVal.toStdString().c_str() );
+    manApplet->ccClient()->addCertProfileExt( nProfileNum, &sProfileExt );
+    JS_DB_resetProfileExt( &sProfileExt );
 }
 
-void MakeCertPolicyDlg::saveKeyUsageUse(int nPolicyNum )
+void MakeCertProfileDlg::saveKeyUsageUse(int nProfileNum )
 {
-    JCC_PolicyExt   sPolicyExt;
-    memset( &sPolicyExt, 0x00, sizeof(sPolicyExt));
+    JCC_ProfileExt   sProfileExt;
+    memset( &sProfileExt, 0x00, sizeof(sProfileExt));
 
     QString strValue;
 
@@ -915,15 +915,15 @@ void MakeCertPolicyDlg::saveKeyUsageUse(int nPolicyNum )
         strValue += mKeyUsageList->item(i)->text();
     }
 
-    JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mKeyUsageCriticalCheck->isChecked(), "keyUsage", strValue.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
-    JS_DB_resetPolicyExt( &sPolicyExt );
+    JS_DB_setProfileExt( &sProfileExt, -1, nProfileNum, mKeyUsageCriticalCheck->isChecked(), "keyUsage", strValue.toStdString().c_str() );
+    manApplet->ccClient()->addCertProfileExt( nProfileNum, &sProfileExt );
+    JS_DB_resetProfileExt( &sProfileExt );
 }
 
-void MakeCertPolicyDlg::saveNCUse(int nPolicyNum )
+void MakeCertProfileDlg::saveNCUse(int nProfileNum )
 {
-    JCC_PolicyExt   sPolicyExt;
-    memset( &sPolicyExt, 0x00, sizeof(sPolicyExt));
+    JCC_ProfileExt   sProfileExt;
+    memset( &sProfileExt, 0x00, sizeof(sProfileExt));
 
     QString strVal = "";
 
@@ -953,15 +953,15 @@ void MakeCertPolicyDlg::saveNCUse(int nPolicyNum )
         strVal += strMax;
     }
 
-    JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mNCCriticalCheck->isChecked(), "nameConstraints", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
-    JS_DB_resetPolicyExt( &sPolicyExt );
+    JS_DB_setProfileExt( &sProfileExt, -1, nProfileNum, mNCCriticalCheck->isChecked(), "nameConstraints", strVal.toStdString().c_str() );
+    manApplet->ccClient()->addCertProfileExt( nProfileNum, &sProfileExt );
+    JS_DB_resetProfileExt( &sProfileExt );
 }
 
-void MakeCertPolicyDlg::savePolicyUse(int nPolicyNum )
+void MakeCertProfileDlg::savePolicyUse(int nProfileNum )
 {
-    JCC_PolicyExt   sPolicyExt;
-    memset( &sPolicyExt, 0x00, sizeof(sPolicyExt));
+    JCC_ProfileExt   sProfileExt;
+    memset( &sProfileExt, 0x00, sizeof(sProfileExt));
 
     QString strVal;
 
@@ -978,15 +978,15 @@ void MakeCertPolicyDlg::savePolicyUse(int nPolicyNum )
         strVal += "#";
     }
 
-    JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mPolicyCriticalCheck->isChecked(), "certificatePolicies", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
-    JS_DB_resetPolicyExt( &sPolicyExt );
+    JS_DB_setProfileExt( &sProfileExt, -1, nProfileNum, mPolicyCriticalCheck->isChecked(), "certificatePolicies", strVal.toStdString().c_str() );
+    manApplet->ccClient()->addCertProfileExt( nProfileNum, &sProfileExt );
+    JS_DB_resetProfileExt( &sProfileExt );
 }
 
-void MakeCertPolicyDlg::savePCUse(int nPolicyNum )
+void MakeCertProfileDlg::savePCUse(int nProfileNum )
 {
-    JCC_PolicyExt   sPolicyExt;
-    memset( &sPolicyExt, 0x00, sizeof(sPolicyExt));
+    JCC_ProfileExt   sProfileExt;
+    memset( &sProfileExt, 0x00, sizeof(sProfileExt));
 
     QString strVal;
     strVal = "REP";
@@ -1004,15 +1004,15 @@ void MakeCertPolicyDlg::savePCUse(int nPolicyNum )
         strVal += mPCInhibitText->text();
     }
 
-    JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mPCCriticalCheck->isChecked(), "policyConstraints", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
-    JS_DB_resetPolicyExt( &sPolicyExt );
+    JS_DB_setProfileExt( &sProfileExt, -1, nProfileNum, mPCCriticalCheck->isChecked(), "policyConstraints", strVal.toStdString().c_str() );
+    manApplet->ccClient()->addCertProfileExt( nProfileNum, &sProfileExt );
+    JS_DB_resetProfileExt( &sProfileExt );
 }
 
-void MakeCertPolicyDlg::savePMUse(int nPolicyNum )
+void MakeCertProfileDlg::savePMUse(int nProfileNum )
 {
-    JCC_PolicyExt   sPolicyExt;
-    memset( &sPolicyExt, 0x00, sizeof(sPolicyExt));
+    JCC_ProfileExt   sProfileExt;
+    memset( &sProfileExt, 0x00, sizeof(sProfileExt));
 
     QString strVal;
 
@@ -1030,25 +1030,25 @@ void MakeCertPolicyDlg::savePMUse(int nPolicyNum )
         strVal += strSDP;
     }
 
-    JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mPMCriticalCheck->isChecked(), "policyMappings", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
-    JS_DB_resetPolicyExt( &sPolicyExt );
+    JS_DB_setProfileExt( &sProfileExt, -1, nProfileNum, mPMCriticalCheck->isChecked(), "policyMappings", strVal.toStdString().c_str() );
+    manApplet->ccClient()->addCertProfileExt( nProfileNum, &sProfileExt );
+    JS_DB_resetProfileExt( &sProfileExt );
 }
 
-void MakeCertPolicyDlg::saveSKIUse(int nPolicyNum )
+void MakeCertProfileDlg::saveSKIUse(int nProfileNum )
 {
-    JCC_PolicyExt   sPolicyExt;
-    memset( &sPolicyExt, 0x00, sizeof(sPolicyExt));
+    JCC_ProfileExt   sProfileExt;
+    memset( &sProfileExt, 0x00, sizeof(sProfileExt));
 
-    JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mSKICriticalCheck->isChecked(), "subjectKeyIdentifier", NULL );
-    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
-    JS_DB_resetPolicyExt( &sPolicyExt );
+    JS_DB_setProfileExt( &sProfileExt, -1, nProfileNum, mSKICriticalCheck->isChecked(), "subjectKeyIdentifier", NULL );
+    manApplet->ccClient()->addCertProfileExt( nProfileNum, &sProfileExt );
+    JS_DB_resetProfileExt( &sProfileExt );
 }
 
-void MakeCertPolicyDlg::saveSANUse(int nPolicyNum)
+void MakeCertProfileDlg::saveSANUse(int nProfileNum)
 {
-    JCC_PolicyExt   sPolicyExt;
-    memset( &sPolicyExt, 0x00, sizeof(sPolicyExt));
+    JCC_ProfileExt   sProfileExt;
+    memset( &sProfileExt, 0x00, sizeof(sProfileExt));
 
     QString strVal = "";
     for( int i=0; i < mSANTable->rowCount(); i++ )
@@ -1065,18 +1065,18 @@ void MakeCertPolicyDlg::saveSANUse(int nPolicyNum)
         strVal += strData;
     }
 
-    JS_DB_setPolicyExt( &sPolicyExt, -1, nPolicyNum, mSANCriticalCheck->isChecked(), "subjectAltName", strVal.toStdString().c_str() );
-    manApplet->ccClient()->addCertPolicyExt( nPolicyNum, &sPolicyExt );
-    JS_DB_resetPolicyExt( &sPolicyExt );
+    JS_DB_setProfileExt( &sProfileExt, -1, nProfileNum, mSANCriticalCheck->isChecked(), "subjectAltName", strVal.toStdString().c_str() );
+    manApplet->ccClient()->addCertProfileExt( nProfileNum, &sProfileExt );
+    JS_DB_resetProfileExt( &sProfileExt );
 }
 
-void MakeCertPolicyDlg::setAIAUse( JCC_PolicyExt *pPolicyExt )
+void MakeCertProfileDlg::setAIAUse( JCC_ProfileExt *pProfileExt )
 {
     mAIAUseCheck->setChecked(true);
-    mAIACriticalCheck->setChecked( pPolicyExt->bCritical );
+    mAIACriticalCheck->setChecked( pProfileExt->bCritical );
     clickAIAUse();
 
-    QString strVal = pPolicyExt->pValue;
+    QString strVal = pProfileExt->pValue;
 
     QStringList valList = strVal.split("#");
 
@@ -1099,13 +1099,13 @@ void MakeCertPolicyDlg::setAIAUse( JCC_PolicyExt *pPolicyExt )
     }
 }
 
-void MakeCertPolicyDlg::setAKIUse( JCC_PolicyExt *pPolicyExt )
+void MakeCertProfileDlg::setAKIUse( JCC_ProfileExt *pProfileExt )
 {
     mAKIUseCheck->setChecked(true);
-    mAKICriticalCheck->setChecked( pPolicyExt->bCritical );
+    mAKICriticalCheck->setChecked( pProfileExt->bCritical );
     clickAKIUse();
 
-    QString strVal = pPolicyExt->pValue;
+    QString strVal = pProfileExt->pValue;
 
     bool bStatus = strVal.contains("ISSUER");
     mAKICertIssuerCheck->setChecked(bStatus);
@@ -1114,13 +1114,13 @@ void MakeCertPolicyDlg::setAKIUse( JCC_PolicyExt *pPolicyExt )
     mAKICertSerialCheck->setChecked(bStatus);
 }
 
-void MakeCertPolicyDlg::setBCUse( JCC_PolicyExt *pPolicyExt )
+void MakeCertProfileDlg::setBCUse( JCC_ProfileExt *pProfileExt )
 {
     mBCUseCheck->setChecked(true);
-    mBCCriticalCheck->setChecked( pPolicyExt->bCritical );
+    mBCCriticalCheck->setChecked( pProfileExt->bCritical );
     clickBCUse();
 
-    QString strVal = pPolicyExt->pValue;
+    QString strVal = pProfileExt->pValue;
 
     QStringList valList = strVal.split("#");
     QString strType= valList.at(0);
@@ -1130,13 +1130,13 @@ void MakeCertPolicyDlg::setBCUse( JCC_PolicyExt *pPolicyExt )
     mBCPathLenText->setText( strLen );
 }
 
-void MakeCertPolicyDlg::setCRLDPUse( JCC_PolicyExt *pPolicyExt )
+void MakeCertProfileDlg::setCRLDPUse( JCC_ProfileExt *pProfileExt )
 {
     mCRLDPUseCheck->setChecked(true);
-    mCRLDPCriticalCheck->setChecked( pPolicyExt->bCritical );
+    mCRLDPCriticalCheck->setChecked( pProfileExt->bCritical );
     clickCRLDPUse();
 
-    QString strVal = pPolicyExt->pValue;
+    QString strVal = pProfileExt->pValue;
 
     QStringList valList = strVal.split("#");
 
@@ -1154,27 +1154,27 @@ void MakeCertPolicyDlg::setCRLDPUse( JCC_PolicyExt *pPolicyExt )
     }
 }
 
-void MakeCertPolicyDlg::setEKUUse( JCC_PolicyExt *pPolicyExt )
+void MakeCertProfileDlg::setEKUUse( JCC_ProfileExt *pProfileExt )
 {
     QString strVal = "";
 
     mEKUUseCheck->setChecked(true);
-    mEKUCriticalCheck->setChecked( pPolicyExt->bCritical );
+    mEKUCriticalCheck->setChecked( pProfileExt->bCritical );
     clickEKUUse();
 
-    strVal = pPolicyExt->pValue;
+    strVal = pProfileExt->pValue;
     QStringList valList = strVal.split("#");
 
     if( valList.size() > 0 ) mEKUList->insertItems( 0, valList );
 }
 
-void MakeCertPolicyDlg::setIANUse( JCC_PolicyExt *pPolicyExt )
+void MakeCertProfileDlg::setIANUse( JCC_ProfileExt *pProfileExt )
 {
     mIANUseCheck->setChecked(true);
-    mIANCriticalCheck->setChecked( pPolicyExt->bCritical );
+    mIANCriticalCheck->setChecked( pProfileExt->bCritical );
     clickIANUse();
 
-    QString strVal = pPolicyExt->pValue;
+    QString strVal = pProfileExt->pValue;
 
     QStringList valList = strVal.split("#");
 
@@ -1192,13 +1192,13 @@ void MakeCertPolicyDlg::setIANUse( JCC_PolicyExt *pPolicyExt )
     }
 }
 
-void MakeCertPolicyDlg::setKeyUsageUse( JCC_PolicyExt *pPolicyExt )
+void MakeCertProfileDlg::setKeyUsageUse( JCC_ProfileExt *pProfileExt )
 {
     mKeyUsageUseCheck->setChecked(true);
-    mKeyUsageCriticalCheck->setChecked( pPolicyExt->bCritical );
+    mKeyUsageCriticalCheck->setChecked( pProfileExt->bCritical );
     clickKeyUsageUse();
 
-    QString strVal = pPolicyExt->pValue;
+    QString strVal = pProfileExt->pValue;
 
     mKeyUsageList->clear();
 
@@ -1206,13 +1206,13 @@ void MakeCertPolicyDlg::setKeyUsageUse( JCC_PolicyExt *pPolicyExt )
     if( valList.size() > 0 ) mKeyUsageList->insertItems(0, valList );
 }
 
-void MakeCertPolicyDlg::setNCUse( JCC_PolicyExt *pPolicyExt )
+void MakeCertProfileDlg::setNCUse( JCC_ProfileExt *pProfileExt )
 {
     mNCUseCheck->setChecked(true);
-    mNCCriticalCheck->setChecked( pPolicyExt->bCritical );
+    mNCCriticalCheck->setChecked( pProfileExt->bCritical );
     clickNCUse();
 
-    QString strVal = pPolicyExt->pValue;
+    QString strVal = pProfileExt->pValue;
 
     QStringList valList = strVal.split("#");
 
@@ -1239,13 +1239,13 @@ void MakeCertPolicyDlg::setNCUse( JCC_PolicyExt *pPolicyExt )
     }
 }
 
-void MakeCertPolicyDlg::setPolicyUse( JCC_PolicyExt *pPolicyExt )
+void MakeCertProfileDlg::setPolicyUse( JCC_ProfileExt *pProfileExt )
 {
     mPolicyUseCheck->setChecked(true);
-    mPolicyCriticalCheck->setChecked( pPolicyExt->bCritical );
+    mPolicyCriticalCheck->setChecked( pProfileExt->bCritical );
     clickPolicyUse();
 
-    QString strVal = pPolicyExt->pValue;
+    QString strVal = pProfileExt->pValue;
 
     QStringList valList = strVal.split("%%");
 
@@ -1285,13 +1285,13 @@ void MakeCertPolicyDlg::setPolicyUse( JCC_PolicyExt *pPolicyExt )
     }
 }
 
-void MakeCertPolicyDlg::setPCUse( JCC_PolicyExt *pPolicyExt )
+void MakeCertProfileDlg::setPCUse( JCC_ProfileExt *pProfileExt )
 {
     mPCUseCheck->setChecked(true);
-    mPCCriticalCheck->setChecked( pPolicyExt->bCritical );
+    mPCCriticalCheck->setChecked( pProfileExt->bCritical );
     clickPCUse();
 
-    QString strVal = pPolicyExt->pValue;
+    QString strVal = pProfileExt->pValue;
     QStringList valList = strVal.split("#");
 
     for( int i=0; i < valList.size(); i++ )
@@ -1309,13 +1309,13 @@ void MakeCertPolicyDlg::setPCUse( JCC_PolicyExt *pPolicyExt )
     }
 }
 
-void MakeCertPolicyDlg::setPMUse( JCC_PolicyExt *pPolicyExt )
+void MakeCertProfileDlg::setPMUse( JCC_ProfileExt *pProfileExt )
 {
     mPMUseCheck->setChecked(true);
-    mPMCriticalCheck->setChecked( pPolicyExt->bCritical );
+    mPMCriticalCheck->setChecked( pProfileExt->bCritical );
     clickPMUse();
 
-    QString strVal = pPolicyExt->pValue;
+    QString strVal = pProfileExt->pValue;
 
     QStringList valList = strVal.split("#");
 
@@ -1335,20 +1335,20 @@ void MakeCertPolicyDlg::setPMUse( JCC_PolicyExt *pPolicyExt )
     }
 }
 
-void MakeCertPolicyDlg::setSKIUse( JCC_PolicyExt *pPolicyExt )
+void MakeCertProfileDlg::setSKIUse( JCC_ProfileExt *pProfileExt )
 {
     mSKIUseCheck->setChecked(true);
-    mSKICriticalCheck->setChecked( pPolicyExt->bCritical );
+    mSKICriticalCheck->setChecked( pProfileExt->bCritical );
     clickSKIUse();
 }
 
-void MakeCertPolicyDlg::setSANUse( JCC_PolicyExt *pPolicyExt )
+void MakeCertProfileDlg::setSANUse( JCC_ProfileExt *pProfileExt )
 {
     mSANUseCheck->setChecked(true);
-    mSANCriticalCheck->setChecked( pPolicyExt->bCritical );
+    mSANCriticalCheck->setChecked( pProfileExt->bCritical );
     clickSANUse();
 
-    QString strVal = pPolicyExt->pValue;
+    QString strVal = pProfileExt->pValue;
 
     QStringList valList = strVal.split("#");
 

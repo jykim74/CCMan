@@ -37,13 +37,13 @@ void ManTreeView::showContextMenu(QPoint point)
         menu.addAction(tr("RegUser"), manApplet->mainWindow(), &MainWindow::regUser);
         menu.addAction(tr("IssueCert"), manApplet->mainWindow(), &MainWindow::issueCert );
     }
-    else if( item->type() == ITEM_TYPE_CERT_POLICY )
+    else if( item->type() == ITEM_TYPE_CERT_PROFILE )
     {
-        menu.addAction(tr("MakeCertPolicy"), manApplet->mainWindow(), &MainWindow::makeCertPolicy );
+        menu.addAction(tr("MakeCertProfile"), manApplet->mainWindow(), &MainWindow::makeCertProfile );
     }
-    else if( item->type() == ITEM_TYPE_CRL_POLICY )
+    else if( item->type() == ITEM_TYPE_CRL_PROFILE )
     {
-        menu.addAction(tr("MakeCRLPolicy"), manApplet->mainWindow(), &MainWindow::makeCRLPolicy );
+        menu.addAction(tr("MakeCRLProfile"), manApplet->mainWindow(), &MainWindow::makeCRLProfile );
     }
     else if( item->type() == ITEM_TYPE_REG_SIGNER || item->type() == ITEM_TYPE_OCSP_SIGNER )
     {

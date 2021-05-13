@@ -51,6 +51,8 @@ int CCClient::getCount(int nType)
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 pParamList,
                 pHeaderList,
@@ -89,9 +91,9 @@ int CCClient::getNum(int nType)
         strType = "crls";
     else if( nType == ITEM_TYPE_REVOKE )
         strType = "revokeds";
-    else if( nType == ITEM_TYPE_CERT_POLICY )
+    else if( nType == ITEM_TYPE_CERT_PROFILE )
         strType = "cert_policies";
-    else if( nType == ITEM_TYPE_CRL_POLICY )
+    else if( nType == ITEM_TYPE_CRL_PROFILE )
         strType = "crl_policies";
     else
         strType = "none";
@@ -104,6 +106,8 @@ int CCClient::getNum(int nType)
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 pParamList,
                 pHeaderList,
@@ -146,6 +150,8 @@ int CCClient::getUserList( int nOffset, int nLimit, JCC_UserList **ppUserList )
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 pParamList,
                 pHeaderList,
@@ -181,6 +187,8 @@ int CCClient::getUser( int nNum, JCC_User *pUser )
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 NULL,
                 pHeaderList,
@@ -215,6 +223,8 @@ int CCClient::delUser(int nNum)
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_DELETE,
                 NULL,
                 pHeaderList,
@@ -231,7 +241,7 @@ int CCClient::delUser(int nNum)
     return 0;
 }
 
-int CCClient::getCertPolicyList( JCC_CertPolicyList **ppCertPolicyList )
+int CCClient::getCertProfileList( JCC_CertProfileList **ppCertProfileList )
 {
     int ret = 0;
     int status = 0;
@@ -243,13 +253,15 @@ int CCClient::getCertPolicyList( JCC_CertPolicyList **ppCertPolicyList )
     char    *pRsp = NULL;
 
     strURL = base_url_;
-    strURL += JS_CC_PATH_CERT_POLICY;
+    strURL += JS_CC_PATH_CERT_PROFILE;
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 NULL,
                 pHeaderList,
@@ -257,7 +269,7 @@ int CCClient::getCertPolicyList( JCC_CertPolicyList **ppCertPolicyList )
                 &status,
                 &pRsp );
 
-    JS_CC_decodeCertPolicyList( pRsp, ppCertPolicyList );
+    JS_CC_decodeCertProfileList( pRsp, ppCertProfileList );
 
     if( pRsp ) JS_free( pRsp );
 
@@ -265,7 +277,7 @@ int CCClient::getCertPolicyList( JCC_CertPolicyList **ppCertPolicyList )
     return 0;
 }
 
-int CCClient::getCertPolicy(int nNum, JCC_CertPolicy *pCertPolicy)
+int CCClient::getCertProfile(int nNum, JCC_CertProfile *pCertProfile)
 {
     int ret = 0;
     int status = 0;
@@ -277,12 +289,14 @@ int CCClient::getCertPolicy(int nNum, JCC_CertPolicy *pCertPolicy)
 
 
     strURL = base_url_;
-    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CERT_POLICY ).arg( nNum );
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CERT_PROFILE ).arg( nNum );
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 NULL,
                 pHeaderList,
@@ -290,14 +304,14 @@ int CCClient::getCertPolicy(int nNum, JCC_CertPolicy *pCertPolicy)
                 &status,
                 &pRsp );
 
-    JS_CC_decodeCertPolicy( pRsp, pCertPolicy );
+    JS_CC_decodeCertProfile( pRsp, pCertProfile );
     if( pRsp ) JS_free( pRsp );
     if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
 
     return 0;
 }
 
-int CCClient::getCertPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicyExtList )
+int CCClient::getCertProfileExtList( int nProfileNum, JCC_ProfileExtList **ppProfileExtList )
 {
     int ret = 0;
     int status = 0;
@@ -310,12 +324,14 @@ int CCClient::getCertPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicy
 
 
     strURL = base_url_;
-    strURL += QString( "%1/%2/extensions" ).arg( JS_CC_PATH_CERT_POLICY ).arg( nPolicyNum );
+    strURL += QString( "%1/%2/extensions" ).arg( JS_CC_PATH_CERT_PROFILE ).arg( nProfileNum );
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 NULL,
                 pHeaderList,
@@ -323,7 +339,7 @@ int CCClient::getCertPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicy
                 &status,
                 &pRsp );
 
-    JS_CC_decodePolicyExtList( pRsp, ppPolicyExtList );
+    JS_CC_decodeProfileExtList( pRsp, ppProfileExtList );
     if( pRsp ) JS_free( pRsp );
     if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
 
@@ -331,7 +347,7 @@ int CCClient::getCertPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicy
 }
 
 
-int CCClient::getCRLPolicyList( JCC_CRLPolicyList **ppCRLPolicyList )
+int CCClient::getCRLProfileList( JCC_CRLProfileList **ppCRLProfileList )
 {
     int ret = 0;
     int status = 0;
@@ -343,13 +359,15 @@ int CCClient::getCRLPolicyList( JCC_CRLPolicyList **ppCRLPolicyList )
     char    *pRsp = NULL;
 
     strURL = base_url_;
-    strURL += JS_CC_PATH_CRL_POLICY;
+    strURL += JS_CC_PATH_CRL_PROFILE;
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 NULL,
                 pHeaderList,
@@ -357,7 +375,7 @@ int CCClient::getCRLPolicyList( JCC_CRLPolicyList **ppCRLPolicyList )
                 &status,
                 &pRsp );
 
-    JS_CC_decodeCRLPolicyList( pRsp, ppCRLPolicyList );
+    JS_CC_decodeCRLProfileList( pRsp, ppCRLProfileList );
 
     if( pRsp ) JS_free( pRsp );
 
@@ -365,7 +383,7 @@ int CCClient::getCRLPolicyList( JCC_CRLPolicyList **ppCRLPolicyList )
     return 0;
 }
 
-int CCClient::getCRLPolicy(int nNum, JCC_CRLPolicy *pCRLPolicy)
+int CCClient::getCRLProfile(int nNum, JCC_CRLProfile *pCRLProfile)
 {
     int ret = 0;
     int status = 0;
@@ -377,12 +395,14 @@ int CCClient::getCRLPolicy(int nNum, JCC_CRLPolicy *pCRLPolicy)
 
 
     strURL = base_url_;
-    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CRL_POLICY ).arg( nNum );
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CRL_PROFILE ).arg( nNum );
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 NULL,
                 pHeaderList,
@@ -390,14 +410,14 @@ int CCClient::getCRLPolicy(int nNum, JCC_CRLPolicy *pCRLPolicy)
                 &status,
                 &pRsp );
 
-    JS_CC_decodeCRLPolicy( pRsp, pCRLPolicy );
+    JS_CC_decodeCRLProfile( pRsp, pCRLProfile );
     if( pRsp ) JS_free( pRsp );
     if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
 
     return 0;
 }
 
-int CCClient::getCRLPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicyExtList )
+int CCClient::getCRLProfileExtList( int nProfileNum, JCC_ProfileExtList **ppProfileExtList )
 {
     int ret = 0;
     int status = 0;
@@ -409,12 +429,14 @@ int CCClient::getCRLPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicyE
 
 
     strURL = base_url_;
-    strURL += QString( "%1/%2/extensions" ).arg( JS_CC_PATH_CRL_POLICY ).arg( nPolicyNum );
+    strURL += QString( "%1/%2/extensions" ).arg( JS_CC_PATH_CRL_PROFILE ).arg( nProfileNum );
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 NULL,
                 pHeaderList,
@@ -422,7 +444,7 @@ int CCClient::getCRLPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicyE
                 &status,
                 &pRsp );
 
-    JS_CC_decodePolicyExtList( pRsp, ppPolicyExtList );
+    JS_CC_decodeProfileExtList( pRsp, ppProfileExtList );
     if( pRsp ) JS_free( pRsp );
     if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
 
@@ -447,6 +469,8 @@ int CCClient::getSigner( int nNum, JCC_Signer *pSigner )
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 NULL,
                 pHeaderList,
@@ -486,6 +510,8 @@ int CCClient::getSignerList( int nType, JCC_SignerList **ppSignerList )
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 pParamList,
                 pHeaderList,
@@ -521,6 +547,8 @@ int CCClient::getCert( int nNum, JCC_Cert *pCert )
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 NULL,
                 pHeaderList,
@@ -562,6 +590,8 @@ int CCClient::getCertList( int nOffset, int nLimit, JCC_CertList **ppCertList )
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 pParamList,
                 pHeaderList,
@@ -599,6 +629,8 @@ int CCClient::getCRL( int nNum, JCC_CRL *pCRL )
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 NULL,
                 pHeaderList,
@@ -639,6 +671,8 @@ int CCClient::getCRLList( int nOffset, int nLimit, JCC_CRLList **ppCRLList )
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 pParamList,
                 pHeaderList,
@@ -674,6 +708,8 @@ int CCClient::getRevoked( int nSeq, JCC_Revoked *pRevoked )
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 NULL,
                 pHeaderList,
@@ -715,6 +751,8 @@ int CCClient::getRevokedList( int nOffset, int nLimit, JCC_RevokedList **ppRevok
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_GET,
                 pParamList,
                 pHeaderList,
@@ -732,7 +770,7 @@ int CCClient::getRevokedList( int nOffset, int nLimit, JCC_RevokedList **ppRevok
     return 0;
 }
 
-int CCClient::addCRLPolicy( JCC_CRLPolicy *pCRLPolicy )
+int CCClient::addCRLProfile( JCC_CRLProfile *pCRLProfile )
 {
     int ret = 0;
     int status = 0;
@@ -747,14 +785,16 @@ int CCClient::addCRLPolicy( JCC_CRLPolicy *pCRLPolicy )
     memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
 
     strURL = base_url_;
-    strURL += JS_CC_PATH_CRL_POLICY;
+    strURL += JS_CC_PATH_CRL_PROFILE;
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
-    JS_CC_encodeCRLPolicy( pCRLPolicy, &pReq );
+    JS_CC_encodeCRLProfile( pCRLProfile, &pReq );
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_POST,
                 NULL,
                 pHeaderList,
@@ -771,7 +811,7 @@ int CCClient::addCRLPolicy( JCC_CRLPolicy *pCRLPolicy )
     return 0;
 }
 
-int CCClient::modCRLPolicy( int nNum, JCC_CRLPolicy *pCRLPolicy )
+int CCClient::modCRLProfile( int nNum, JCC_CRLProfile *pCRLProfile )
 {
     int ret = 0;
     int status = 0;
@@ -786,14 +826,16 @@ int CCClient::modCRLPolicy( int nNum, JCC_CRLPolicy *pCRLPolicy )
     memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
 
     strURL = base_url_;
-    strURL += QString( "%1/%2").arg(JS_CC_PATH_CRL_POLICY).arg(nNum);
+    strURL += QString( "%1/%2").arg(JS_CC_PATH_CRL_PROFILE).arg(nNum);
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
-    JS_CC_encodeCRLPolicy( pCRLPolicy, &pReq );
+    JS_CC_encodeCRLProfile( pCRLProfile, &pReq );
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_PUT,
                 NULL,
                 pHeaderList,
@@ -811,7 +853,7 @@ int CCClient::modCRLPolicy( int nNum, JCC_CRLPolicy *pCRLPolicy )
     return 0;
 }
 
-int CCClient::delCRLPolicyExts( int nPolicyNum )
+int CCClient::delCRLProfileExts( int nProfileNum )
 {
     int ret = 0;
     int status = 0;
@@ -826,13 +868,15 @@ int CCClient::delCRLPolicyExts( int nPolicyNum )
     memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
 
     strURL = base_url_;
-    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CRL_POLICY ).arg( nPolicyNum );
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CRL_PROFILE ).arg( nProfileNum );
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
     JS_UTIL_createNameValList2( "mode", "extonly", &pParamList );
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_DELETE,
                 pParamList,
                 pHeaderList,
@@ -850,7 +894,7 @@ int CCClient::delCRLPolicyExts( int nPolicyNum )
     return 0;
 }
 
-int CCClient::delCRLPolicy( int nNum )
+int CCClient::delCRLProfile( int nNum )
 {
     int ret = 0;
     int status = 0;
@@ -865,13 +909,15 @@ int CCClient::delCRLPolicy( int nNum )
     memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
 
     strURL = base_url_;
-    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CRL_POLICY ).arg( nNum );
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CRL_PROFILE ).arg( nNum );
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_DELETE,
                 NULL,
                 pHeaderList,
@@ -888,7 +934,7 @@ int CCClient::delCRLPolicy( int nNum )
     return 0;
 }
 
-int CCClient::addCRLPolicyExt( int nPolicyNum, JCC_PolicyExt *pPolicyExt )
+int CCClient::addCRLProfileExt( int nProfileNum, JCC_ProfileExt *pProfileExt )
 {
     int ret = 0;
     int status = 0;
@@ -903,14 +949,16 @@ int CCClient::addCRLPolicyExt( int nPolicyNum, JCC_PolicyExt *pPolicyExt )
     memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
 
     strURL = base_url_;
-    strURL += QString( "%1/%2" ).arg(JS_CC_PATH_CRL_POLICY).arg( nPolicyNum );
+    strURL += QString( "%1/%2" ).arg(JS_CC_PATH_CRL_PROFILE).arg( nProfileNum );
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
-    JS_CC_encodePolicyExt( pPolicyExt, &pReq );
+    JS_CC_encodeProfileExt( pProfileExt, &pReq );
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_POST,
                 NULL,
                 pHeaderList,
@@ -928,7 +976,7 @@ int CCClient::addCRLPolicyExt( int nPolicyNum, JCC_PolicyExt *pPolicyExt )
     return 0;
 }
 
-int CCClient::addCertPolicy( JCC_CertPolicy *pCertPolicy )
+int CCClient::addCertProfile( JCC_CertProfile *pCertProfile )
 {
     int ret = 0;
     int status = 0;
@@ -944,14 +992,16 @@ int CCClient::addCertPolicy( JCC_CertPolicy *pCertPolicy )
     memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
 
     strURL = base_url_;
-    strURL += JS_CC_PATH_CERT_POLICY;
+    strURL += JS_CC_PATH_CERT_PROFILE;
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
-    JS_CC_encodeCertPolicy( pCertPolicy, &pReq );
+    JS_CC_encodeCertProfile( pCertProfile, &pReq );
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_POST,
                 NULL,
                 pHeaderList,
@@ -968,7 +1018,7 @@ int CCClient::addCertPolicy( JCC_CertPolicy *pCertPolicy )
     return 0;
 }
 
-int CCClient::modCertPolicy( int nNum, JCC_CertPolicy *pCertPolicy )
+int CCClient::modCertProfile( int nNum, JCC_CertProfile *pCertProfile )
 {
     int ret = 0;
     int status = 0;
@@ -983,14 +1033,16 @@ int CCClient::modCertPolicy( int nNum, JCC_CertPolicy *pCertPolicy )
     memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
 
     strURL = base_url_;
-    strURL += QString( "%1/%2" ).arg(JS_CC_PATH_CERT_POLICY).arg( nNum );
+    strURL += QString( "%1/%2" ).arg(JS_CC_PATH_CERT_PROFILE).arg( nNum );
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
-    JS_CC_encodeCertPolicy( pCertPolicy, &pReq );
+    JS_CC_encodeCertProfile( pCertProfile, &pReq );
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_PUT,
                 NULL,
                 pHeaderList,
@@ -1008,7 +1060,7 @@ int CCClient::modCertPolicy( int nNum, JCC_CertPolicy *pCertPolicy )
     return 0;
 }
 
-int CCClient::delCertPolicy( int nNum )
+int CCClient::delCertProfile( int nNum )
 {
     int ret = 0;
     int status = 0;
@@ -1024,13 +1076,15 @@ int CCClient::delCertPolicy( int nNum )
     memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
 
     strURL = base_url_;
-    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CERT_POLICY ).arg( nNum );
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CERT_PROFILE ).arg( nNum );
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_DELETE,
                 NULL,
                 pHeaderList,
@@ -1047,7 +1101,7 @@ int CCClient::delCertPolicy( int nNum )
     return 0;
 }
 
-int CCClient::delCertPolicyExts( int nPolicyNum )
+int CCClient::delCertProfileExts( int nProfileNum )
 {
     int ret = 0;
     int status = 0;
@@ -1063,13 +1117,15 @@ int CCClient::delCertPolicyExts( int nPolicyNum )
     memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
 
     strURL = base_url_;
-    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CERT_POLICY ).arg( nPolicyNum );
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_CERT_PROFILE ).arg( nProfileNum );
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
     JS_UTIL_createNameValList2( "mode", "extonly", &pParamList );
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_DELETE,
                 pParamList,
                 pHeaderList,
@@ -1087,7 +1143,7 @@ int CCClient::delCertPolicyExts( int nPolicyNum )
     return 0;
 }
 
-int CCClient::addCertPolicyExt( int nPolicyNum, JCC_PolicyExt *pPolicyExt )
+int CCClient::addCertProfileExt( int nProfileNum, JCC_ProfileExt *pProfileExt )
 {
     int ret = 0;
     int status = 0;
@@ -1103,14 +1159,16 @@ int CCClient::addCertPolicyExt( int nPolicyNum, JCC_PolicyExt *pPolicyExt )
     memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
 
     strURL = base_url_;
-    strURL += QString( "%1/%2" ).arg(JS_CC_PATH_CERT_POLICY).arg( nPolicyNum );
+    strURL += QString( "%1/%2" ).arg(JS_CC_PATH_CERT_PROFILE).arg( nProfileNum );
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
-    JS_CC_encodePolicyExt( pPolicyExt, &pReq );
+    JS_CC_encodeProfileExt( pProfileExt, &pReq );
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_POST,
                 NULL,
                 pHeaderList,
@@ -1152,6 +1210,8 @@ int CCClient::addSigner(JCC_Signer *pSigner)
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_POST,
                 NULL,
                 pHeaderList,
@@ -1192,6 +1252,8 @@ int CCClient::delSigner(int nNum)
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_DELETE,
                 NULL,
                 pHeaderList,
@@ -1232,6 +1294,8 @@ int CCClient::addRevoked(JCC_Revoked *pRevoked)
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_POST,
                 NULL,
                 pHeaderList,
@@ -1272,6 +1336,8 @@ int CCClient::delRevoked(int nSeq)
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
+                NULL,
+                NULL,
                 JS_HTTP_METHOD_DELETE,
                 NULL,
                 pHeaderList,

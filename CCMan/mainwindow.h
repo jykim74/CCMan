@@ -34,8 +34,8 @@ public:
 
     void createRightList( int nItemType );
     void createRightUserList();
-    void createRightCertPolicyList();
-    void createRightCRLPolicyList();
+    void createRightCertProfileList();
+    void createRightCRLProfileList();
     void createRightSignerList( int nItemType );
     void createRightCertList();
     void createRightCRLList();
@@ -43,8 +43,8 @@ public:
     void createRightCA();
 
     void showRightBottomUser( int nSeq );
-    void showRightBottomCertPolicy( int nNum );
-    void showRightBottomCRLPolicy( int nNum );
+    void showRightBottomCertProfile( int nNum );
+    void showRightBottomCRLProfile( int nNum );
     void showRightBottomSigner( int nNum );
     void showRightBottomCert( int nNum );
     void showRightBottomCRL( int nNum );
@@ -66,13 +66,13 @@ public slots:
     void showRightMenu(QPoint point);
     void deleteUser();
     void modifyUser();
-    void makeCertPolicy();
-    void makeCRLPolicy();
+    void makeCertProfile();
+    void makeCRLProfile();
     void regSigner();
-    void modifyCertPolicy();
-    void modifyCRLPolicy();
-    void deleteCertPolicy();
-    void deleteCRLPolicy();
+    void modifyCertProfile();
+    void modifyCRLProfile();
+    void deleteCertProfile();
+    void deleteCRLProfile();
     void deleteSigner();
     void revokeCert();
     void deleteRevoke();

@@ -126,19 +126,19 @@ void CRLInfoDlg::initialize()
 
         while( pCurList )
         {
-            JDB_PolicyExt   sPolicyExt;
-            memset( &sPolicyExt, 0x00, sizeof(sPolicyExt));
-            JS_PKI_transExtensionToDBRec( &pCurList->sExtensionInfo, &sPolicyExt );
+            JDB_ProfileExt   sProfileExt;
+            memset( &sProfileExt, 0x00, sizeof(sProfileExt));
+            JS_PKI_transExtensionToDBRec( &pCurList->sExtensionInfo, &sProfileExt );
 
             mCRLListTable->insertRow(i);
-            mCRLListTable->setItem(i,0, new QTableWidgetItem(QString("%1").arg( sPolicyExt.pSN )));
+            mCRLListTable->setItem(i,0, new QTableWidgetItem(QString("%1").arg( sProfileExt.pSN )));
             mCRLListTable->setItem(i,1, new QTableWidgetItem(QString("[%1]%2")
-                                                               .arg( sPolicyExt.bCritical )
-                                                               .arg( sPolicyExt.pValue )));
+                                                               .arg( sProfileExt.bCritical )
+                                                               .arg( sProfileExt.pValue )));
 
 
             pCurList = pCurList->pNext;
-            JS_DB_resetPolicyExt( &sPolicyExt );
+            JS_DB_resetProfileExt( &sProfileExt );
             i++;
         }
     }
@@ -238,17 +238,17 @@ void CRLInfoDlg::clickRevokeField(QModelIndex index)
     }
 
 
-    JDB_PolicyExt   sPolicyExt;
-    memset( &sPolicyExt, 0x00, sizeof(sPolicyExt));
-    JS_PKI_transExtensionToDBRec( &pRevInfoList->sRevokeInfo.sExtReason, &sPolicyExt );
+    JDB_ProfileExt   sProfileExt;
+    memset( &sProfileExt, 0x00, sizeof(sProfileExt));
+    JS_PKI_transExtensionToDBRec( &pRevInfoList->sRevokeInfo.sExtReason, &sProfileExt );
 
 
     mRevokeDetailTable->insertRow(0);
     mRevokeDetailTable->setItem(0,0, new QTableWidgetItem(QString("%1")
-                                                                .arg( sPolicyExt.pSN )));
+                                                                .arg( sProfileExt.pSN )));
     mRevokeDetailTable->setItem(0,1, new QTableWidgetItem(QString("[%1]%2")
-                                                           .arg( sPolicyExt.bCritical )
-                                                           .arg( sPolicyExt.pValue )));
+                                                           .arg( sProfileExt.bCritical )
+                                                           .arg( sProfileExt.pValue )));
 
-    JS_DB_resetPolicyExt( &sPolicyExt );
+    JS_DB_resetProfileExt( &sProfileExt );
 }

@@ -34,7 +34,7 @@ void IssueCertDlg::accept()
     JCC_IssueCertRsp sIssueCertRsp;
 
     int nUserNum = -1;
-    int nCertPolicyNum = -1;
+    int nCertProfileNum = -1;
     QString strName;
     QString strSSN;
     QString strEmail;
@@ -54,8 +54,8 @@ void IssueCertDlg::accept()
         nUserNum = mUserNumText->text().toInt();
     }
 
-    QVariant data = mCertPolicyCombo->currentData();
-    nCertPolicyNum = data.toInt();
+    QVariant data = mCertProfileCombo->currentData();
+    nCertProfileNum = data.toInt();
 
     BIN binCSR = {0,0};
     char *pHex = NULL;
@@ -71,7 +71,6 @@ void IssueCertDlg::accept()
     {
         int nAlg = 0;
         BIN binPub = {0,0};
-        BIN binPub2 = {0,0};
 
         QString strSubjectDn = mSubjectDNText->text();
 
@@ -79,19 +78,18 @@ void IssueCertDlg::accept()
         {
             nAlg = JS_PKI_KEY_TYPE_RSA;
             int nKeySize = mOptionCombo->currentText().toInt();
-            ret = JS_PKI_RSAGenKeyPair( nKeySize, 65537, &binPub, &binPub2, &binPri );
+            ret = JS_PKI_RSAGenKeyPair( nKeySize, 65537, &binPub, &binPri );
         }
         else if( mAlgCombo->currentText() == "EC" )
         {
             nAlg = JS_PKI_KEY_TYPE_ECC;
             int nGroupID = JS_PKI_getNidFromSN( mOptionCombo->currentText().toStdString().c_str() );
-            ret = JS_PKI_ECCGenKeyPair( nGroupID, &binPub, &binPub2, &binPri );
+            ret = JS_PKI_ECCGenKeyPair( nGroupID, &binPub, &binPri );
         }
 
-        ret = JS_PKI_makeCSR( nAlg, "SHA256", strSubjectDn.toStdString().c_str(), &binPri, NULL, &binCSR );
+        ret = JS_PKI_makeCSR( nAlg, "SHA256", strSubjectDn.toStdString().c_str(), NULL, &binPri, NULL, &binCSR );
 
         JS_BIN_reset( &binPub );
-        JS_BIN_reset( &binPub2 );
         JS_BIN_reset( &binPri );
     }
 
@@ -100,7 +98,7 @@ void IssueCertDlg::accept()
 
     JS_CC_setIssueCertReq( &sIssueCertReq,
                            nUserNum,
-                           nCertPolicyNum,
+                           nCertProfileNum,
                            strName.toStdString().c_str(),
                            strSSN.toStdString().c_str(),
                            strEmail.toStdString().c_str(),
@@ -172,23 +170,23 @@ void IssueCertDlg::initialize()
     connect( mRegUserCheck, SIGNAL(clicked()), this, SLOT(clickRegUser()));
     connect( mUseCSRCheck, SIGNAL(clicked()), this, SLOT(clickUseCSR()));
 
-    JCC_CertPolicyList *pCertPolicyList = NULL;
-    JCC_CertPolicyList *pCurList = NULL;
+    JCC_CertProfileList *pCertProfileList = NULL;
+    JCC_CertProfileList *pCurList = NULL;
 
-    manApplet->ccClient()->getCertPolicyList( &pCertPolicyList );
+    manApplet->ccClient()->getCertProfileList( &pCertProfileList );
 
-    pCurList = pCertPolicyList;
+    pCurList = pCertProfileList;
 
     while( pCurList )
     {
-        int nPolicyNum = pCurList->sCertPolicy.nNum;
-        QVariant data = nPolicyNum;
-        mCertPolicyCombo->addItem( pCurList->sCertPolicy.pName, data );
+        int nProfileNum = pCurList->sCertProfile.nNum;
+        QVariant data = nProfileNum;
+        mCertProfileCombo->addItem( pCurList->sCertProfile.pName, data );
 
         pCurList = pCurList->pNext;
     }
 
-    if( pCertPolicyList ) JS_DB_resetCertPolicyList( &pCertPolicyList );
+    if( pCertProfileList ) JS_DB_resetCertProfileList( &pCertProfileList );
 }
 
 void IssueCertDlg::setDefault()

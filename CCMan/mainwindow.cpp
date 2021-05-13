@@ -21,8 +21,8 @@
 
 #include "js_db.h"
 #include "js_db_data.h"
-#include "make_cert_policy_dlg.h"
-#include "make_crl_policy_dlg.h"
+#include "make_cert_profile_dlg.h"
+#include "make_crl_profile_dlg.h"
 #include "signer_dlg.h"
 #include "revoke_cert_dlg.h"
 #include "issue_cert_dlg.h"
@@ -108,11 +108,11 @@ void MainWindow::createActions()
     toolsMenu->addAction(regUserAct);
     toolsToolBar->addAction(regUserAct);
 
-    QAction *makeCertPolicyAct = toolsMenu->addAction(tr("&MakeCertPolicy"), this, &MainWindow::makeCertPolicy);
-    makeCertPolicyAct->setStatusTip(tr( "Make certificate policy"));
+    QAction *makeCertProfileAct = toolsMenu->addAction(tr("&MakeCertProfile"), this, &MainWindow::makeCertProfile);
+    makeCertProfileAct->setStatusTip(tr( "Make certificate profile"));
 
-    QAction *makeCRLPolicyAct = toolsMenu->addAction(tr("&MakeCRLPolicy"), this, &MainWindow::makeCRLPolicy);
-    makeCRLPolicyAct->setStatusTip(tr( "Make CRL Policy"));
+    QAction *makeCRLProfileAct = toolsMenu->addAction(tr("&MakeCRLProfile"), this, &MainWindow::makeCRLProfile);
+    makeCRLProfileAct->setStatusTip(tr( "Make CRL Profile"));
 
     QAction *regSignerAct = toolsMenu->addAction(tr("&RegSigner"), this, &MainWindow::regSigner);
     regSignerAct->setStatusTip(tr("Register Signer"));
@@ -151,15 +151,15 @@ void MainWindow::showRightMenu(QPoint point)
         menu.addAction( tr("DeleteUser"), this, &MainWindow::deleteUser );
         menu.addAction( tr("ModifyUser"), this, &MainWindow::modifyUser );
     }
-    else if( right_table_->type() == ITEM_TYPE_CERT_POLICY )
+    else if( right_table_->type() == ITEM_TYPE_CERT_PROFILE )
     {
-        menu.addAction( tr("ModifyCertPolicy"), this, &MainWindow::modifyCertPolicy );
-        menu.addAction( tr("DeleteCertPolicy"), this, &MainWindow::deleteCertPolicy );
+        menu.addAction( tr("ModifyCertProfile"), this, &MainWindow::modifyCertProfile );
+        menu.addAction( tr("DeleteCertProfile"), this, &MainWindow::deleteCertProfile );
     }
-    else if( rightType() == ITEM_TYPE_CRL_POLICY )
+    else if( rightType() == ITEM_TYPE_CRL_PROFILE )
     {
-        menu.addAction( tr("ModifyCRLPolicy"), this, &MainWindow::modifyCRLPolicy );
-        menu.addAction( tr("DeleteCRLPolicy"), this, &MainWindow::deleteCRLPolicy );
+        menu.addAction( tr("ModifyCRLProfile"), this, &MainWindow::modifyCRLProfile );
+        menu.addAction( tr("DeleteCRLProfile"), this, &MainWindow::deleteCRLProfile );
     }
     else if( rightType() == ITEM_TYPE_REG_SIGNER || rightType() == ITEM_TYPE_OCSP_SIGNER )
     {
@@ -218,10 +218,10 @@ void MainWindow::rightTableClick(QModelIndex index )
 
     if( nType == ITEM_TYPE_USER )
         showRightBottomUser( nSeq );
-    else if( nType == ITEM_TYPE_CERT_POLICY )
-        showRightBottomCertPolicy( nSeq );
-    else if( nType == ITEM_TYPE_CRL_POLICY )
-        showRightBottomCRLPolicy( nSeq );
+    else if( nType == ITEM_TYPE_CERT_PROFILE )
+        showRightBottomCertProfile( nSeq );
+    else if( nType == ITEM_TYPE_CRL_PROFILE )
+        showRightBottomCRLProfile( nSeq );
     else if( nType == ITEM_TYPE_REG_SIGNER || nType == ITEM_TYPE_OCSP_SIGNER )
         showRightBottomSigner( nSeq );
     else if( nType == ITEM_TYPE_CERT )
@@ -277,120 +277,120 @@ void MainWindow::showRightBottomUser( int nSeq )
     right_text_->setText( strMsg );
 }
 
-void MainWindow::showRightBottomCertPolicy( int nNum )
+void MainWindow::showRightBottomCertProfile( int nNum )
 {
     QString strMsg;
     QString strPart;
 
-    JCC_CertPolicy  sCertPolicy;
+    JCC_CertProfile  sCertProfile;
 
-    memset( &sCertPolicy, 0x00, sizeof(sCertPolicy));
-    manApplet->ccClient()->getCertPolicy( nNum, &sCertPolicy );
+    memset( &sCertProfile, 0x00, sizeof(sCertProfile));
+    manApplet->ccClient()->getCertProfile( nNum, &sCertProfile );
 
-    strMsg = "[ Certificate policy information ]\n";
+    strMsg = "[ Certificate profile information ]\n";
 
-    strPart = QString( "Num: %1\n").arg( sCertPolicy.nNum );
+    strPart = QString( "Num: %1\n").arg( sCertProfile.nNum );
     strMsg += strPart;
 
-    strPart = QString( "Name: %1\n").arg( sCertPolicy.pName);
+    strPart = QString( "Name: %1\n").arg( sCertProfile.pName);
     strMsg += strPart;
 
-    strPart = QString( "Version: %1\n").arg( sCertPolicy.nVersion );
+    strPart = QString( "Version: %1\n").arg( sCertProfile.nVersion );
     strMsg += strPart;
 
-    strPart = QString( "NotBefore: %1\n").arg( sCertPolicy.nNotBefore );
+    strPart = QString( "NotBefore: %1\n").arg( sCertProfile.nNotBefore );
     strMsg += strPart;
 
-    strPart = QString( "NotAfter: %1\n").arg( sCertPolicy.nNotAfter );
+    strPart = QString( "NotAfter: %1\n").arg( sCertProfile.nNotAfter );
     strMsg += strPart;
 
-    strPart = QString( "Hash: %1\n").arg( sCertPolicy.pHash );
+    strPart = QString( "Hash: %1\n").arg( sCertProfile.pHash );
     strMsg += strPart;
 
-    strPart = QString( "DNTemplate: %1\n").arg( sCertPolicy.pDNTemplate );
+    strPart = QString( "DNTemplate: %1\n").arg( sCertProfile.pDNTemplate );
     strMsg += strPart;
 
     strMsg += "========= Extensions information ==========\n";
 
 
-    JCC_PolicyExtList *pPolicyExtList = NULL;
-    JCC_PolicyExtList *pCurList = NULL;
+    JCC_ProfileExtList *pProfileExtList = NULL;
+    JCC_ProfileExtList *pCurList = NULL;
 
-    manApplet->ccClient()->getCertPolicyExtList( nNum, &pPolicyExtList );
+    manApplet->ccClient()->getCertProfileExtList( nNum, &pProfileExtList );
 
-    pCurList = pPolicyExtList;
+    pCurList = pProfileExtList;
 
     while( pCurList )
     {
         strPart = QString( "%1 || %2 || %3 || %4\n")
-                .arg(pCurList->sPolicyExt.nSeq)
-                .arg(pCurList->sPolicyExt.bCritical)
-                .arg(pCurList->sPolicyExt.pSN)
-                .arg(pCurList->sPolicyExt.pValue);
+                .arg(pCurList->sProfileExt.nSeq)
+                .arg(pCurList->sProfileExt.bCritical)
+                .arg(pCurList->sProfileExt.pSN)
+                .arg(pCurList->sProfileExt.pValue);
 
         strMsg += strPart;
         pCurList = pCurList->pNext;
     }
 
     right_text_->setText( strMsg );
-    JS_DB_resetCertPolicy( &sCertPolicy );
-    if( pPolicyExtList ) JS_DB_resetPolicyExtList( &pPolicyExtList );
+    JS_DB_resetCertProfile( &sCertProfile );
+    if( pProfileExtList ) JS_DB_resetProfileExtList( &pProfileExtList );
 }
 
-void MainWindow::showRightBottomCRLPolicy( int nNum )
+void MainWindow::showRightBottomCRLProfile( int nNum )
 {
     QString strMsg;
     QString strPart;
 
-    JCC_CRLPolicy   sCRLPolicy;
+    JCC_CRLProfile   sCRLProfile;
 
-    memset( &sCRLPolicy, 0x00, sizeof(sCRLPolicy));
-    manApplet->ccClient()->getCRLPolicy( nNum, &sCRLPolicy );
+    memset( &sCRLProfile, 0x00, sizeof(sCRLProfile));
+    manApplet->ccClient()->getCRLProfile( nNum, &sCRLProfile );
 
     strMsg = "[ CRL information ]\n";
 
-    strPart = QString( "Num: %1\n").arg(sCRLPolicy.nNum);
+    strPart = QString( "Num: %1\n").arg(sCRLProfile.nNum);
     strMsg += strPart;
 
-    strPart = QString( "Name: %1\n").arg(sCRLPolicy.pName);
+    strPart = QString( "Name: %1\n").arg(sCRLProfile.pName);
     strMsg += strPart;
 
-    strPart = QString( "Version: %1\n").arg(sCRLPolicy.nVersion);
+    strPart = QString( "Version: %1\n").arg(sCRLProfile.nVersion);
     strMsg += strPart;
 
-    strPart = QString( "LastUpdate : %1\n").arg(sCRLPolicy.nLastUpdate);
+    strPart = QString( "LastUpdate : %1\n").arg(sCRLProfile.nLastUpdate);
     strMsg += strPart;
 
-    strPart = QString("NextUpdate: %1\n").arg(sCRLPolicy.nNextUpdate);
+    strPart = QString("NextUpdate: %1\n").arg(sCRLProfile.nNextUpdate);
     strMsg += strPart;
 
-    strPart = QString("Hash: %1\n").arg(sCRLPolicy.pHash);
+    strPart = QString("Hash: %1\n").arg(sCRLProfile.pHash);
     strMsg += strPart;
 
     strMsg += "========= Extensions information ==========\n";
 
-    JCC_PolicyExtList *pPolicyExtList = NULL;
-    JCC_PolicyExtList *pCurList = NULL;
+    JCC_ProfileExtList *pProfileExtList = NULL;
+    JCC_ProfileExtList *pCurList = NULL;
 
-    manApplet->ccClient()->getCRLPolicyExtList( nNum, &pPolicyExtList );
+    manApplet->ccClient()->getCRLProfileExtList( nNum, &pProfileExtList );
 
-    pCurList = pPolicyExtList;
+    pCurList = pProfileExtList;
 
     while( pCurList )
     {
         strPart = QString( "%1 || %2 || %3 || %4\n")
-                .arg(pCurList->sPolicyExt.nSeq)
-                .arg(pCurList->sPolicyExt.bCritical)
-                .arg(pCurList->sPolicyExt.pSN)
-                .arg(pCurList->sPolicyExt.pValue);
+                .arg(pCurList->sProfileExt.nSeq)
+                .arg(pCurList->sProfileExt.bCritical)
+                .arg(pCurList->sProfileExt.pSN)
+                .arg(pCurList->sProfileExt.pValue);
 
         strMsg += strPart;
         pCurList = pCurList->pNext;
     }
 
     right_text_->setText( strMsg );
-    JS_DB_resetCRLPolicy( &sCRLPolicy );
-    if( pPolicyExtList ) JS_DB_resetPolicyExtList( &pPolicyExtList );
+    JS_DB_resetCRLProfile( &sCRLProfile );
+    if( pProfileExtList ) JS_DB_resetProfileExtList( &pProfileExtList );
 }
 
 void MainWindow::showRightBottomSigner(int nNum)
@@ -608,15 +608,15 @@ void MainWindow::createTreeMenu()
     pUserItem->setType( ITEM_TYPE_USER );
     pTopItem->appendRow( pUserItem );
 
-    ManTreeItem *pCertPolicyItem = new ManTreeItem( QString("CertPolicy"));
-    pCertPolicyItem->setIcon( QIcon(":/images/policy.png"));
-    pCertPolicyItem->setType( ITEM_TYPE_CERT_POLICY );
-    pTopItem->appendRow( pCertPolicyItem );
+    ManTreeItem *pCertProfileItem = new ManTreeItem( QString("CertProfile"));
+    pCertProfileItem->setIcon( QIcon(":/images/policy.png"));
+    pCertProfileItem->setType( ITEM_TYPE_CERT_PROFILE );
+    pTopItem->appendRow( pCertProfileItem );
 
-    ManTreeItem *pCRLPolicyItem = new ManTreeItem( QString("CRLPolicy"));
-    pCRLPolicyItem->setIcon( QIcon(":/images/policy.png"));
-    pCRLPolicyItem->setType( ITEM_TYPE_CRL_POLICY );
-    pTopItem->appendRow( pCRLPolicyItem );
+    ManTreeItem *pCRLProfileItem = new ManTreeItem( QString("CRLProfile"));
+    pCRLProfileItem->setIcon( QIcon(":/images/policy.png"));
+    pCRLProfileItem->setType( ITEM_TYPE_CRL_PROFILE );
+    pTopItem->appendRow( pCRLProfileItem );
 
     ManTreeItem *pRegSignerItem = new ManTreeItem( QString("RegSigner"));
     pRegSignerItem->setIcon( QIcon(":/images/reg_signer.png"));
@@ -654,8 +654,8 @@ void MainWindow::createTreeMenu()
 
 void MainWindow::createRightList(int nItemType)
 {
-    if( nItemType == ITEM_TYPE_CERT_POLICY ||
-            nItemType == ITEM_TYPE_CRL_POLICY ||
+    if( nItemType == ITEM_TYPE_CERT_PROFILE ||
+            nItemType == ITEM_TYPE_CRL_PROFILE ||
             nItemType == ITEM_TYPE_REG_SIGNER ||
             nItemType == ITEM_TYPE_OCSP_SIGNER )
     {
@@ -668,10 +668,10 @@ void MainWindow::createRightList(int nItemType)
 
     if( nItemType == ITEM_TYPE_USER )
         createRightUserList();
-    else if( nItemType == ITEM_TYPE_CERT_POLICY )
-        createRightCertPolicyList();
-    else if( nItemType == ITEM_TYPE_CRL_POLICY )
-        createRightCRLPolicyList();
+    else if( nItemType == ITEM_TYPE_CERT_PROFILE )
+        createRightCertProfileList();
+    else if( nItemType == ITEM_TYPE_CRL_PROFILE )
+        createRightCRLProfileList();
     else if( nItemType == ITEM_TYPE_REG_SIGNER || nItemType == ITEM_TYPE_OCSP_SIGNER )
         createRightSignerList( nItemType );
     else if( nItemType == ITEM_TYPE_CERT )
@@ -739,81 +739,81 @@ void MainWindow::createRightUserList()
     if( pDBUserList ) JS_DB_resetUserList( &pDBUserList );
 }
 
-void MainWindow::createRightCertPolicyList()
+void MainWindow::createRightCertProfileList()
 {
     int i = 0;
     removeAllRight();
-    JDB_CertPolicyList  *pCertPolicyList = NULL;
-    JDB_CertPolicyList  *pCurList = NULL;
+    JDB_CertProfileList  *pCertProfileList = NULL;
+    JDB_CertProfileList  *pCurList = NULL;
 
     QStringList titleList = { "Num", "Name", "Version", "NotBefore", "NotAfter", "Hash", "DNTemplate" };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
-    right_table_->setType( ITEM_TYPE_CERT_POLICY );
+    right_table_->setType( ITEM_TYPE_CERT_PROFILE );
 
     right_table_->setColumnCount(titleList.size());
     right_table_->setHorizontalHeaderLabels( titleList );
     right_table_->verticalHeader()->setVisible(false);
 
-    manApplet->ccClient()->getCertPolicyList( &pCertPolicyList );
-    pCurList = pCertPolicyList;
+    manApplet->ccClient()->getCertProfileList( &pCertProfileList );
+    pCurList = pCertProfileList;
 
     while( pCurList )
     {
         right_table_->insertRow(i);
 
-        right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCertPolicy.nNum ) ));
-        right_table_->setItem( i, 1, new QTableWidgetItem( pCurList->sCertPolicy.pName ));
-        right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( pCurList->sCertPolicy.nVersion )));
-        right_table_->setItem( i, 3, new QTableWidgetItem( QString("%1").arg( pCurList->sCertPolicy.nNotBefore )));
-        right_table_->setItem( i, 4, new QTableWidgetItem( QString("%1").arg( pCurList->sCertPolicy.nNotAfter )));
-        right_table_->setItem( i, 5, new QTableWidgetItem( pCurList->sCertPolicy.pHash ));
-        right_table_->setItem( i, 6, new QTableWidgetItem( pCurList->sCertPolicy.pDNTemplate ));
+        right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCertProfile.nNum ) ));
+        right_table_->setItem( i, 1, new QTableWidgetItem( pCurList->sCertProfile.pName ));
+        right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( pCurList->sCertProfile.nVersion )));
+        right_table_->setItem( i, 3, new QTableWidgetItem( QString("%1").arg( pCurList->sCertProfile.nNotBefore )));
+        right_table_->setItem( i, 4, new QTableWidgetItem( QString("%1").arg( pCurList->sCertProfile.nNotAfter )));
+        right_table_->setItem( i, 5, new QTableWidgetItem( pCurList->sCertProfile.pHash ));
+        right_table_->setItem( i, 6, new QTableWidgetItem( pCurList->sCertProfile.pDNTemplate ));
 
         pCurList = pCurList->pNext;
         i++;
     }
 
-    if( pCertPolicyList ) JS_DB_resetCertPolicyList( &pCertPolicyList );
+    if( pCertProfileList ) JS_DB_resetCertProfileList( &pCertProfileList );
 }
 
-void MainWindow::createRightCRLPolicyList()
+void MainWindow::createRightCRLProfileList()
 {
     int i = 0;
     removeAllRight();
 
-    JDB_CRLPolicyList   *pCRLPolicyList = NULL;
-    JDB_CRLPolicyList   *pCurList = NULL;
+    JDB_CRLProfileList   *pCRLProfileList = NULL;
+    JDB_CRLProfileList   *pCurList = NULL;
 
     QStringList titleList = { "Num", "Name", "Version", "LastUpdate", "NextUpdate", "Hash" };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
-    right_table_->setType(ITEM_TYPE_CRL_POLICY);
+    right_table_->setType(ITEM_TYPE_CRL_PROFILE);
 
     right_table_->setColumnCount( titleList.size() );
     right_table_->setHorizontalHeaderLabels( titleList );
     right_table_->verticalHeader()->setVisible(false);
 
-    manApplet->ccClient()->getCRLPolicyList( &pCRLPolicyList );
-    pCurList = pCRLPolicyList;
+    manApplet->ccClient()->getCRLProfileList( &pCRLProfileList );
+    pCurList = pCRLProfileList;
 
     while( pCurList )
     {
         right_table_->insertRow(i);
-        right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCRLPolicy.nNum )) );
-        right_table_->setItem( i, 1, new QTableWidgetItem( pCurList->sCRLPolicy.pName) );
-        right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( pCurList->sCRLPolicy.nVersion )) );
-        right_table_->setItem( i, 3, new QTableWidgetItem( QString("%1").arg( pCurList->sCRLPolicy.nLastUpdate )) );
-        right_table_->setItem( i, 4, new QTableWidgetItem( QString("%1").arg( pCurList->sCRLPolicy.nNextUpdate )) );
-        right_table_->setItem( i, 5, new QTableWidgetItem( pCurList->sCRLPolicy.pHash) );
+        right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCRLProfile.nNum )) );
+        right_table_->setItem( i, 1, new QTableWidgetItem( pCurList->sCRLProfile.pName) );
+        right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( pCurList->sCRLProfile.nVersion )) );
+        right_table_->setItem( i, 3, new QTableWidgetItem( QString("%1").arg( pCurList->sCRLProfile.nLastUpdate )) );
+        right_table_->setItem( i, 4, new QTableWidgetItem( QString("%1").arg( pCurList->sCRLProfile.nNextUpdate )) );
+        right_table_->setItem( i, 5, new QTableWidgetItem( pCurList->sCRLProfile.pHash) );
 
         pCurList = pCurList->pNext;
         i++;
     }
 
-    if( pCRLPolicyList ) JS_DB_resetCRLPolicyList( &pCRLPolicyList );
+    if( pCRLProfileList ) JS_DB_resetCRLProfileList( &pCRLProfileList );
 }
 
 void MainWindow::createRightSignerList( int nItemType )
@@ -1103,7 +1103,7 @@ void MainWindow::createRightCA()
 
     while( pCurList )
     {
-        JDB_PolicyExt   sDBExt;
+        JDB_ProfileExt   sDBExt;
 
         memset( &sDBExt, 0x00, sizeof(sDBExt));
 
@@ -1114,7 +1114,7 @@ void MainWindow::createRightCA()
         right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( sDBExt.pValue )));
 
         pCurList = pCurList->pNext;
-        JS_DB_resetPolicyExt( &sDBExt );
+        JS_DB_resetProfileExt( &sDBExt );
     }
 
     JS_CC_resetNameVal( &sNameVal );
@@ -1160,16 +1160,16 @@ void MainWindow::modifyUser()
     int nSeq = item->text().toInt();
 }
 
-void MainWindow::makeCertPolicy()
+void MainWindow::makeCertProfile()
 {
-    MakeCertPolicyDlg makeCertPolicyDlg;
-    makeCertPolicyDlg.exec();
+    MakeCertProfileDlg makeCertProfileDlg;
+    makeCertProfileDlg.exec();
 }
 
-void MainWindow::makeCRLPolicy()
+void MainWindow::makeCRLProfile()
 {
-    MakeCRLPolicyDlg makeCRLPolicyDlg;
-    makeCRLPolicyDlg.exec();
+    MakeCRLProfileDlg makeCRLProfileDlg;
+    makeCRLProfileDlg.exec();
 }
 
 void MainWindow::regSigner()
@@ -1184,53 +1184,53 @@ void MainWindow::regSigner()
     signerDlg.exec();
 }
 
-void MainWindow::modifyCertPolicy()
+void MainWindow::modifyCertProfile()
 {
     int row = right_table_->currentRow();
     QTableWidgetItem* item = right_table_->item( row, 0 );
 
     int num = item->text().toInt();
 
-    MakeCertPolicyDlg makeCertPolicyDlg;
-    makeCertPolicyDlg.setEdit(true);
-    makeCertPolicyDlg.setPolicyNum(num);
+    MakeCertProfileDlg makeCertProfileDlg;
+    makeCertProfileDlg.setEdit(true);
+    makeCertProfileDlg.setProfileNum(num);
 
-    makeCertPolicyDlg.exec();
+    makeCertProfileDlg.exec();
 }
 
-void MainWindow::modifyCRLPolicy()
+void MainWindow::modifyCRLProfile()
 {
     int row = right_table_->currentRow();
     QTableWidgetItem* item = right_table_->item( row, 0 );
 
     int num = item->text().toInt();
 
-    MakeCRLPolicyDlg makeCRLPolicyDlg;
-    makeCRLPolicyDlg.setEdit(true);
-    makeCRLPolicyDlg.setPolicyNum(num);
-    makeCRLPolicyDlg.exec();
+    MakeCRLProfileDlg makeCRLProfileDlg;
+    makeCRLProfileDlg.setEdit(true);
+    makeCRLProfileDlg.setProfileNum(num);
+    makeCRLProfileDlg.exec();
 }
 
-void MainWindow::deleteCertPolicy()
+void MainWindow::deleteCertProfile()
 {
     int row = right_table_->currentRow();
     QTableWidgetItem* item = right_table_->item( row, 0 );
 
     int num = item->text().toInt();
 
-    manApplet->ccClient()->delCertPolicy( num );
-    createRightCertPolicyList();
+    manApplet->ccClient()->delCertProfile( num );
+    createRightCertProfileList();
 }
 
-void MainWindow::deleteCRLPolicy()
+void MainWindow::deleteCRLProfile()
 {
     int row = right_table_->currentRow();
     QTableWidgetItem* item = right_table_->item( row, 0 );
 
     int num = item->text().toInt();
 
-    manApplet->ccClient()->delCRLPolicy( num );
-    createRightCRLPolicyList();
+    manApplet->ccClient()->delCRLProfile( num );
+    createRightCRLProfileList();
 }
 
 void MainWindow::deleteSigner()

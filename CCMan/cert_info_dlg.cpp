@@ -142,20 +142,20 @@ void CertInfoDlg::initialize()
 
         while( pCurList )
         {
-            JDB_PolicyExt sPolicyRec;
-            memset( &sPolicyRec, 0x00, sizeof(sPolicyRec));
-            JS_PKI_transExtensionToDBRec( &pCurList->sExtensionInfo, &sPolicyRec );
+            JDB_ProfileExt sProfileRec;
+            memset( &sProfileRec, 0x00, sizeof(sProfileRec));
+            JS_PKI_transExtensionToDBRec( &pCurList->sExtensionInfo, &sProfileRec );
 
             mFieldTable->insertRow(i);
-            mFieldTable->setItem(i,0, new QTableWidgetItem(QString("%1").arg( sPolicyRec.pSN )));
+            mFieldTable->setItem(i,0, new QTableWidgetItem(QString("%1").arg( sProfileRec.pSN )));
             mFieldTable->setItem(i,1, new QTableWidgetItem(QString("[%1]%2")
-                                                               .arg( sPolicyRec.bCritical )
-                                                               .arg( sPolicyRec.pValue )));
+                                                               .arg( sProfileRec.bCritical )
+                                                               .arg( sProfileRec.pValue )));
 
 
             pCurList = pCurList->pNext;
 
-            JS_DB_resetPolicyExt( &sPolicyRec );
+            JS_DB_resetProfileExt( &sProfileRec );
             i++;
         }
     }

@@ -21,12 +21,12 @@ public:
     int getUserList( int nOffset, int nLimit, JCC_UserList **ppUserList );
     int getUser( int nNum, JCC_User *pUser );
     int delUser( int nNum );
-    int getCertPolicyList( JCC_CertPolicyList **ppCertPolicyList );
-    int getCertPolicy( int nNum, JCC_CertPolicy *pCertPolicy );
-    int getCertPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicyExtList );
-    int getCRLPolicyList( JCC_CRLPolicyList **ppCRLPolicyList );
-    int getCRLPolicy( int nNum, JCC_CRLPolicy *pCRLPolicy );
-    int getCRLPolicyExtList( int nPolicyNum, JCC_PolicyExtList **ppPolicyExtList );
+    int getCertProfileList( JCC_CertProfileList **ppCertProfileList );
+    int getCertProfile( int nNum, JCC_CertProfile *pCertProfile );
+    int getCertProfileExtList( int nProfileNum, JCC_ProfileExtList **ppProfileExtList );
+    int getCRLProfileList( JCC_CRLProfileList **ppCRLProfileList );
+    int getCRLProfile( int nNum, JCC_CRLProfile *pCRLProfile );
+    int getCRLProfileExtList( int nProfileNum, JCC_ProfileExtList **ppProfileExtList );
     int getSigner( int nNum, JCC_Signer *pSigner );
     int getSignerList( int nType, JCC_SignerList **ppSignerList );
     int getCert( int nNum, JCC_Cert *pCert );
@@ -36,17 +36,17 @@ public:
     int getRevoked( int nSeq, JCC_Revoked *pRevoked );
     int getRevokedList( int nOffset, int nLimit, JCC_RevokedList **ppRevokedList );
 
-    int addCRLPolicy( JCC_CRLPolicy *pCRLPolicy );
-    int modCRLPolicy( int nNum, JCC_CRLPolicy *pCRLPolicy );
-    int delCRLPolicyExts( int nPolicyNum );
-    int delCRLPolicy( int nNum );
-    int addCRLPolicyExt( int nPolicyNum, JCC_PolicyExt *pPolicyExt );
+    int addCRLProfile( JCC_CRLProfile *pCRLProfile );
+    int modCRLProfile( int nNum, JCC_CRLProfile *pCRLProfile );
+    int delCRLProfileExts( int nProfileNum );
+    int delCRLProfile( int nNum );
+    int addCRLProfileExt( int nProfileNum, JCC_ProfileExt *pProfileExt );
 
-    int addCertPolicy( JCC_CertPolicy *pCertPolicy );
-    int modCertPolicy( int nNum, JCC_CertPolicy *pCertPolicy );
-    int delCertPolicyExts( int nPolicyNum );
-    int delCertPolicy( int nNum );
-    int addCertPolicyExt( int nPolicyNum, JCC_PolicyExt *pPolicyExt );
+    int addCertProfile( JCC_CertProfile *pCertProfile );
+    int modCertProfile( int nNum, JCC_CertProfile *pCertProfile );
+    int delCertProfileExts( int nProfileNum );
+    int delCertProfile( int nNum );
+    int addCertProfileExt( int nProfileNum, JCC_ProfileExt *pProfileExt );
 
     int addSigner( JCC_Signer *pSigner );
     int delSigner( int nNum );
