@@ -50,9 +50,9 @@ void RegUserDlg::accept()
 
     ret = JS_HTTP_requestTokenPost(
                 strURL.toStdString().c_str(),
-                pReq,
                 pContentType,
                 strToken.toStdString().c_str(),
+                pReq,
                 &nStatusCode,
                 &pRsp );
 
