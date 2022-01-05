@@ -30,6 +30,7 @@
 #include "js_pki.h"
 #include "js_pki_x509.h"
 #include "js_pki_ext.h"
+#include "common.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -65,19 +66,25 @@ void MainWindow::initialize()
     left_tree_ = new ManTreeView(this);
     left_model_ = new ManTreeModel(this);
     right_menu_ = new SearchMenu;
-    right_text_ = new QTextEdit;
-//    right_table_ = new QTableWidget;
+    log_text_ = new QTextEdit;
+
     right_table_ = new ManRightWidget;
 
     right_menu_->setMaximumHeight(20);
     left_tree_->setModel(left_model_);
+
+    log_text_->setFont( QFont("굴림체") );
+    log_text_->setReadOnly(true);
+
+    right_table_->setSelectionBehavior(QAbstractItemView::SelectRows);
+    right_table_->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     hsplitter_->addWidget(left_tree_);
     hsplitter_->addWidget(vsplitter_);
 
     vsplitter_->addWidget(right_table_);
     vsplitter_->addWidget(right_menu_);
-    vsplitter_->addWidget(right_text_);
+    vsplitter_->addWidget(log_text_);
 
     QList<int> vsizes;
     vsizes << 1200 << 10 << 500;
@@ -95,6 +102,20 @@ void MainWindow::initialize()
 
     right_table_->setContextMenuPolicy(Qt::CustomContextMenu);
     connect( right_table_, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showRightMenu(QPoint)));
+}
+
+void MainWindow::log( const QString strLog, QColor cr )
+{
+    QTextCursor cursor = log_text_->textCursor();
+
+    QTextCharFormat format;
+    format.setForeground( cr );
+    cursor.mergeCharFormat(format);
+
+    cursor.insertText( strLog );
+
+    log_text_->setTextCursor( cursor );
+    log_text_->repaint();
 }
 
 void MainWindow::createActions()
@@ -215,27 +236,55 @@ void MainWindow::rightTableClick(QModelIndex index )
     int nSeq = item->text().toInt();
     int nType = right_table_->type();
 
-    right_text_->setText( strVal );
+    log_text_->setText( strVal );
 
-    if( nType == ITEM_TYPE_USER )
-        showRightBottomUser( nSeq );
+    if( nType == ITEM_TYPE_ADMIN )
+        logAdmin( nSeq );
+    else if( nType == ITEM_TYPE_USER )
+        logUser( nSeq );
     else if( nType == ITEM_TYPE_CERT_PROFILE )
-        showRightBottomCertProfile( nSeq );
+        logCertProfile( nSeq );
     else if( nType == ITEM_TYPE_CRL_PROFILE )
-        showRightBottomCRLProfile( nSeq );
+        logCRLProfile( nSeq );
     else if( nType == ITEM_TYPE_REG_SIGNER || nType == ITEM_TYPE_OCSP_SIGNER )
-        showRightBottomSigner( nSeq );
+        logSigner( nSeq );
     else if( nType == ITEM_TYPE_CERT )
-        showRightBottomCert( nSeq );
+        logCert( nSeq );
     else if( nType == ITEM_TYPE_CRL )
-        showRightBottomCRL( nSeq );
+        logCRL( nSeq );
     else if( nType == ITEM_TYPE_REVOKE )
-        showRightBottomRevoked( nSeq );
+        logRevoked( nSeq );
     else if( nType == ITEM_TYPE_CA )
-        showRightBottomCA( row );
+        logCA( row );
 }
 
-void MainWindow::showRightBottomUser( int nSeq )
+void MainWindow::logAdmin( int nSeq )
+{
+    QString strMsg;
+    QString strPart;
+
+    JCC_Admin sAdmin;
+    memset( &sAdmin, 0x00, sizeof(sAdmin));
+
+    manApplet->ccClient()->getAdmin( nSeq, &sAdmin );
+
+    logClear();
+
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( "== Admin Information\n" );
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( QString("Seq          : %1\n").arg(sAdmin.nSeq));
+    manApplet->log( QString("Status       : %1\n").arg(sAdmin.nStatus));
+    manApplet->log( QString("Type         : %1\n").arg(sAdmin.nType));
+    manApplet->log( QString("Name         : %1\n").arg(sAdmin.pName));
+    manApplet->log( QString("Password     : %1\n").arg(sAdmin.pPassword));
+    manApplet->log( QString("Email        : %1\n").arg(sAdmin.pEmail));
+
+    logCursorTop();
+    JS_DB_resetAdmin( &sAdmin );
+}
+
+void MainWindow::logUser( int nSeq )
 {
     QString strMsg;
     QString strPart;
@@ -247,6 +296,23 @@ void MainWindow::showRightBottomUser( int nSeq )
 
     manApplet->ccClient()->getUser( nSeq, &sUser );
 
+    logClear();
+
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( "== User Information\n" );
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( QString("Num           : %1\n").arg(sUser.nNum));
+    manApplet->log( QString("RegTime       : %1\n").arg(getDateTime(sUser.nRegTime)));
+    manApplet->log( QString("Name          : %1\n").arg(sUser.pName));
+    manApplet->log( QString("SSN           : %1\n").arg(sUser.pSSN));
+    manApplet->log( QString("Email         : %1\n").arg(sUser.pEmail));
+    manApplet->log( QString("Status        : %1\n").arg(sUser.nStatus));
+    manApplet->log( QString("RefNum        : %1\n").arg(sUser.pRefNum));
+    manApplet->log( QString("AuthCode      : %1\n").arg(sUser.pAuthCode));
+
+    logCursorTop();
+    JS_DB_resetUser( &sUser );
+/*
     strMsg = "[ User information ]\n";
 
     strPart = QString( "Num: %1\n").arg( sUser.nNum);
@@ -275,126 +341,101 @@ void MainWindow::showRightBottomUser( int nSeq )
     strMsg += strPart;
 
     JS_DB_resetUser( &sUser );
-    right_text_->setText( strMsg );
+    log_text_->setText( strMsg );
+    */
 }
 
-void MainWindow::showRightBottomCertProfile( int nNum )
+void MainWindow::logCertProfile( int nNum )
 {
     QString strMsg;
     QString strPart;
 
     JCC_CertProfile  sCertProfile;
+    JCC_ProfileExtList  *pProfileExtList = NULL;
+    JCC_ProfileExtList *pCurList = NULL;
 
     memset( &sCertProfile, 0x00, sizeof(sCertProfile));
     manApplet->ccClient()->getCertProfile( nNum, &sCertProfile );
 
-    strMsg = "[ Certificate profile information ]\n";
 
-    strPart = QString( "Num: %1\n").arg( sCertProfile.nNum );
-    strMsg += strPart;
-
-    strPart = QString( "Name: %1\n").arg( sCertProfile.pName);
-    strMsg += strPart;
-
-    strPart = QString( "Version: %1\n").arg( sCertProfile.nVersion );
-    strMsg += strPart;
-
-    strPart = QString( "NotBefore: %1\n").arg( sCertProfile.nNotBefore );
-    strMsg += strPart;
-
-    strPart = QString( "NotAfter: %1\n").arg( sCertProfile.nNotAfter );
-    strMsg += strPart;
-
-    strPart = QString( "Hash: %1\n").arg( sCertProfile.pHash );
-    strMsg += strPart;
-
-    strPart = QString( "DNTemplate: %1\n").arg( sCertProfile.pDNTemplate );
-    strMsg += strPart;
-
-    strMsg += "========= Extensions information ==========\n";
-
-
-    JCC_ProfileExtList *pProfileExtList = NULL;
-    JCC_ProfileExtList *pCurList = NULL;
+    logClear();
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( "== Certificate Profile Information\n" );
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( QString("Num         : %1\n").arg(sCertProfile.nNum));
+    manApplet->log( QString("Name        : %1\n").arg(sCertProfile.pName));
+    manApplet->log( QString("Version     : %1\n").arg(sCertProfile.nVersion));
+    manApplet->log( QString("NotBefore   : %1\n").arg(sCertProfile.nNotBefore));
+    manApplet->log( QString("NotAfter    : %1\n").arg(sCertProfile.nNotAfter));
+    manApplet->log( QString("Hash        : %1\n").arg(sCertProfile.pHash));
+    manApplet->log( QString("DNTemplate  : %1\n").arg(sCertProfile.pDNTemplate));
+    manApplet->log( "======================= Extension Information ==========================\n" );
 
     manApplet->ccClient()->getCertProfileExtList( nNum, &pProfileExtList );
-
     pCurList = pProfileExtList;
 
     while( pCurList )
     {
-        strPart = QString( "%1 || %2 || %3 || %4\n")
+        manApplet->log( QString( "%1 || %2 || %3 || %4\n")
                 .arg(pCurList->sProfileExt.nSeq)
-                .arg(pCurList->sProfileExt.bCritical)
+                .arg(pCurList->sProfileExt.bCritical )
                 .arg(pCurList->sProfileExt.pSN)
-                .arg(pCurList->sProfileExt.pValue);
+                .arg(pCurList->sProfileExt.pValue) );
 
-        strMsg += strPart;
         pCurList = pCurList->pNext;
     }
 
-    right_text_->setText( strMsg );
+
+    logCursorTop();
     JS_DB_resetCertProfile( &sCertProfile );
     if( pProfileExtList ) JS_DB_resetProfileExtList( &pProfileExtList );
 }
 
-void MainWindow::showRightBottomCRLProfile( int nNum )
+void MainWindow::logCRLProfile( int nNum )
 {
     QString strMsg;
     QString strPart;
 
     JCC_CRLProfile   sCRLProfile;
+    JCC_ProfileExtList  *pProfileExtList = NULL;
+    JCC_ProfileExtList  *pCurList = NULL;
 
     memset( &sCRLProfile, 0x00, sizeof(sCRLProfile));
     manApplet->ccClient()->getCRLProfile( nNum, &sCRLProfile );
 
-    strMsg = "[ CRL information ]\n";
-
-    strPart = QString( "Num: %1\n").arg(sCRLProfile.nNum);
-    strMsg += strPart;
-
-    strPart = QString( "Name: %1\n").arg(sCRLProfile.pName);
-    strMsg += strPart;
-
-    strPart = QString( "Version: %1\n").arg(sCRLProfile.nVersion);
-    strMsg += strPart;
-
-    strPart = QString( "LastUpdate : %1\n").arg(sCRLProfile.nLastUpdate);
-    strMsg += strPart;
-
-    strPart = QString("NextUpdate: %1\n").arg(sCRLProfile.nNextUpdate);
-    strMsg += strPart;
-
-    strPart = QString("Hash: %1\n").arg(sCRLProfile.pHash);
-    strMsg += strPart;
-
-    strMsg += "========= Extensions information ==========\n";
-
-    JCC_ProfileExtList *pProfileExtList = NULL;
-    JCC_ProfileExtList *pCurList = NULL;
+    logClear();
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( "== CRL Profile Information\n" );
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( QString("Num          : %1\n").arg(sCRLProfile.nNum));
+    manApplet->log( QString("Name         : %1\n").arg(sCRLProfile.pName));
+    manApplet->log( QString("Version      : %1\n").arg(sCRLProfile.nVersion));
+    manApplet->log( QString("LastUpdate   : %1\n").arg(sCRLProfile.nLastUpdate));
+    manApplet->log( QString("NextUpdate   : %1\n").arg(sCRLProfile.nNextUpdate));
+    manApplet->log( QString("Hash         : %1\n").arg(sCRLProfile.pHash));
+    manApplet->log( "======================= Extension Information ==========================\n" );
 
     manApplet->ccClient()->getCRLProfileExtList( nNum, &pProfileExtList );
-
     pCurList = pProfileExtList;
 
     while( pCurList )
     {
-        strPart = QString( "%1 || %2 || %3 || %4\n")
+        manApplet->log( QString( "%1 || %2 || %3 || %4\n")
                 .arg(pCurList->sProfileExt.nSeq)
-                .arg(pCurList->sProfileExt.bCritical)
+                .arg(pCurList->sProfileExt.bCritical )
                 .arg(pCurList->sProfileExt.pSN)
-                .arg(pCurList->sProfileExt.pValue);
+                .arg(pCurList->sProfileExt.pValue) );
 
-        strMsg += strPart;
         pCurList = pCurList->pNext;
     }
 
-    right_text_->setText( strMsg );
+    logCursorTop();
+
     JS_DB_resetCRLProfile( &sCRLProfile );
     if( pProfileExtList ) JS_DB_resetProfileExtList( &pProfileExtList );
 }
 
-void MainWindow::showRightBottomSigner(int nNum)
+void MainWindow::logSigner(int nNum)
 {
     QString strMsg;
     QString strPart;
@@ -406,39 +447,24 @@ void MainWindow::showRightBottomSigner(int nNum)
 
     manApplet->ccClient()->getSigner( nNum, &sSigner );
 
-    strMsg = "[ Signer information ]\n";
+    manApplet->mainWindow()->logClear();
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( "== Signer Information\n" );
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( QString("Num          : %1\n").arg( sSigner.nNum));
+    manApplet->log( QString("RegTime      : %1\n").arg(getDateTime(sSigner.nRegTime)));
+    manApplet->log( QString("Type         : %1\n").arg( sSigner.nType ));
+    manApplet->log( QString("DN           : %1\n").arg( sSigner.pDN));
+    manApplet->log( QString("DNHash       : %1\n").arg( sSigner.pDNHash));
+    manApplet->log( QString("Cert         : %1\n").arg( sSigner.pCert ));
+    manApplet->log( QString("Status       : %1\n").arg( sSigner.nStatus));
+    manApplet->log( QString("Desc         : %1\n").arg( sSigner.pDesc ));
 
-    strPart = QString( "Num: %1\n").arg( sSigner.nNum);
-    strMsg += strPart;
-
-    JS_UTIL_getDateTime( sSigner.nRegTime, sRegTime );
-    strPart = QString( "RegTime: %1\n").arg( sRegTime );
-    strMsg += strPart;
-
-    strPart = QString( "Type: %1\n").arg( sSigner.nType );
-    strMsg += strPart;
-
-    strPart = QString( "DN: %1\n").arg( sSigner.pDN );
-    strMsg += strPart;
-
-    strPart = QString( "DNHash: %1\n").arg( sSigner.pDNHash );
-    strMsg += strPart;
-
-    strPart = QString( "Cert: %1\n").arg( sSigner.pCert );
-    strMsg += strPart;
-
-    strPart = QString( "Status: %1\n").arg( sSigner.nStatus );
-    strMsg += strPart;
-
-    strPart = QString( "Desc: %1\n").arg( sSigner.pDesc );
-    strMsg += strPart;
-
-    right_text_->setText( strMsg );
-
+    logCursorTop();
     JS_DB_resetSigner( &sSigner );
 }
 
-void MainWindow::showRightBottomCert( int nNum )
+void MainWindow::logCert( int nNum )
 {
     QString strMsg;
     QString strPart;
@@ -446,60 +472,36 @@ void MainWindow::showRightBottomCert( int nNum )
     JCC_Cert    sCert;
     memset( &sCert, 0x00, sizeof(sCert));
 
-    char    sRegTime[64];
+    char    sRegDate[64];
 
     manApplet->ccClient()->getCert( nNum, &sCert );
 
-    strMsg = "[ Ceritificate information ]\n";
+    manApplet->mainWindow()->logClear();
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( "== Certificate Information\n" );
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( QString("Num           : %1\n").arg(sCert.nNum));
+    JS_UTIL_getDateTime( sCert.nRegTime, sRegDate );
+    manApplet->log( QString("RegDate       : %1\n").arg(sRegDate));
+    manApplet->log( QString("KeyNum        : %1\n").arg(sCert.nKeyNum));
+    manApplet->log( QString("UserNum       : %1\n").arg(sCert.nUserNum ));
+    manApplet->log( QString("SignAlgorithm : %1\n").arg(sCert.pSignAlg));
+    manApplet->log( QString("Certificate   : %1\n").arg(sCert.pCert));
+    manApplet->log( QString("IsCA          : %1\n").arg(sCert.bCA));
+    manApplet->log( QString("IsSelf        : %1\n").arg(sCert.bSelf));
+    manApplet->log( QString("SubjectDN     : %1\n").arg(sCert.pSubjectDN));
+    manApplet->log( QString("IssuerNum     : %1\n").arg(sCert.nIssuerNum));
+    manApplet->log( QString("Status        : %1\n").arg(sCert.nStatus));
+    manApplet->log( QString("Serial        : %1\n").arg(sCert.pSerial));
+    manApplet->log( QString("DNHash        : %1\n").arg(sCert.pDNHash));
+    manApplet->log( QString("KeyHash       : %1\n").arg(sCert.pKeyHash));
+    manApplet->log( QString("CRLDP         : %1\n").arg(sCert.pCRLDP));
 
-    strPart = QString("Num: %1\n").arg( sCert.nNum );
-    strMsg += strPart;
-
-    JS_UTIL_getDateTime( sCert.nRegTime, sRegTime );
-    strPart = QString("RegTime: %1\n").arg( sRegTime );
-    strMsg += strPart;
-
-    strPart = QString( "KeyNum: %1\n").arg( sCert.nKeyNum );
-    strMsg += strPart;
-
-    strPart = QString( "SignAlgorithm: %1\n").arg( sCert.pSignAlg );
-    strMsg += strPart;
-
-    strPart = QString( "Certificate: %1\n").arg( sCert.pCert );
-    strMsg += strPart;
-
-    strPart = QString( "IsCA: %1\n").arg( sCert.bCA );
-    strMsg += strPart;
-
-    strPart = QString( "IsSelf: %1\n").arg( sCert.bSelf );
-    strMsg += strPart;
-
-    strPart = QString( "SubjectDN: %1\n").arg( sCert.pSubjectDN );
-    strMsg += strPart;
-
-    strPart = QString( "IssuerNum: %1\n").arg( sCert.nIssuerNum );
-    strMsg += strPart;
-
-    strPart = QString( "Status: %1\n").arg( sCert.nStatus );
-    strMsg += strPart;
-
-    strPart = QString( "Serial: %1\n").arg( sCert.pSerial );
-    strMsg += strPart;
-
-    strPart = QString( "DNHash: %1\n").arg( sCert.pDNHash );
-    strMsg += strPart;
-
-    strPart = QString( "KeyHash: %1\n").arg( sCert.pKeyHash );
-    strMsg += strPart;
-
-    strPart = QString( "CRLDP: %1\n").arg( sCert.pCRLDP );
-    strMsg += strPart;
-
-    right_text_->setText( strMsg );
+    logCursorTop();
     JS_DB_resetCert( &sCert );
 }
 
-void MainWindow::showRightBottomCRL( int nNum )
+void MainWindow::logCRL( int nNum )
 {
     QString strMsg;
     QString strPart;
@@ -511,32 +513,23 @@ void MainWindow::showRightBottomCRL( int nNum )
 
     manApplet->ccClient()->getCRL( nNum, &sCRL );
 
-    strMsg = "[ CRL information ]\n";
-
-    strPart = QString( "Num: %1\n" ).arg( sCRL.nNum );
-    strMsg += strPart;
-
+    manApplet->mainWindow()->logClear();
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( "== CRL Information\n" );
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( QString("Num           : %1\n").arg(sCRL.nNum));
     JS_UTIL_getDateTime( sCRL.nRegTime, sRegTime );
-    strPart = QString( "RegTime: %1\n" ).arg( sRegTime );
-    strMsg += strPart;
+    manApplet->log( QString("RegTime       : %1\n").arg(sRegTime));
+    manApplet->log( QString("IssuerNum     : %1\n").arg(sCRL.nIssuerNum));
+    manApplet->log( QString("SignAlgorithm : %1\n").arg(sCRL.pSignAlg));
+    manApplet->log( QString("CRLDP         : %1\n").arg(sCRL.pCRLDP));
+    manApplet->log( QString("CRL           : %1\n").arg(sCRL.pCRL));
 
-    strPart = QString( "IssuerNum: %1\n").arg( sCRL.nIssuerNum );
-    strMsg += strPart;
-
-    strPart = QString( "SignAlgorithm: %1\n").arg( sCRL.pSignAlg );
-    strMsg += strPart;
-
-    strPart = QString( "CRLDP: %1\n").arg( sCRL.pCRLDP );
-    strMsg += strPart;
-
-    strPart = QString( "CRL: %1\n").arg( sCRL.pCRL );
-    strMsg += strPart;
-
-
-    right_text_->setText( strMsg );
+    logCursorTop();
+    JS_DB_resetCRL( &sCRL );
 }
 
-void MainWindow::showRightBottomRevoked( int nSeq )
+void MainWindow::logRevoked( int nSeq )
 {
     QString strMsg;
     QString strPart;
@@ -546,33 +539,23 @@ void MainWindow::showRightBottomRevoked( int nSeq )
 
     manApplet->ccClient()->getRevoked( nSeq, &sRevoked );
 
-    strMsg = "[ Revoke information ]\n";
+    manApplet->mainWindow()->logClear();
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( "== Revoke Information\n" );
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( QString("Seq          : %1\n").arg( sRevoked.nSeq));
+    manApplet->log( QString("CertNum      : %1\n").arg( sRevoked.nCertNum));
+    manApplet->log( QString("IssuerNum    : %1\n").arg( sRevoked.nIssuerNum));
+    manApplet->log( QString("Serial       : %1\n").arg( sRevoked.pSerial));
+    manApplet->log( QString("RevokeDate   : %1\n").arg( getDateTime( sRevoked.nRevokedDate )));
+    manApplet->log( QString("Reason       : %1\n").arg( sRevoked.nReason));
+    manApplet->log( QString("CRLDP        : %1\n").arg( sRevoked.pCRLDP ));
 
-    strPart = QString( "Seq: %1\n").arg( sRevoked.nSeq );
-    strMsg += strPart;
-
-    strPart = QString( "CertNum: %1\n").arg( sRevoked.nCertNum );
-    strMsg += strPart;
-
-    strPart = QString( "IssuerNum: %1\n").arg( sRevoked.nIssuerNum );
-    strMsg += strPart;
-
-    strPart = QString( "Serial: %1\n").arg( sRevoked.pSerial );
-    strMsg += strPart;
-
-    strPart = QString( "RevokeDate: %1\n").arg( sRevoked.nRevokedDate );
-    strMsg += strPart;
-
-    strPart = QString( "Reason: %1\n").arg( sRevoked.nReason );
-    strMsg += strPart;
-
-    strPart = QString( "CRLDP: %1\n").arg( sRevoked.pCRLDP );
-    strMsg += strPart;
-
-    right_text_->setText( strMsg );
+    logCursorTop();
+    JS_DB_resetRevoked( &sRevoked );
 }
 
-void MainWindow::showRightBottomCA( int row )
+void MainWindow::logCA( int row )
 {
     QString strVal;
     QString strPart;
@@ -584,7 +567,7 @@ void MainWindow::showRightBottomCA( int row )
     strVal += "\n\n";
     strVal += rightItem->text();
 
-    right_text_->setText( strVal );
+    log_text_->setText( strVal );
 }
 
 void MainWindow::createTreeMenu()
@@ -711,8 +694,9 @@ void MainWindow::createRightAdminList()
     {
         right_table_->insertRow(i);
 
+        right_table_->setRowHeight(i, 10 );
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sAdmin.nSeq ) ));
-        right_table_->setItem( i, 1, new QTableWidgetItem( pCurList->sAdmin.nStatus ));
+        right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( pCurList->sAdmin.nStatus ) ));
         right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( pCurList->sAdmin.nType )));
         right_table_->setItem( i, 3, new QTableWidgetItem( QString("%1").arg( pCurList->sAdmin.pName )));
         right_table_->setItem( i, 4, new QTableWidgetItem( QString("%1").arg( pCurList->sAdmin.pPassword )));
@@ -760,6 +744,7 @@ void MainWindow::createRightUserList()
     {
         char sRegTime[64];
         right_table_->insertRow(i);
+        right_table_->setRowHeight(i, 10 );
 
         JS_UTIL_getDateTime( pCurList->sUser.nRegTime, sRegTime );
 
@@ -803,6 +788,7 @@ void MainWindow::createRightCertProfileList()
     while( pCurList )
     {
         right_table_->insertRow(i);
+        right_table_->setRowHeight(i, 10 );
 
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCertProfile.nNum ) ));
         right_table_->setItem( i, 1, new QTableWidgetItem( pCurList->sCertProfile.pName ));
@@ -843,6 +829,8 @@ void MainWindow::createRightCRLProfileList()
     while( pCurList )
     {
         right_table_->insertRow(i);
+        right_table_->setRowHeight(i, 10 );
+
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCRLProfile.nNum )) );
         right_table_->setItem( i, 1, new QTableWidgetItem( pCurList->sCRLProfile.pName) );
         right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( pCurList->sCRLProfile.nVersion )) );
@@ -889,6 +877,7 @@ void MainWindow::createRightSignerList( int nItemType )
     {
         char sRegTime[64];
         right_table_->insertRow(i);
+        right_table_->setRowHeight(i, 10 );
 
         JS_UTIL_getDateTime( pCurList->sSigner.nRegTime, sRegTime );
 
@@ -945,6 +934,8 @@ void MainWindow::createRightCertList()
 
         JS_UTIL_getDateTime( pCurList->sCert.nRegTime, sRegTime );
         right_table_->insertRow(i);
+        right_table_->setRowHeight(i, 10 );
+
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCert.nNum) ));
         right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( sRegTime ) ));
         right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg(pCurList->sCert.pSerial)));
@@ -993,6 +984,8 @@ void MainWindow::createRightCRLList()
         JS_UTIL_getDateTime( pCurList->sCRL.nRegTime, sRegTime );
 
         right_table_->insertRow(i);
+        right_table_->setRowHeight(i, 10 );
+
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCRL.nNum )));
         right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( sRegTime )));
         right_table_->setItem( i, 2, new QTableWidgetItem(QString("%1").arg( pCurList->sCRL.nIssuerNum )));
@@ -1039,6 +1032,7 @@ void MainWindow::createRightRevokedList()
     while( pCurList )
     {
         right_table_->insertRow(i);
+        right_table_->setRowHeight(i, 10 );
 
         JS_UTIL_getDateTime( pCurList->sRevoked.nRevokedDate, sDateTime );
 
@@ -1090,53 +1084,63 @@ void MainWindow::createRightCA()
     JS_PKI_getCertInfo( &binCert, &sCertInfo, &pExtInfoList );
 
     right_table_->insertRow(i);
+    right_table_->setRowHeight(i, 10 );
     right_table_->setItem( i, 0, new QTableWidgetItem( "Version" ));
     right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.nVersion)));
 
     i++;
     right_table_->insertRow(i);
+    right_table_->setRowHeight(i, 10 );
     right_table_->setItem( i, 0, new QTableWidgetItem( "Serial"));
     right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSerial)));
 
     i++;
     right_table_->insertRow(i);
+    right_table_->setRowHeight(i, 10 );
     right_table_->setItem( i, 0, new QTableWidgetItem( "SignAlgorithm"));
     right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSignAlgorithm)));
 
     i++;
     right_table_->insertRow(i);
+    right_table_->setRowHeight(i, 10 );
     right_table_->setItem( i, 0, new QTableWidgetItem( "IssuerName"));
     right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pIssuerName)));
 
     i++;
     right_table_->insertRow(i);
+    right_table_->setRowHeight(i, 10 );
     right_table_->setItem( i, 0, new QTableWidgetItem( "SubjectName"));
     right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSubjectName)));
 
     i++;
     JS_UTIL_getDateTime( sCertInfo.uNotBefore, sNotBefore );
     right_table_->insertRow(i);
+    right_table_->setRowHeight(i, 10 );
     right_table_->setItem( i, 0, new QTableWidgetItem( "NotBefore"));
     right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sNotBefore)));
 
     i++;
     JS_UTIL_getDateTime( sCertInfo.uNotAfter, sNotAfter );
     right_table_->insertRow(i);
+    right_table_->setRowHeight(i, 10 );
     right_table_->setItem( i, 0, new QTableWidgetItem( "NotAfter"));
     right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sNotAfter)));
 
     i++;
     right_table_->insertRow(i);
+    right_table_->setRowHeight(i, 10 );
     right_table_->setItem( i, 0, new QTableWidgetItem( "PublicKey"));
     right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pPublicKey)));
 
     i++;
     right_table_->insertRow(i);
+    right_table_->setRowHeight(i, 10 );
     right_table_->setItem( i, 0, new QTableWidgetItem( "DNHash"));
     right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pDNHash)));
 
     i++;
     right_table_->insertRow(i);
+    right_table_->setRowHeight(i, 10 );
     right_table_->setItem( i, 0, new QTableWidgetItem( "Signature"));
     right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSignature)));
 
@@ -1151,6 +1155,7 @@ void MainWindow::createRightCA()
         JS_PKI_transExtensionToDBRec( &pCurList->sExtensionInfo, &sDBExt );
         i++;
         right_table_->insertRow(i);
+        right_table_->setRowHeight(i, 10 );
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( sDBExt.pSN )));
         right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( sDBExt.pValue )));
 
@@ -1163,9 +1168,19 @@ void MainWindow::createRightCA()
     if( pExtInfoList ) JS_PKI_resetExtensionInfoList( &pExtInfoList );
 }
 
+void MainWindow::logClear()
+{
+    log_text_->clear();
+}
+
+void MainWindow::logCursorTop()
+{
+    log_text_->moveCursor(QTextCursor::Start);
+}
+
 void MainWindow::removeAllRight()
 {
-    right_text_->setText("");
+    log_text_->setText("");
 
     int rowCnt = right_table_->rowCount();
 

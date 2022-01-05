@@ -27,6 +27,8 @@ public:
     void showWindow();
     void initialize();
 
+    void log( const QString strLog, QColor cr = QColor(0x00, 0x00, 0x00) );
+
     void createActions();
     void createStatusBar();
     void createTableMenu();
@@ -43,19 +45,22 @@ public:
     void createRightRevokedList();
     void createRightCA();
 
-    void showRightBottomUser( int nSeq );
-    void showRightBottomCertProfile( int nNum );
-    void showRightBottomCRLProfile( int nNum );
-    void showRightBottomSigner( int nNum );
-    void showRightBottomCert( int nNum );
-    void showRightBottomCRL( int nNum );
-    void showRightBottomRevoked( int nSeq );
-    void showRightBottomCA( int row );
+    void logAdmin( int nSeq );
+    void logUser( int nSeq );
+    void logCertProfile( int nNum );
+    void logCRLProfile( int nNum );
+    void logSigner( int nNum );
+    void logCert( int nNum );
+    void logCRL( int nNum );
+    void logRevoked( int nSeq );
+    void logCA( int row );
 
     int rightType();
     int rightCount();
 
 private:
+    void logClear();
+    void logCursorTop();
     void removeAllRight();
     void createTreeMenu();
 
@@ -92,9 +97,9 @@ private:
 
     ManTreeView*    left_tree_;
     ManTreeModel*   left_model_;
-//    QTableWidget*   right_table_;
+
     ManRightWidget*  right_table_;
-    QTextEdit*      right_text_;
+    QTextEdit*      log_text_;
     SearchMenu*     right_menu_;
 };
 #endif // MAINWINDOW_H

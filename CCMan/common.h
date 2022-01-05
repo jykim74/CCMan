@@ -63,4 +63,6 @@ const QStringList kRevokeReasonList = {
     "keyTime","CAKeyTime"
 };
 
+QString getDateTime( time_t tTime );
+
 #endif // COMMON_H

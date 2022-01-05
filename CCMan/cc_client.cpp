@@ -241,6 +241,40 @@ int CCClient::delUser(int nNum)
     return 0;
 }
 
+int CCClient::getAdmin( int nSeq, JCC_Admin *pAdmin )
+{
+    int ret = 0;
+    int status = 0;
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+
+    char *pRsp = NULL;
+
+
+    strURL = base_url_;
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_ADMIN ).arg( nSeq );
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                NULL,
+                NULL,
+                JS_HTTP_METHOD_GET,
+                NULL,
+                pHeaderList,
+                NULL,
+                &status,
+                &pRsp );
+
+    JS_CC_decodeAdmin( pRsp, pAdmin );
+    if( pRsp ) JS_free( pRsp );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
 int CCClient::getAdminList( JCC_AdminList **ppAdminList )
 {
     int ret = 0;

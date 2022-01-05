@@ -24,6 +24,7 @@ SOURCES += \
     auto_update_service.cpp \
     cc_client.cpp \
     cert_info_dlg.cpp \
+    common.cpp \
     crl_info_dlg.cpp \
     i18n_helper.cpp \
     issue_cert_dlg.cpp \

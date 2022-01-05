@@ -48,6 +48,12 @@ void ManApplet::start()
     main_win_->show();
 }
 
+void ManApplet::log( const QString strLog, QColor cr )
+{
+    main_win_->log( strLog, cr );
+}
+
+
 void ManApplet::restartApp()
 {
     if( in_exit_ || QCoreApplication::closingDown() )
