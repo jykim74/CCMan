@@ -33,6 +33,7 @@ public:
 
 
     void createRightList( int nItemType );
+    void createRightAdminList();
     void createRightUserList();
     void createRightCertProfileList();
     void createRightCRLProfileList();

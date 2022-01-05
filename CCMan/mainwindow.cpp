@@ -69,6 +69,7 @@ void MainWindow::initialize()
 //    right_table_ = new QTableWidget;
     right_table_ = new ManRightWidget;
 
+    right_menu_->setMaximumHeight(20);
     left_tree_->setModel(left_model_);
 
     hsplitter_->addWidget(left_tree_);
@@ -666,7 +667,9 @@ void MainWindow::createRightList(int nItemType)
         right_menu_->show();
     }
 
-    if( nItemType == ITEM_TYPE_USER )
+    if( nItemType == ITEM_TYPE_ADMIN )
+        createRightAdminList();
+    else if( nItemType == ITEM_TYPE_USER )
         createRightUserList();
     else if( nItemType == ITEM_TYPE_CERT_PROFILE )
         createRightCertProfileList();
@@ -682,6 +685,44 @@ void MainWindow::createRightList(int nItemType)
         createRightRevokedList();
     else if( nItemType == ITEM_TYPE_CA )
         createRightCA();
+}
+
+void MainWindow::createRightAdminList()
+{
+    int i = 0;
+    removeAllRight();
+    JDB_AdminList  *pAdminList = NULL;
+    JDB_AdminList  *pCurList = NULL;
+
+    QStringList titleList = { tr("Seq"), tr("Status"), tr("Type"), tr("Name"), tr("Password"), tr("Email") };
+
+    right_table_->clear();
+    right_table_->horizontalHeader()->setStretchLastSection(true);
+    right_table_->setType( ITEM_TYPE_ADMIN );
+
+    right_table_->setColumnCount(titleList.size());
+    right_table_->setHorizontalHeaderLabels( titleList );
+    right_table_->verticalHeader()->setVisible(false);
+
+    manApplet->ccClient()->getAdminList( &pAdminList );
+    pCurList = pAdminList;
+
+    while( pCurList )
+    {
+        right_table_->insertRow(i);
+
+        right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sAdmin.nSeq ) ));
+        right_table_->setItem( i, 1, new QTableWidgetItem( pCurList->sAdmin.nStatus ));
+        right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( pCurList->sAdmin.nType )));
+        right_table_->setItem( i, 3, new QTableWidgetItem( QString("%1").arg( pCurList->sAdmin.pName )));
+        right_table_->setItem( i, 4, new QTableWidgetItem( QString("%1").arg( pCurList->sAdmin.pPassword )));
+        right_table_->setItem( i, 5, new QTableWidgetItem( pCurList->sAdmin.pEmail ));
+
+        pCurList = pCurList->pNext;
+        i++;
+    }
+
+    if( pAdminList ) JS_DB_resetAdminList( &pAdminList );
 }
 
 void MainWindow::createRightUserList()
