@@ -41,5 +41,25 @@
         <file>images/branch-open.png</file>
         <file>images/vline.png</file>
         <file>images/admin.png</file>
+        <file>images/audit.png</file>
+        <file>images/cert_profile.png</file>
+        <file>images/certman.icns</file>
+        <file>images/certman.png</file>
+        <file>images/crl_profile.png</file>
+        <file>images/csr.png</file>
+        <file>images/disk.png</file>
+        <file>images/get_ldap.png</file>
+        <file>images/key.png</file>
+        <file>images/key_reg.png</file>
+        <file>images/kms.png</file>
+        <file>images/new_key.png</file>
+        <file>images/pub_ldap.png</file>
+        <file>images/server_status.png</file>
+        <file>images/setting.png</file>
+        <file>images/signer_reg.png</file>
+        <file>images/statistics.png</file>
+        <file>images/timestamp.jpg</file>
+        <file>images/timestamp.png</file>
+        <file>images/user_reg.png</file>
     </qresource>
 </RCC>

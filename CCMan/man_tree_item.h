@@ -13,7 +13,11 @@ enum {
     ITEM_TYPE_OCSP_SIGNER,
     ITEM_TYPE_CERT_PROFILE,
     ITEM_TYPE_CRL_PROFILE,
-    ITEM_TYPE_CA
+    ITEM_TYPE_CA,
+    ITEM_TYPE_KMS,
+    ITEM_TYPE_TSP,
+    ITEM_TYPE_STATISTICS,
+    ITEM_TYPE_AUDIT
 };
 
 class ManTreeItem : public QStandardItem

@@ -31,6 +31,7 @@
 #include "js_pki_x509.h"
 #include "js_pki_ext.h"
 #include "common.h"
+#include "stat_form.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -79,8 +80,17 @@ void MainWindow::initialize()
     right_table_->setSelectionBehavior(QAbstractItemView::SelectRows);
     right_table_->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
+    QWidget *rightWidget = new QWidget;
+    stack_ = new QStackedLayout;
+    stat_ = new StatForm;
+
+    stack_->addWidget( vsplitter_ );
+    stack_->addWidget( stat_ );
+    rightWidget->setLayout( stack_ );
+
     hsplitter_->addWidget(left_tree_);
-    hsplitter_->addWidget(vsplitter_);
+//    hsplitter_->addWidget(vsplitter_);
+    hsplitter_->addWidget( rightWidget );
 
     vsplitter_->addWidget(right_table_);
     vsplitter_->addWidget(right_menu_);
@@ -256,6 +266,12 @@ void MainWindow::rightTableClick(QModelIndex index )
         logRevoked( nSeq );
     else if( nType == ITEM_TYPE_CA )
         logCA( row );
+    else if( nType == ITEM_TYPE_KMS )
+        logKMS( nSeq );
+    else if( nType == ITEM_TYPE_TSP )
+        logTSP( nSeq );
+    else if( nType == ITEM_TYPE_AUDIT )
+        logAudit( nSeq );
 }
 
 void MainWindow::logAdmin( int nSeq )
@@ -570,6 +586,75 @@ void MainWindow::logCA( int row )
     log_text_->setText( strVal );
 }
 
+void MainWindow::logKMS( int nSeq )
+{
+    JCC_KMS sKMS;
+    memset( &sKMS, 0x00, sizeof(sKMS));
+
+    manApplet->ccClient()->getKMS( nSeq, &sKMS );
+
+    manApplet->mainWindow()->logClear();
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( "== KMS Information\n" );
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( QString("Seq          : %1\n").arg( sKMS.nSeq));
+    manApplet->log( QString("RegTime      : %1\n").arg( getDateTime( sKMS.nRegTime )));
+    manApplet->log( QString("State        : %1\n").arg( sKMS.nState ));
+    manApplet->log( QString("Type         : %1\n").arg( sKMS.nType ));
+    manApplet->log( QString("Algorithm    : %1\n").arg( sKMS.nAlgorithm ));
+    manApplet->log( QString("ID           : %1\n").arg( sKMS.pID ));
+    manApplet->log( QString("Info         : %1\n").arg( sKMS.pInfo ));
+
+    logCursorTop();
+    JS_DB_resetKMS( &sKMS );
+}
+
+void MainWindow::logTSP( int nSeq )
+{
+    JCC_TSP sTSP;
+    memset( &sTSP, 0x00, sizeof(sTSP));
+
+    manApplet->ccClient()->getTSP( nSeq, &sTSP );
+
+    manApplet->mainWindow()->logClear();
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( "== TSP Information\n" );
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( QString("Seq          : %1\n").arg( sTSP.nSeq));
+    manApplet->log( QString("RegTime      : %1\n").arg( getDateTime( sTSP.nRegTime )));
+    manApplet->log( QString("Serial       : %1\n").arg( sTSP.nSerial ));
+    manApplet->log( QString("SrcHash      : %1\n").arg( sTSP.pSrcHash ));
+    manApplet->log( QString("Policy       : %1\n").arg( sTSP.pPolicy ));
+    manApplet->log( QString("TSTInfo      : %1\n").arg( sTSP.pTSTInfo ));
+    manApplet->log( QString("Data         : %1\n").arg( sTSP.pData ));
+
+    logCursorTop();
+    JS_DB_resetTSP( &sTSP );
+}
+
+void MainWindow::logAudit( int nSeq )
+{
+    JCC_Audit sAudit;
+    memset( &sAudit, 0x00, sizeof(sAudit));
+
+    manApplet->ccClient()->getAudit( nSeq, &sAudit );
+
+    manApplet->mainWindow()->logClear();
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( "== Audit Information\n" );
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( QString("Seq          : %1\n").arg( sAudit.nSeq));
+    manApplet->log( QString("RegTime      : %1\n").arg( getDateTime( sAudit.nRegTime )));
+    manApplet->log( QString("Kind         : %1\n").arg( sAudit.nKind ));
+    manApplet->log( QString("Operation    : %1\n").arg( sAudit.nOperation ));
+    manApplet->log( QString("UserName     : %1\n").arg( sAudit.pUserName ));
+    manApplet->log( QString("Info         : %1\n").arg( sAudit.pInfo ));
+    manApplet->log( QString("MAC          : %1\n").arg( sAudit.pMAC ));
+
+    logCursorTop();
+    JS_DB_resetAudit( &sAudit );
+}
+
 void MainWindow::createTreeMenu()
 {
     left_model_->clear();
@@ -632,12 +717,34 @@ void MainWindow::createTreeMenu()
     pRevokeItem->setIcon(QIcon(":/images/revoke.png"));
     pTopItem->appendRow( pRevokeItem );
 
+    ManTreeItem *pKMSItem = new ManTreeItem( QString( "KMS" ));
+    pKMSItem->setIcon(QIcon(":/images/kms.png"));
+    pKMSItem->setType( ITEM_TYPE_KMS );
+    pTopItem->appendRow( pKMSItem );
+
+    ManTreeItem *pTSPItem = new ManTreeItem( QString( "TSP" ));
+    pTSPItem->setIcon(QIcon(":/images/timestamp.png"));
+    pTSPItem->setType( ITEM_TYPE_TSP );
+    pTopItem->appendRow( pTSPItem );
+
+    ManTreeItem *pStatisticsItem = new ManTreeItem( QString( "Statistics" ));
+    pStatisticsItem->setIcon(QIcon(":/images/statistics.png"));
+    pStatisticsItem->setType( ITEM_TYPE_STATISTICS );
+    pTopItem->appendRow( pStatisticsItem );
+
+    ManTreeItem *pAuditItem = new ManTreeItem( QString( "Audit") );
+    pAuditItem->setIcon( QIcon(":/images/audit.png"));
+    pAuditItem->setType( ITEM_TYPE_AUDIT );
+    pTopItem->appendRow( pAuditItem );
+
     QModelIndex ri = left_model_->index(0,0);
     left_tree_->expand(ri);
 }
 
 void MainWindow::createRightList(int nItemType)
 {
+    stack_->setCurrentIndex(0);
+
     if( nItemType == ITEM_TYPE_CERT_PROFILE ||
             nItemType == ITEM_TYPE_CRL_PROFILE ||
             nItemType == ITEM_TYPE_REG_SIGNER ||
@@ -668,6 +775,14 @@ void MainWindow::createRightList(int nItemType)
         createRightRevokedList();
     else if( nItemType == ITEM_TYPE_CA )
         createRightCA();
+    else if( nItemType == ITEM_TYPE_KMS )
+        createRightKMS();
+    else if( nItemType == ITEM_TYPE_TSP )
+        createRightTSP();
+    else if( nItemType == ITEM_TYPE_STATISTICS )
+        createRightStatistics();
+    else if( nItemType == ITEM_TYPE_AUDIT )
+        createRightAudit();
 }
 
 void MainWindow::createRightAdminList()
@@ -1166,6 +1281,174 @@ void MainWindow::createRightCA()
     JS_CC_resetNameVal( &sNameVal );
     JS_PKI_resetCertInfo( &sCertInfo );
     if( pExtInfoList ) JS_PKI_resetExtensionInfoList( &pExtInfoList );
+}
+
+void MainWindow::createRightStatistics()
+{
+    stack_->setCurrentIndex(1);
+}
+
+void MainWindow::createRightKMS()
+{
+    log( "KMS" );
+
+    removeAllRight();
+
+    int i = 0;
+    int nLimit = manApplet->settingsMgr()->listCount();
+    int nPage = right_menu_->curPage();
+    int nOffset = nPage * nLimit;
+    int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_KMS );
+    char    sDateTime[64];
+
+    right_menu_->setLimit( nLimit );
+    right_menu_->setTotalCount( nTotalCnt );
+
+    QStringList titleList = { "Seq", "RegTime", "State", "Type", "Algorithm", "ID", "Info" };
+
+    right_table_->clear();
+    right_table_->horizontalHeader()->setStretchLastSection(true);
+    right_table_->setColumnCount( titleList.size() );
+    right_table_->setHorizontalHeaderLabels(titleList);
+    right_table_->verticalHeader()->setVisible(false);
+
+    JCC_KMSList     *pKMSList = NULL;
+    JCC_KMSList     *pCurList = NULL;
+
+    manApplet->ccClient()->getKMSList( nOffset, nLimit, &pKMSList );
+
+    pCurList = pKMSList;
+
+    while( pCurList )
+    {
+        right_table_->insertRow(i);
+        right_table_->setRowHeight(i, 10 );
+
+        JS_UTIL_getDateTime( pCurList->sKMS.nRegTime, sDateTime );
+
+        right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sKMS.nSeq )));
+        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( sDateTime )));
+        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( pCurList->sKMS.nState )));
+        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sKMS.nType )));
+        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sKMS.nAlgorithm )));
+        right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sKMS.pID )));
+        right_table_->setItem(i,6, new QTableWidgetItem(QString("%1").arg( pCurList->sKMS.pInfo )));
+
+        pCurList = pCurList->pNext;
+        i++;
+    }
+
+
+    right_menu_->updatePageLabel();
+    if( pKMSList ) JS_DB_resetKMSList( &pKMSList );
+}
+
+void MainWindow::createRightTSP()
+{
+    log( "TSP" );
+    removeAllRight();
+
+    int i = 0;
+    int nLimit = manApplet->settingsMgr()->listCount();
+    int nPage = right_menu_->curPage();
+    int nOffset = nPage * nLimit;
+    int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_TSP );
+    char    sDateTime[64];
+
+    right_menu_->setLimit( nLimit );
+    right_menu_->setTotalCount( nTotalCnt );
+
+    QStringList titleList = { "Seq", "RegTime", "Serial", "SrcHash", "Policy", "TSTInfo", "Data" };
+
+    right_table_->clear();
+    right_table_->horizontalHeader()->setStretchLastSection(true);
+    right_table_->setColumnCount( titleList.size() );
+    right_table_->setHorizontalHeaderLabels(titleList);
+    right_table_->verticalHeader()->setVisible(false);
+
+    JCC_TSPList     *pTSPList = NULL;
+    JCC_TSPList     *pCurList = NULL;
+
+    manApplet->ccClient()->getTSPList( nOffset, nLimit, &pTSPList );
+
+    pCurList = pTSPList;
+
+    while( pCurList )
+    {
+        right_table_->insertRow(i);
+        right_table_->setRowHeight(i, 10 );
+
+        JS_UTIL_getDateTime( pCurList->sTSP.nRegTime, sDateTime );
+
+        right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sTSP.nSeq )));
+        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( sDateTime )));
+        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( pCurList->sTSP.nSerial )));
+        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sTSP.pSrcHash )));
+        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sTSP.pPolicy )));
+        right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sTSP.pTSTInfo )));
+        right_table_->setItem(i,6, new QTableWidgetItem(QString("%1").arg( pCurList->sTSP.pData )));
+
+        pCurList = pCurList->pNext;
+        i++;
+    }
+
+
+    right_menu_->updatePageLabel();
+    if( pTSPList ) JS_DB_resetTSPList( &pTSPList );
+}
+
+void MainWindow::createRightAudit()
+{
+    log( "Audit" );
+    removeAllRight();
+
+    int i = 0;
+    int nLimit = manApplet->settingsMgr()->listCount();
+    int nPage = right_menu_->curPage();
+    int nOffset = nPage * nLimit;
+    int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_AUDIT );
+    char    sDateTime[64];
+
+    right_menu_->setLimit( nLimit );
+    right_menu_->setTotalCount( nTotalCnt );
+
+    QStringList titleList = { "Seq", "RegTime", "Kind", "Operation", "UserName", "Info", "MAC" };
+
+    right_table_->clear();
+    right_table_->horizontalHeader()->setStretchLastSection(true);
+    right_table_->setColumnCount( titleList.size() );
+    right_table_->setHorizontalHeaderLabels(titleList);
+    right_table_->verticalHeader()->setVisible(false);
+
+    JCC_AuditList     *pAuditList = NULL;
+    JCC_AuditList     *pCurList = NULL;
+
+    manApplet->ccClient()->getAuditList( nOffset, nLimit, &pAuditList );
+
+    pCurList = pAuditList;
+
+    while( pCurList )
+    {
+        right_table_->insertRow(i);
+        right_table_->setRowHeight(i, 10 );
+
+        JS_UTIL_getDateTime( pCurList->sAudit.nRegTime, sDateTime );
+
+        right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.nSeq )));
+        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( sDateTime )));
+        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.nKind )));
+        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.nOperation )));
+        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.pUserName )));
+        right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.pInfo )));
+        right_table_->setItem(i,6, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.pMAC )));
+
+        pCurList = pCurList->pNext;
+        i++;
+    }
+
+
+    right_menu_->updatePageLabel();
+    if( pAuditList ) JS_DB_resetAuditList( &pAuditList );
 }
 
 void MainWindow::logClear()

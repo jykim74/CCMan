@@ -3,6 +3,31 @@
 
 #include <QStringList>
 
+#define     JS_REC_STATUS_NOT_USED          0
+#define     JS_REC_STATUS_USED              1
+
+#define     JS_STATUS_INVALID     0
+#define     JS_STATUS_STOP        1
+#define     JS_STATUS_VALID       2
+
+#define     JS_ADMIN_TYPE_INVALID       0
+#define     JS_ADMIN_TYPE_MASTER        1
+#define     JS_ADMIN_TYPE_ADMIN         2
+#define     JS_ADMIN_TYPE_AUDIT         3
+
+#define     JS_USER_STATUS_INVALID      0
+#define     JS_USER_STATUS_REGISTER     1
+#define     JS_USER_STATUS_ISSUED       2
+#define     JS_USER_STATUS_STOP         3
+
+#define     JS_SIGNER_TYPE_REG     0
+#define     JS_SIGNER_TYPE_OCSP    1
+
+#define     JS_CERT_STATUS_INVALID      0
+#define     JS_CERT_STATUS_GOOD         1
+#define     JS_CERT_STATUS_REVOKE       2
+#define     JS_CERT_STATUS_HOLD         3
+
 const int   kListCount = 15;
 
 const QStringList kMechList = { "RSA", "EC" };
@@ -64,5 +89,13 @@ const QStringList kRevokeReasonList = {
 };
 
 QString getDateTime( time_t tTime );
+QString getRecStatusName( int nStatus );
+QString getAdminTypeName( int nType );
+QString getStatusName( int nStatus );
+QString getUserStatusName( int nStatus );
+QString getSignerTypeName( int nType );
+QString getCertStatusName( int nStatus );
+QString getCertStatusSName( int nStatus );
+QString getRevokeReasonName( int nReason );
 
 #endif // COMMON_H

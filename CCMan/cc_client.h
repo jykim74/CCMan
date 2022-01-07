@@ -38,6 +38,14 @@ public:
     int getRevoked( int nSeq, JCC_Revoked *pRevoked );
     int getRevokedList( int nOffset, int nLimit, JCC_RevokedList **ppRevokedList );
 
+    int getKMS( int nNum, JCC_KMS *pKMS );
+    int getKMSList( int nOffset, int nLimit, JCC_KMSList **ppKMSList );
+    int getTSP( int nNum, JCC_TSP *pTSP );
+    int getTSPList( int nOffset, int nLimit, JCC_TSPList **ppTSPList );
+    int getAudit( int nNum, JCC_Audit *pAudit );
+    int getAuditList( int nOffset, int nLimit, JCC_AuditList **ppAuditList );
+    int getStatisticsCount( int nStart, int nEnd, const char *pTable );
+
     int addCRLProfile( JCC_CRLProfile *pCRLProfile );
     int modCRLProfile( int nNum, JCC_CRLProfile *pCRLProfile );
     int delCRLProfileExts( int nProfileNum );

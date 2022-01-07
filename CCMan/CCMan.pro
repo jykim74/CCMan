@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -44,7 +44,8 @@ SOURCES += \
     search_menu.cpp \
     settings_dlg.cpp \
     settings_mgr.cpp \
-    signer_dlg.cpp
+    signer_dlg.cpp \
+    stat_form.cpp
 
 HEADERS += \
     about_dlg.h \
@@ -72,7 +73,8 @@ HEADERS += \
     settings_dlg.h \
     settings_mgr.h \
     signer_dlg.h \
-    singleton.h
+    singleton.h \
+    stat_form.h
 
 FORMS += \
     about_dlg.ui \
@@ -87,7 +89,8 @@ FORMS += \
     reg_user_dlg.ui \
     revoke_cert_dlg.ui \
     settings_dlg.ui \
-    signer_dlg.ui
+    signer_dlg.ui \
+    stat_form.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

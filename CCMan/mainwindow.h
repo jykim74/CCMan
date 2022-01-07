@@ -6,12 +6,14 @@
 #include <QTreeView>
 #include <QTableWidget>
 #include <QTextEdit>
+#include <QStackedLayout>
 
 class ManTreeView;
 class ManTreeItem;
 class ManTreeModel;
 class ManRightWidget;
 class SearchMenu;
+class StatForm;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -44,6 +46,10 @@ public:
     void createRightCRLList();
     void createRightRevokedList();
     void createRightCA();
+    void createRightStatistics();
+    void createRightKMS();
+    void createRightTSP();
+    void createRightAudit();
 
     void logAdmin( int nSeq );
     void logUser( int nSeq );
@@ -54,6 +60,9 @@ public:
     void logCRL( int nNum );
     void logRevoked( int nSeq );
     void logCA( int row );
+    void logKMS( int nSeq );
+    void logTSP( int nSeq );
+    void logAudit( int nSeq );
 
     int rightType();
     int rightCount();
@@ -101,5 +110,8 @@ private:
     ManRightWidget*  right_table_;
     QTextEdit*      log_text_;
     SearchMenu*     right_menu_;
+
+    QStackedLayout  *stack_;
+    StatForm*       stat_;
 };
 #endif // MAINWINDOW_H
