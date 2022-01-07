@@ -18,6 +18,7 @@ public:
     void setBaseUrl( const QString strUrl );
     int getCount( int nType );
     int getNum( int nType );
+    QString getName( const char *pColName, int nNum, const char *pTable );
     int getUserList( int nOffset, int nLimit, JCC_UserList **ppUserList );
     int getUser( int nNum, JCC_User *pUser );
     int delUser( int nNum );
