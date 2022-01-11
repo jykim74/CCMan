@@ -32,6 +32,8 @@
 #include "js_pki_ext.h"
 #include "common.h"
 #include "stat_form.h"
+#include "js_kms.h"
+#include "js_gen.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -475,11 +477,22 @@ void MainWindow::logCert( int nNum )
     QString strPart;
 
     JCC_Cert    sCert;
+    JCC_Cert    sIssuer;
+
     memset( &sCert, 0x00, sizeof(sCert));
+    memset( &sIssuer, 0x00, sizeof(sIssuer));
 
     char    sRegDate[64];
+    QString strUserName;
+    QString strIssuerName;
+
+    CCClient* ccClient = manApplet->ccClient();
 
     manApplet->ccClient()->getCert( nNum, &sCert );
+    manApplet->ccClient()->getCert( sCert.nIssuerNum, &sIssuer );
+
+    strUserName = ccClient->getName( sCert.nUserNum, "user" );
+    strIssuerName = sIssuer.pSubjectDN;
 
     manApplet->mainWindow()->logClear();
     manApplet->log( "========================================================================\n" );
@@ -489,14 +502,14 @@ void MainWindow::logCert( int nNum )
     JS_UTIL_getDateTime( sCert.nRegTime, sRegDate );
     manApplet->log( QString("RegDate       : %1\n").arg(sRegDate));
     manApplet->log( QString("KeyNum        : %1\n").arg(sCert.nKeyNum));
-    manApplet->log( QString("UserNum       : %1\n").arg(sCert.nUserNum ));
+    manApplet->log( QString("UserNum       : %1 - %2\n").arg(sCert.nUserNum ).arg(strUserName));
     manApplet->log( QString("SignAlgorithm : %1\n").arg(sCert.pSignAlg));
     manApplet->log( QString("Certificate   : %1\n").arg(sCert.pCert));
     manApplet->log( QString("IsCA          : %1\n").arg(sCert.bCA));
     manApplet->log( QString("IsSelf        : %1\n").arg(sCert.bSelf));
     manApplet->log( QString("SubjectDN     : %1\n").arg(sCert.pSubjectDN));
-    manApplet->log( QString("IssuerNum     : %1\n").arg(sCert.nIssuerNum));
-    manApplet->log( QString("Status        : %1\n").arg(sCert.nStatus));
+    manApplet->log( QString("IssuerNum     : %1 - %2\n").arg(sCert.nIssuerNum).arg(strIssuerName));
+    manApplet->log( QString("Status        : %1 - %2\n").arg(sCert.nStatus).arg(getCertStatusName(sCert.nStatus)));
     manApplet->log( QString("Serial        : %1\n").arg(sCert.pSerial));
     manApplet->log( QString("DNHash        : %1\n").arg(sCert.pDNHash));
     manApplet->log( QString("KeyHash       : %1\n").arg(sCert.pKeyHash));
@@ -504,6 +517,7 @@ void MainWindow::logCert( int nNum )
 
     logCursorTop();
     JS_DB_resetCert( &sCert );
+    JS_DB_resetCert( &sIssuer );
 }
 
 void MainWindow::logCRL( int nNum )
@@ -512,11 +526,17 @@ void MainWindow::logCRL( int nNum )
     QString strPart;
 
     JCC_CRL sCRL;
+    JCC_Cert sIssuer;
+
     memset( &sCRL, 0x00, sizeof(sCRL));
+    memset( &sIssuer, 0x00, sizeof(sIssuer));
 
     char    sRegTime[64];
 
     manApplet->ccClient()->getCRL( nNum, &sCRL );
+    manApplet->ccClient()->getCert( sCRL.nIssuerNum, &sIssuer );
+
+    QString strIssuerName = sIssuer.pSubjectDN;
 
     manApplet->mainWindow()->logClear();
     manApplet->log( "========================================================================\n" );
@@ -525,13 +545,14 @@ void MainWindow::logCRL( int nNum )
     manApplet->log( QString("Num           : %1\n").arg(sCRL.nNum));
     JS_UTIL_getDateTime( sCRL.nRegTime, sRegTime );
     manApplet->log( QString("RegTime       : %1\n").arg(sRegTime));
-    manApplet->log( QString("IssuerNum     : %1\n").arg(sCRL.nIssuerNum));
+    manApplet->log( QString("IssuerNum     : %1 - %2\n").arg(sCRL.nIssuerNum).arg(strIssuerName));
     manApplet->log( QString("SignAlgorithm : %1\n").arg(sCRL.pSignAlg));
     manApplet->log( QString("CRLDP         : %1\n").arg(sCRL.pCRLDP));
     manApplet->log( QString("CRL           : %1\n").arg(sCRL.pCRL));
 
     logCursorTop();
     JS_DB_resetCRL( &sCRL );
+    JS_DB_resetCert( &sIssuer );
 }
 
 void MainWindow::logRevoked( int nSeq )
@@ -542,18 +563,23 @@ void MainWindow::logRevoked( int nSeq )
     JCC_Revoked sRevoked;
     memset( &sRevoked, 0x00, sizeof(sRevoked));
 
-    manApplet->ccClient()->getRevoked( nSeq, &sRevoked );
+    CCClient* ccClient = manApplet->ccClient();
+
+    ccClient->getRevoked( nSeq, &sRevoked );
+    QString strCertName = ccClient->getDN( sRevoked.nCertNum );
+    QString strIssuerName = ccClient->getDN( sRevoked.nIssuerNum );
+    QString strReason = JS_PKI_getRevokeReasonName( sRevoked.nReason );
 
     manApplet->mainWindow()->logClear();
     manApplet->log( "========================================================================\n" );
     manApplet->log( "== Revoke Information\n" );
     manApplet->log( "========================================================================\n" );
     manApplet->log( QString("Seq          : %1\n").arg( sRevoked.nSeq));
-    manApplet->log( QString("CertNum      : %1\n").arg( sRevoked.nCertNum));
-    manApplet->log( QString("IssuerNum    : %1\n").arg( sRevoked.nIssuerNum));
+    manApplet->log( QString("CertNum      : %1 - %2\n").arg( sRevoked.nCertNum).arg(strCertName));
+    manApplet->log( QString("IssuerNum    : %1 - %2\n").arg( sRevoked.nIssuerNum).arg(strIssuerName));
     manApplet->log( QString("Serial       : %1\n").arg( sRevoked.pSerial));
     manApplet->log( QString("RevokeDate   : %1\n").arg( getDateTime( sRevoked.nRevokedDate )));
-    manApplet->log( QString("Reason       : %1\n").arg( sRevoked.nReason));
+    manApplet->log( QString("Reason       : %1 - %2\n").arg( sRevoked.nReason).arg(strReason));
     manApplet->log( QString("CRLDP        : %1\n").arg( sRevoked.pCRLDP ));
 
     logCursorTop();
@@ -577,8 +603,12 @@ void MainWindow::logKMS( int nSeq )
 {
     JCC_KMS sKMS;
     memset( &sKMS, 0x00, sizeof(sKMS));
+    CCClient* ccClient = manApplet->ccClient();
 
-    manApplet->ccClient()->getKMS( nSeq, &sKMS );
+    ccClient->getKMS( nSeq, &sKMS );
+
+    QString strType = JS_KMS_getObjectTypeName( sKMS.nType );
+    QString strAlg = JS_PKI_getKeyTypeName( sKMS.nAlgorithm );
 
     manApplet->mainWindow()->logClear();
     manApplet->log( "========================================================================\n" );
@@ -586,9 +616,9 @@ void MainWindow::logKMS( int nSeq )
     manApplet->log( "========================================================================\n" );
     manApplet->log( QString("Seq          : %1\n").arg( sKMS.nSeq));
     manApplet->log( QString("RegTime      : %1\n").arg( getDateTime( sKMS.nRegTime )));
-    manApplet->log( QString("State        : %1\n").arg( sKMS.nState ));
-    manApplet->log( QString("Type         : %1\n").arg( sKMS.nType ));
-    manApplet->log( QString("Algorithm    : %1\n").arg( sKMS.nAlgorithm ));
+    manApplet->log( QString("State        : %1 - %2\n").arg( sKMS.nState ).arg( getStatusName( sKMS.nState )));
+    manApplet->log( QString("Type         : %1 - %2\n").arg( sKMS.nType ).arg(strType));
+    manApplet->log( QString("Algorithm    : %1 - %2\n").arg( sKMS.nAlgorithm ).arg(strAlg));
     manApplet->log( QString("ID           : %1\n").arg( sKMS.pID ));
     manApplet->log( QString("Info         : %1\n").arg( sKMS.pInfo ));
 
@@ -626,14 +656,17 @@ void MainWindow::logAudit( int nSeq )
 
     manApplet->ccClient()->getAudit( nSeq, &sAudit );
 
+    QString strKind = JS_GEN_getKindName( sAudit.nKind );
+    QString strOper = JS_GEN_getOperationName( sAudit.nOperation );
+
     manApplet->mainWindow()->logClear();
     manApplet->log( "========================================================================\n" );
     manApplet->log( "== Audit Information\n" );
     manApplet->log( "========================================================================\n" );
     manApplet->log( QString("Seq          : %1\n").arg( sAudit.nSeq));
     manApplet->log( QString("RegTime      : %1\n").arg( getDateTime( sAudit.nRegTime )));
-    manApplet->log( QString("Kind         : %1\n").arg( sAudit.nKind ));
-    manApplet->log( QString("Operation    : %1\n").arg( sAudit.nOperation ));
+    manApplet->log( QString("Kind         : %1 - %2\n").arg( sAudit.nKind ).arg( strKind ));
+    manApplet->log( QString("Operation    : %1 - %2\n").arg( sAudit.nOperation ).arg( strOper ));
     manApplet->log( QString("UserName     : %1\n").arg( sAudit.pUserName ));
     manApplet->log( QString("Info         : %1\n").arg( sAudit.pInfo ));
     manApplet->log( QString("MAC          : %1\n").arg( sAudit.pMAC ));
@@ -1141,7 +1174,7 @@ void MainWindow::createRightCRLList()
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
 
-    QStringList titleList = { "Num", "RegTime", "IssuerNum", "SignAlg", "CRLDP" };
+    QStringList titleList = { tr("Num"), tr("RegTime"), tr("IssuerNum"), tr("SignAlg"), tr("CRLDP") };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -1154,10 +1187,23 @@ void MainWindow::createRightCRLList()
 
     manApplet->ccClient()->getCRLList( nOffset, nLimit, &pCRLList );
 
+    right_table_->setColumnWidth( 0, 40 );
+    right_table_->setColumnWidth( 1, 140 );
+    right_table_->setColumnWidth( 2, 200 );
+    right_table_->setColumnWidth( 3, 200 );
+
     pCurList = pCRLList;
 
     while( pCurList )
     {
+        JCC_Cert sIssuer;
+        QString strIssuerName;
+
+        memset( &sIssuer, 0x00, sizeof(sIssuer));
+
+        manApplet->ccClient()->getCert( pCurList->sCRL.nIssuerNum, &sIssuer );
+        strIssuerName = sIssuer.pSubjectDN;
+
         JS_UTIL_getDateTime( pCurList->sCRL.nRegTime, sRegTime );
 
         right_table_->insertRow(i);
@@ -1165,10 +1211,11 @@ void MainWindow::createRightCRLList()
 
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCRL.nNum )));
         right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( sRegTime )));
-        right_table_->setItem( i, 2, new QTableWidgetItem(QString("%1").arg( pCurList->sCRL.nIssuerNum )));
+        right_table_->setItem( i, 2, new QTableWidgetItem(QString("%1").arg( strIssuerName )));
         right_table_->setItem( i, 3, new QTableWidgetItem( pCurList->sCRL.pSignAlg ));
         right_table_->setItem( i, 4, new QTableWidgetItem( pCurList->sCRL.pCRLDP ));
 
+        JS_DB_resetCert( &sIssuer );
         pCurList = pCurList->pNext;
         i++;
     }
@@ -1187,11 +1234,12 @@ void MainWindow::createRightRevokedList()
     int nOffset = nPage * nLimit;
     int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_REVOKE );
     char    sDateTime[64];
+    CCClient *ccClient = manApplet->ccClient();
 
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
 
-    QStringList titleList = { "Num", "CertNum", "IssuerNum", "Serial", "RevokedDate", "Reason", "CRLDP" };
+    QStringList titleList = { tr("Num"), tr("CertNum"), tr("IssuerNum"), tr("Serial"), tr("RevokedDate"), tr("Reason"), tr("CRLDP") };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -1204,18 +1252,28 @@ void MainWindow::createRightRevokedList()
 
     manApplet->ccClient()->getRevokedList( nOffset, nLimit, &pRevokedList );
 
+    right_table_->setColumnWidth( 0, 40 );
+    right_table_->setColumnWidth( 1, 120 );
+    right_table_->setColumnWidth( 2, 120 );
+    right_table_->setColumnWidth( 3, 60 );
+    right_table_->setColumnWidth( 4, 140 );
+    right_table_->setColumnWidth( 5, 120 );
+
     pCurList = pRevokedList;
 
     while( pCurList )
     {
+        QString strCertName = ccClient->getDN( pCurList->sRevoked.nCertNum );
+        QString strIssuerName = ccClient->getDN( pCurList->sRevoked.nIssuerNum );
+
         right_table_->insertRow(i);
         right_table_->setRowHeight(i, 10 );
 
         JS_UTIL_getDateTime( pCurList->sRevoked.nRevokedDate, sDateTime );
 
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nSeq )));
-        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nCertNum )));
-        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nIssuerNum )));
+        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( strCertName )));
+        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( strIssuerName )));
         right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.pSerial )));
         right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( sDateTime )));
         right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( JS_PKI_getRevokeReasonName( pCurList->sRevoked.nReason ))));
@@ -1364,11 +1422,12 @@ void MainWindow::createRightKMS()
     int nOffset = nPage * nLimit;
     int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_KMS );
     char    sDateTime[64];
+    CCClient* ccClient = manApplet->ccClient();
 
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
 
-    QStringList titleList = { "Seq", "RegTime", "State", "Type", "Algorithm", "ID", "Info" };
+    QStringList titleList = { tr("Seq"), tr("RegTime"), tr("State"), tr("Type"), tr("Algorithm"), tr("ID"), tr("Info") };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -1379,22 +1438,32 @@ void MainWindow::createRightKMS()
     JCC_KMSList     *pKMSList = NULL;
     JCC_KMSList     *pCurList = NULL;
 
-    manApplet->ccClient()->getKMSList( nOffset, nLimit, &pKMSList );
+    ccClient->getKMSList( nOffset, nLimit, &pKMSList );
 
     pCurList = pKMSList;
+
+    right_table_->setColumnWidth( 0, 40 );
+    right_table_->setColumnWidth( 1, 140 );
+    right_table_->setColumnWidth( 2, 100 );
+    right_table_->setColumnWidth( 3, 100 );
+    right_table_->setColumnWidth( 4, 100 );
+    right_table_->setColumnWidth( 5, 100 );
 
     while( pCurList )
     {
         right_table_->insertRow(i);
         right_table_->setRowHeight(i, 10 );
 
+        QString strType = JS_KMS_getObjectTypeName( pCurList->sKMS.nType );
+        QString strAlg = JS_PKI_getKeyTypeName( pCurList->sKMS.nAlgorithm );
+
         JS_UTIL_getDateTime( pCurList->sKMS.nRegTime, sDateTime );
 
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sKMS.nSeq )));
         right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( sDateTime )));
-        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( pCurList->sKMS.nState )));
-        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sKMS.nType )));
-        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sKMS.nAlgorithm )));
+        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( getStatusName( pCurList->sKMS.nState ))));
+        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( strType )));
+        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( strAlg )));
         right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sKMS.pID )));
         right_table_->setItem(i,6, new QTableWidgetItem(QString("%1").arg( pCurList->sKMS.pInfo )));
 
@@ -1422,7 +1491,7 @@ void MainWindow::createRightTSP()
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
 
-    QStringList titleList = { "Seq", "RegTime", "Serial", "SrcHash", "Policy", "TSTInfo", "Data" };
+    QStringList titleList = { tr("Seq"), tr("RegTime"), tr("Serial"), tr("SrcHash"), tr("Policy") };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -1434,6 +1503,11 @@ void MainWindow::createRightTSP()
     JCC_TSPList     *pCurList = NULL;
 
     manApplet->ccClient()->getTSPList( nOffset, nLimit, &pTSPList );
+
+    right_table_->setColumnWidth( 0, 40 );
+    right_table_->setColumnWidth( 1, 140 );
+    right_table_->setColumnWidth( 2, 100 );
+    right_table_->setColumnWidth( 3, 200 );
 
     pCurList = pTSPList;
 
@@ -1449,8 +1523,7 @@ void MainWindow::createRightTSP()
         right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( pCurList->sTSP.nSerial )));
         right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sTSP.pSrcHash )));
         right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sTSP.pPolicy )));
-        right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sTSP.pTSTInfo )));
-        right_table_->setItem(i,6, new QTableWidgetItem(QString("%1").arg( pCurList->sTSP.pData )));
+
 
         pCurList = pCurList->pNext;
         i++;
@@ -1476,7 +1549,7 @@ void MainWindow::createRightAudit()
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
 
-    QStringList titleList = { "Seq", "RegTime", "Kind", "Operation", "UserName", "Info", "MAC" };
+    QStringList titleList = { tr("Seq"), tr("RegTime"), tr("Kind"), tr("Operation"), tr("UserName"), tr("Info"), tr("MAC") };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -1491,17 +1564,27 @@ void MainWindow::createRightAudit()
 
     pCurList = pAuditList;
 
+    right_table_->setColumnWidth( 0, 40 );
+    right_table_->setColumnWidth( 1, 140 );
+    right_table_->setColumnWidth( 2, 100 );
+    right_table_->setColumnWidth( 3, 100 );
+    right_table_->setColumnWidth( 4, 100 );
+    right_table_->setColumnWidth( 5, 100 );
+
     while( pCurList )
     {
         right_table_->insertRow(i);
         right_table_->setRowHeight(i, 10 );
 
+        QString strKind = JS_GEN_getKindName( pCurList->sAudit.nKind );
+        QString strOper = JS_GEN_getOperationName( pCurList->sAudit.nOperation );
+
         JS_UTIL_getDateTime( pCurList->sAudit.nRegTime, sDateTime );
 
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.nSeq )));
         right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( sDateTime )));
-        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.nKind )));
-        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.nOperation )));
+        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( strKind )));
+        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( strOper )));
         right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.pUserName )));
         right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.pInfo )));
         right_table_->setItem(i,6, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.pMAC )));

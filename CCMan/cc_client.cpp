@@ -129,7 +129,7 @@ int CCClient::getNum(int nType)
     return nNum;
 }
 
-QString CCClient::getName( const char *pColName, int nNum, const char *pTable )
+QString CCClient::getName( int nNum, const char *pTable )
 {
     int ret = 0;
     int status = 0;
@@ -146,11 +146,53 @@ QString CCClient::getName( const char *pColName, int nNum, const char *pTable )
 
 
     strURL = base_url_;
-    strURL += QString( "%1/%2/%3/%4" )
+    strURL += QString( "%1/%2/%3" )
             .arg( JS_CC_PATH_NAME )
             .arg( pTable )
-            .arg( pColName )
             .arg( nNum );
+
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                NULL,
+                NULL,
+                JS_HTTP_METHOD_GET,
+                pParamList,
+                pHeaderList,
+                NULL,
+                &status,
+                &pRsp );
+
+    JS_CC_decodeNameVal( pRsp, &sNameVal );
+    if( sNameVal.pValue ) strName = sNameVal.pValue;
+
+    JS_CC_resetNameVal( &sNameVal );
+
+    return strName;
+}
+
+QString CCClient::getDN( int nCertNum )
+{
+    int ret = 0;
+    int status = 0;
+    QString strURL;
+    JNameValList    *pParamList = NULL;
+    JNameValList    *pHeaderList = NULL;
+    char    *pRsp = NULL;
+    JCC_NameVal     sNameVal;
+    QString strName;
+
+    memset( &sNameVal, 0x00, sizeof(sNameVal));
+
+    QString strToken = manApplet->accountInfo()->token();
+
+
+    strURL = base_url_;
+    strURL += QString( "%1/%2" )
+            .arg( JS_CC_PATH_DN )
+            .arg( nCertNum );
 
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
