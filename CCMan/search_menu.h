@@ -21,6 +21,9 @@ public:
     void setCurPage( int page );
     void setLimit( int limit );
 
+    QString getCondName();
+    QString getInputWord();
+
     void updatePageLabel();
 
 private:

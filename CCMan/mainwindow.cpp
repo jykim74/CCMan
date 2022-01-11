@@ -858,6 +858,9 @@ void MainWindow::createRightUserList()
     int nOffset = nPage * nLimit;
     int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_USER );
 
+    QString strTarget = right_menu_->getCondName();
+    QString strWord = right_menu_->getInputWord();
+
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
 

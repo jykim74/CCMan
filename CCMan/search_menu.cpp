@@ -5,6 +5,12 @@
 #include "man_applet.h"
 
 static QStringList s_condBaseList = {"Page"};
+static QStringList  s_condCertList = { "Page", "SubjectDN", "Serial" };
+static QStringList  s_condCRLList = { "Page" };
+static QStringList  s_condKeyPairList = { "Page", "Name" };
+static QStringList  s_condReqList = { "Page", "Name" };
+static QStringList  s_condRevokeList = { "Page", "Serial" };
+static QStringList  s_condUserList = { "Page", "Name", "Email", "SSN" };
 
 SearchMenu::SearchMenu(QWidget *parent) : QWidget(parent)
 {
@@ -72,6 +78,17 @@ void SearchMenu::setLimit( int limit )
 {
     limit_ = limit;
 }
+
+QString SearchMenu::getCondName()
+{
+    return cond_combo_->currentText();
+}
+
+QString SearchMenu::getInputWord()
+{
+    return input_text_->text();
+}
+
 
 void SearchMenu::leftPage()
 {
