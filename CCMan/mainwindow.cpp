@@ -856,7 +856,7 @@ void MainWindow::createRightUserList()
     int nLimit = manApplet->settingsMgr()->listCount();
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
-    int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_USER );
+    int nTotalCnt = 0;
 
     QString strTarget = right_menu_->getCondName();
     QString strWord = right_menu_->getInputWord();
@@ -881,7 +881,17 @@ void MainWindow::createRightUserList()
     right_table_->setHorizontalHeaderLabels(titleList);
     right_table_->verticalHeader()->setVisible(false);
 
-    manApplet->ccClient()->getUserList( nOffset, nLimit, &pDBUserList );
+    if( strWord.length() > 0 )
+    {
+        nTotalCnt = manApplet->ccClient()->searchCount( ITEM_TYPE_USER, strTarget, strWord );
+        manApplet->ccClient()->searchUserList( strTarget, strWord, nOffset, nLimit, &pDBUserList );
+    }
+    else
+    {
+        nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_USER );
+        manApplet->ccClient()->getUserList( nOffset, nLimit, &pDBUserList );
+    }
+
     pCurList = pDBUserList;
 
     right_table_->setColumnWidth( 0, 40 );
@@ -1111,11 +1121,13 @@ void MainWindow::createRightCertList()
     int nLimit = manApplet->settingsMgr()->listCount();
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
-    int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_CERT );
+    int nTotalCnt = 0;
     char    sRegTime[64];
 
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
+    QString strTarget = right_menu_->getCondName();
+    QString strWord = right_menu_->getInputWord();
 
     QStringList titleList = { tr("Num"), tr("RegTime"), tr("Serial"), tr("SignAlg"), tr("SubjectDN") };
 
@@ -1128,7 +1140,16 @@ void MainWindow::createRightCertList()
     JDB_CertList    *pCertList = NULL;
     JDB_CertList    *pCurList = NULL;
 
-    manApplet->ccClient()->getCertList( nOffset, nLimit, &pCertList );
+    if( strWord.length() > 0 && strTarget.length() > 0 )
+    {
+        nTotalCnt = manApplet->ccClient()->searchCount( ITEM_TYPE_CERT, strTarget, strWord );
+        manApplet->ccClient()->searchCertList( strTarget, strWord, nOffset, nLimit, &pCertList );
+    }
+    else
+    {
+        nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_CERT );
+        manApplet->ccClient()->getCertList( nOffset, nLimit, &pCertList );
+    }
 
     pCurList = pCertList;
 
@@ -1171,11 +1192,13 @@ void MainWindow::createRightCRLList()
     int nLimit = manApplet->settingsMgr()->listCount();
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
-    int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_CRL );
+    int nTotalCnt = 0;
     char    sRegTime[64];
 
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
+    QString strTarget = right_menu_->getCondName();
+    QString strWord = right_menu_->getInputWord();
 
     QStringList titleList = { tr("Num"), tr("RegTime"), tr("IssuerNum"), tr("SignAlg"), tr("CRLDP") };
 
@@ -1188,7 +1211,16 @@ void MainWindow::createRightCRLList()
     JDB_CRLList     *pCRLList = NULL;
     JDB_CRLList     *pCurList = NULL;
 
-    manApplet->ccClient()->getCRLList( nOffset, nLimit, &pCRLList );
+    if( strTarget.length() > 0 && strWord.length() > 0 )
+    {
+        nTotalCnt = manApplet->ccClient()->searchCount( ITEM_TYPE_CRL, strTarget, strWord );
+        manApplet->ccClient()->searchCRLList( strTarget, strWord, nOffset, nLimit, &pCRLList );
+    }
+    else
+    {
+        nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_CRL );
+        manApplet->ccClient()->getCRLList( nOffset, nLimit, &pCRLList );
+    }
 
     right_table_->setColumnWidth( 0, 40 );
     right_table_->setColumnWidth( 1, 140 );
@@ -1235,12 +1267,14 @@ void MainWindow::createRightRevokedList()
     int nLimit = manApplet->settingsMgr()->listCount();
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
-    int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_REVOKE );
+    int nTotalCnt = 0;
     char    sDateTime[64];
     CCClient *ccClient = manApplet->ccClient();
 
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
+    QString strTarget = right_menu_->getCondName();
+    QString strWord = right_menu_->getInputWord();
 
     QStringList titleList = { tr("Num"), tr("CertNum"), tr("IssuerNum"), tr("Serial"), tr("RevokedDate"), tr("Reason"), tr("CRLDP") };
 
@@ -1253,7 +1287,16 @@ void MainWindow::createRightRevokedList()
     JCC_RevokedList     *pRevokedList = NULL;
     JCC_RevokedList     *pCurList = NULL;
 
-    manApplet->ccClient()->getRevokedList( nOffset, nLimit, &pRevokedList );
+    if( strTarget.length() > 0 && strWord.length() > 0 )
+    {
+        nTotalCnt = manApplet->ccClient()->searchCount( ITEM_TYPE_REVOKE, strTarget, strWord );
+        manApplet->ccClient()->searchRevokedList( strTarget, strWord, nOffset, nLimit, &pRevokedList );
+    }
+    else
+    {
+        nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_REVOKE );
+        manApplet->ccClient()->getRevokedList( nOffset, nLimit, &pRevokedList );
+    }
 
     right_table_->setColumnWidth( 0, 40 );
     right_table_->setColumnWidth( 1, 120 );
@@ -1423,12 +1466,14 @@ void MainWindow::createRightKMS()
     int nLimit = manApplet->settingsMgr()->listCount();
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
-    int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_KMS );
+    int nTotalCnt = 0;
     char    sDateTime[64];
     CCClient* ccClient = manApplet->ccClient();
 
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
+    QString strTarget = right_menu_->getCondName();
+    QString strWord = right_menu_->getInputWord();
 
     QStringList titleList = { tr("Seq"), tr("RegTime"), tr("State"), tr("Type"), tr("Algorithm"), tr("ID"), tr("Info") };
 
@@ -1441,7 +1486,16 @@ void MainWindow::createRightKMS()
     JCC_KMSList     *pKMSList = NULL;
     JCC_KMSList     *pCurList = NULL;
 
-    ccClient->getKMSList( nOffset, nLimit, &pKMSList );
+    if( strTarget.length() > 0 && strWord.length() > 0 )
+    {
+        nTotalCnt = manApplet->ccClient()->searchCount( ITEM_TYPE_KMS, strTarget, strWord );
+        ccClient->searchKMSList( strTarget, strWord, nOffset, nLimit, &pKMSList );
+    }
+    else
+    {
+        nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_KMS );
+        ccClient->getKMSList( nOffset, nLimit, &pKMSList );
+    }
 
     pCurList = pKMSList;
 
@@ -1488,11 +1542,13 @@ void MainWindow::createRightTSP()
     int nLimit = manApplet->settingsMgr()->listCount();
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
-    int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_TSP );
+    int nTotalCnt = 0;
     char    sDateTime[64];
 
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
+    QString strTarget = right_menu_->getCondName();
+    QString strWord = right_menu_->getInputWord();
 
     QStringList titleList = { tr("Seq"), tr("RegTime"), tr("Serial"), tr("SrcHash"), tr("Policy") };
 
@@ -1505,7 +1561,16 @@ void MainWindow::createRightTSP()
     JCC_TSPList     *pTSPList = NULL;
     JCC_TSPList     *pCurList = NULL;
 
-    manApplet->ccClient()->getTSPList( nOffset, nLimit, &pTSPList );
+    if( strTarget.length() > 0 && strWord.length() > 0 )
+    {
+        nTotalCnt = manApplet->ccClient()->searchCount( ITEM_TYPE_TSP, strTarget, strWord );
+        manApplet->ccClient()->searchTSPList( strTarget, strWord, nOffset, nLimit, &pTSPList );
+    }
+    else
+    {
+        nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_TSP );
+        manApplet->ccClient()->getTSPList( nOffset, nLimit, &pTSPList );
+    }
 
     right_table_->setColumnWidth( 0, 40 );
     right_table_->setColumnWidth( 1, 140 );
@@ -1546,11 +1611,13 @@ void MainWindow::createRightAudit()
     int nLimit = manApplet->settingsMgr()->listCount();
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
-    int nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_AUDIT );
+    int nTotalCnt = 0;
     char    sDateTime[64];
 
     right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
+    QString strTarget = right_menu_->getCondName();
+    QString strWord = right_menu_->getInputWord();
 
     QStringList titleList = { tr("Seq"), tr("RegTime"), tr("Kind"), tr("Operation"), tr("UserName"), tr("Info"), tr("MAC") };
 
@@ -1563,7 +1630,16 @@ void MainWindow::createRightAudit()
     JCC_AuditList     *pAuditList = NULL;
     JCC_AuditList     *pCurList = NULL;
 
-    manApplet->ccClient()->getAuditList( nOffset, nLimit, &pAuditList );
+    if( strTarget.length() > 0 && strWord.length() > 0 )
+    {
+        nTotalCnt = manApplet->ccClient()->searchCount( ITEM_TYPE_AUDIT, strTarget, strWord );
+        manApplet->ccClient()->searchAuditList( strTarget, strWord, nOffset, nLimit, &pAuditList );
+    }
+    else
+    {
+        nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_AUDIT );
+        manApplet->ccClient()->getAuditList( nOffset, nLimit, &pAuditList );
+    }
 
     pCurList = pAuditList;
 
