@@ -21,6 +21,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     about_dlg.cpp \
     account_info.cpp \
+    admin_dlg.cpp \
     auto_update_service.cpp \
     cc_client.cpp \
     cert_info_dlg.cpp \
@@ -50,6 +51,7 @@ SOURCES += \
 HEADERS += \
     about_dlg.h \
     account_info.h \
+    admin_dlg.h \
     auto_update_service.h \
     cc_client.h \
     cert_info_dlg.h \
@@ -78,6 +80,7 @@ HEADERS += \
 
 FORMS += \
     about_dlg.ui \
+    admin_dlg.ui \
     cert_info_dlg.ui \
     crl_info_dlg.ui \
     issue_cert_dlg.ui \

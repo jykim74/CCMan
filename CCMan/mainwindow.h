@@ -78,6 +78,7 @@ public slots:
     void treeMenuClick( QModelIndex index );
     void rightTableClick( QModelIndex index );
 
+    void regAdmin();
     void showRightMenu(QPoint point);
     void deleteUser();
     void modifyUser();

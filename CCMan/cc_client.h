@@ -26,6 +26,9 @@ public:
     int getUser( int nNum, JCC_User *pUser );
     int delUser( int nNum );
     int getAdmin( int nSeq, JCC_Admin *pAdmin );
+    int addAdmin( JCC_Admin *pAdmin );
+    int modAdmin( int nSeq, JCC_Admin *pAdmin );
+    int delAdmin( int nSeq );
     int getAdminList( JCC_AdminList **ppAdminList );
     int getCertProfileList( JCC_CertProfileList **ppCertProfileList );
     int getCertProfile( int nNum, JCC_CertProfile *pCertProfile );

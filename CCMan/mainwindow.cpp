@@ -18,6 +18,7 @@
 #include "settings_mgr.h"
 #include "cert_info_dlg.h"
 #include "crl_info_dlg.h"
+#include "admin_dlg.h"
 
 #include "js_db.h"
 #include "js_db_data.h"
@@ -1701,6 +1702,12 @@ void MainWindow::regUser()
 {
     RegUserDlg regUserDlg;
     regUserDlg.exec();
+}
+
+void MainWindow::regAdmin()
+{
+    AdminDlg adminDlg;
+    adminDlg.exec();
 }
 
 void MainWindow::deleteUser()

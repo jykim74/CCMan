@@ -32,7 +32,11 @@ void ManTreeView::showContextMenu(QPoint point)
 
     QMenu menu(this);
 
-    if( item->type() == ITEM_TYPE_USER )
+    if( item->type() == ITEM_TYPE_ADMIN )
+    {
+        menu.addAction(tr("Register Admin"), manApplet->mainWindow(), &MainWindow::regAdmin );
+    }
+    else if( item->type() == ITEM_TYPE_USER )
     {
         menu.addAction(tr("RegUser"), manApplet->mainWindow(), &MainWindow::regUser);
         menu.addAction(tr("IssueCert"), manApplet->mainWindow(), &MainWindow::issueCert );

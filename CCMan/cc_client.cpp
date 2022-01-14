@@ -475,6 +475,132 @@ int CCClient::getAdmin( int nSeq, JCC_Admin *pAdmin )
     return 0;
 }
 
+int CCClient::addAdmin( JCC_Admin *pAdmin )
+{
+    int ret = 0;
+    int status = 0;
+
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+    JCC_CodeMsg sCodeMsg;
+
+    char *pRsp = NULL;
+    char *pReq = NULL;
+
+    memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
+
+    strURL = base_url_;
+    strURL += JS_CC_PATH_ADMIN;
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    JS_CC_encodeAdmin( pAdmin, &pReq );
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                NULL,
+                NULL,
+                JS_HTTP_METHOD_POST,
+                NULL,
+                pHeaderList,
+                pReq,
+                &status,
+                &pRsp );
+
+    JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
+
+    JS_CC_resetCodeMsg( &sCodeMsg );
+    if( pRsp ) JS_free( pRsp );
+    if( pReq ) JS_free( pReq );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
+int CCClient::modAdmin( int nSeq, JCC_Admin *pAdmin )
+{
+    int ret = 0;
+    int status = 0;
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+    JCC_CodeMsg sCodeMsg;
+
+    char *pRsp = NULL;
+    char *pReq = NULL;
+
+    memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
+
+    strURL = base_url_;
+    strURL += QString( "%1/%2").arg(JS_CC_PATH_ADMIN).arg(nSeq);
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    JS_CC_encodeAdmin( pAdmin, &pReq );
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                NULL,
+                NULL,
+                JS_HTTP_METHOD_PUT,
+                NULL,
+                pHeaderList,
+                pReq,
+                &status,
+                &pRsp );
+
+    JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
+
+    JS_CC_resetCodeMsg( &sCodeMsg );
+    if( pRsp ) JS_free( pRsp );
+    if( pReq ) JS_free( pReq );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
+int CCClient::delAdmin(int nSeq)
+{
+    int ret = 0;
+    int status = 0;
+
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+
+    QString strToken = manApplet->accountInfo()->token();
+    JCC_CodeMsg sCodeMsg;
+
+    char *pRsp = NULL;
+
+    memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
+
+    strURL = base_url_;
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_ADMIN ).arg( nSeq );
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                NULL,
+                NULL,
+                JS_HTTP_METHOD_DELETE,
+                NULL,
+                pHeaderList,
+                NULL,
+                &status,
+                &pRsp );
+
+    JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
+
+    JS_CC_resetCodeMsg( &sCodeMsg );
+    if( pRsp ) JS_free( pRsp );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
 int CCClient::getAdminList( JCC_AdminList **ppAdminList )
 {
     int ret = 0;
