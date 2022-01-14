@@ -44,6 +44,7 @@ private slots:
     void clickPMUse();
     void clickSKIUse();
     void clickSANUse();
+    void clickExtensionsUse();
 
     void addKeyUsage();
     void addPolicy();
@@ -54,6 +55,7 @@ private slots:
     void addIAN();
     void addPM();
     void addNC();
+    void addExtensions();
 
     void clearKeyUsage();
     void clearPolicy();
@@ -64,6 +66,7 @@ private slots:
     void clearIAN();
     void clearPM();
     void clearNC();
+    void clearExtensions();
 
 private:
     void initUI();
@@ -84,6 +87,7 @@ private:
     void savePMUse(int nProfileNum );
     void saveSKIUse(int nProfileNum );
     void saveSANUse(int nProfileNum );
+    void saveExtensionsUse( int nProfileNum );
 
     void setAIAUse( JCC_ProfileExt *pProfileExt );
     void setAKIUse( JCC_ProfileExt *pProfileExt );
@@ -98,6 +102,7 @@ private:
     void setPMUse( JCC_ProfileExt *pProfileExt );
     void setSKIUse( JCC_ProfileExt *pProfileExt );
     void setSANUse( JCC_ProfileExt *pProfileExt );
+    void setExtensionsUse( JCC_ProfileExt *pProfileExt );
 
     void initialize();
     void loadProfile();

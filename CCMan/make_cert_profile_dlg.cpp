@@ -118,6 +118,8 @@ void MakeCertProfileDlg::loadProfile()
             setSKIUse( &pCurList->sProfileExt );
         else if( strcasecmp( pCurList->sProfileExt.pSN, kExtNameSAN.toStdString().c_str() ) == 0 )
             setSANUse( &pCurList->sProfileExt );
+        else
+            setExtensionsUse( &pCurList->sProfileExt );
 
         pCurList = pCurList->pNext;
     }
@@ -290,6 +292,7 @@ void MakeCertProfileDlg::accept()
     if( mPMUseCheck->isChecked() ) savePMUse( nProfileNum );
     if( mSKIUseCheck->isChecked() ) saveSKIUse( nProfileNum );
     if( mSANUseCheck->isChecked() ) saveSANUse( nProfileNum );
+    if( mExtensionsUseCheck->isChecked() ) saveExtensionsUse( nProfileNum );
     /* ....... */
 
     manApplet->mainWindow()->createRightCertProfileList();
@@ -322,47 +325,94 @@ void MakeCertProfileDlg::initUI()
 
 void MakeCertProfileDlg::setTableMenus()
 {
-    QStringList sPolicyLabels = { "OID", "CPS", "UserNotice" };
+    QStringList sPolicyLabels = { tr("OID"), tr("CPS"), tr("UserNotice") };
     mPolicyTable->setColumnCount(3);
     mPolicyTable->horizontalHeader()->setStretchLastSection(true);
     mPolicyTable->setHorizontalHeaderLabels( sPolicyLabels );
     mPolicyTable->verticalHeader()->setVisible(false);
+    mPolicyTable->horizontalHeader()->setStyleSheet( kTableStyle );
+    mPolicyTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    mPolicyTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    mPolicyTable->setColumnWidth(0, 100);
+    mPolicyTable->setColumnWidth(1, 100);
 
-    QStringList sCRLDPLabels = { "Type", "Value" };
+    QStringList sCRLDPLabels = { tr("Type"), tr("Value") };
     mCRLDPTable->setColumnCount(2);
     mCRLDPTable->horizontalHeader()->setStretchLastSection(true);
     mCRLDPTable->setHorizontalHeaderLabels(sCRLDPLabels);
     mCRLDPTable->verticalHeader()->setVisible(false);
+    mCRLDPTable->horizontalHeader()->setStyleSheet( kTableStyle );
+    mCRLDPTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    mCRLDPTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    mCRLDPTable->setColumnWidth(0,60);
 
-    QStringList sAIALabels = { "Target", "Type", "Value" };
+    QStringList sAIALabels = { tr("Target"), tr("Type"), tr("Value") };
     mAIATable->setColumnCount(3);
     mAIATable->horizontalHeader()->setStretchLastSection(true);
     mAIATable->setHorizontalHeaderLabels(sAIALabels);
     mAIATable->verticalHeader()->setVisible(false);
+    mAIATable->horizontalHeader()->setStyleSheet( kTableStyle );
+    mAIATable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    mAIATable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    mAIATable->setColumnWidth(0,60);
+    mAIATable->setColumnWidth(1,60);
 
-    QStringList sSANLabels = { "Type", "Value" };
+    QStringList sSANLabels = { tr("Type"), tr("Value") };
     mSANTable->setColumnCount(2);
     mSANTable->horizontalHeader()->setStretchLastSection(true);
     mSANTable->setHorizontalHeaderLabels(sSANLabels);
     mSANTable->verticalHeader()->setVisible(false);
+    mSANTable->horizontalHeader()->setStyleSheet( kTableStyle );
+    mSANTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    mSANTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    mSANTable->setColumnWidth(0,60);
 
-    QStringList sIANLabels = { "Type", "Value" };
+    QStringList sIANLabels = { tr("Type"), tr("Value") };
     mIANTable->setColumnCount(2);
     mIANTable->horizontalHeader()->setStretchLastSection(true);
     mIANTable->setHorizontalHeaderLabels(sIANLabels);
     mIANTable->verticalHeader()->setVisible(false);
+    mIANTable->horizontalHeader()->setStyleSheet( kTableStyle );
+    mIANTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    mIANTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    mIANTable->setColumnWidth(0,60);
 
-    QStringList sPMLabels = { "Tareg", "Value", "Target", "Value" };
+    QStringList sPMLabels = { tr("Target"), tr("Value"), tr("Target"), tr("Value") };
     mPMTable->setColumnCount(4);
     mPMTable->horizontalHeader()->setStretchLastSection(true);
     mPMTable->setHorizontalHeaderLabels(sPMLabels);
     mPMTable->verticalHeader()->setVisible(false);
+    mPMTable->horizontalHeader()->setStyleSheet( kTableStyle );
+    mPMTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    mPMTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    mPMTable->setColumnWidth(0,100);
+    mPMTable->setColumnWidth(1,100);
+    mPMTable->setColumnWidth(2,100);
 
-    QStringList sNCLabels = { "Type", "Target", "Value", "Min", "Max" };
+    QStringList sNCLabels = { tr("Type"), tr("Target"), tr("Value"), tr("Min"), tr("Max") };
     mNCTable->setColumnCount(5);
     mNCTable->horizontalHeader()->setStretchLastSection(true);
     mNCTable->setHorizontalHeaderLabels(sNCLabels);
     mNCTable->verticalHeader()->setVisible(false);
+    mNCTable->horizontalHeader()->setStyleSheet( kTableStyle );
+    mNCTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    mNCTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    mNCTable->setColumnWidth(0,60);
+    mNCTable->setColumnWidth(1,120);
+    mNCTable->setColumnWidth(2,200);
+    mNCTable->setColumnWidth(3,60);
+    mNCTable->setColumnWidth(4,60);
+
+    QStringList sExtensionsLabels = { tr("OID"), tr("Critical"), tr("Value") };
+    mExtensionsTable->setColumnCount(sExtensionsLabels.size());
+    mExtensionsTable->horizontalHeader()->setStretchLastSection(true);
+    mExtensionsTable->setHorizontalHeaderLabels(sExtensionsLabels);
+    mExtensionsTable->verticalHeader()->setVisible(false);
+    mExtensionsTable->horizontalHeader()->setStyleSheet( kTableStyle );
+    mExtensionsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    mExtensionsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    mExtensionsTable->setColumnWidth(0,180);
+    mExtensionsTable->setColumnWidth(1,60);
 }
 
 void MakeCertProfileDlg::connectExtends()
@@ -383,6 +433,7 @@ void MakeCertProfileDlg::connectExtends()
     connect( mPMUseCheck, SIGNAL(clicked()), this, SLOT(clickPMUse()));
     connect( mSKIUseCheck, SIGNAL(clicked()), this, SLOT(clickSKIUse()));
     connect( mSANUseCheck, SIGNAL(clicked()), this, SLOT(clickSANUse()));
+    connect( mExtensionsUseCheck, SIGNAL(clicked()), this, SLOT(clickExtensionsUse()));
 
     connect( mKeyUsageAddBtn, SIGNAL(clicked()), this, SLOT(addKeyUsage()));
     connect( mPolicyAddBtn, SIGNAL(clicked()), this, SLOT(addPolicy()));
@@ -393,6 +444,7 @@ void MakeCertProfileDlg::connectExtends()
     connect( mIANAddBtn, SIGNAL(clicked()), this, SLOT(addIAN()));
     connect( mPMAddBtn, SIGNAL(clicked()), this, SLOT(addPM()));
     connect( mNCAddBtn, SIGNAL(clicked()), this, SLOT(addNC()));
+    connect( mExtensionsAddBtn, SIGNAL(clicked()), this, SLOT(addExtensions()));
 
     connect( mKeyUsageClearBtn, SIGNAL(clicked()), this, SLOT(clearKeyUsage()));
     connect( mPolicyClearBtn, SIGNAL(clicked()), this, SLOT(clearPolicy()));
@@ -403,6 +455,18 @@ void MakeCertProfileDlg::connectExtends()
     connect( mIANClearBtn, SIGNAL(clicked()), this, SLOT(clearIAN()));
     connect( mPMClearBtn, SIGNAL(clicked()), this, SLOT(clearPM()));
     connect( mNCClearBtn, SIGNAL(clicked()), this, SLOT(clearNC()));
+    connect( mExtensionsClearBtn, SIGNAL(clicked()), this, SLOT(clearExtensions()));
+
+    connect( mKeyUsageList, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotKeyUsageMenuRequested(QPoint)));
+    connect( mEKUList, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotEKUMenuRequested(QPoint)));
+    connect( mPolicyTable, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotPolicyMenuRequested(QPoint)));
+    connect( mCRLDPTable, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotCRLDPMenuRequested(QPoint)));
+    connect( mAIATable, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotAIAMenuRequested(QPoint)));
+    connect( mSANTable, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotSANMenuRequested(QPoint)));
+    connect( mIANTable, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotIANMenuRequested(QPoint)));
+    connect( mPMTable, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotPMMenuRequested(QPoint)));
+    connect( mNCTable, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotNCMenuRequested(QPoint)));
+    connect( mExtensionsTable, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotExtensionsMenuRequested(QPoint)));
 }
 
 void MakeCertProfileDlg::clickUseCSR()
@@ -445,6 +509,7 @@ void MakeCertProfileDlg::setExtends()
     clickPMUse();
     clickSKIUse();
     clickSANUse();
+    clickExtensionsUse();
 }
 
 
@@ -453,6 +518,7 @@ void MakeCertProfileDlg::clickAIAUse()
     bool bStatus = mAIAUseCheck->isChecked();
 
     mAIACriticalCheck->setEnabled(bStatus);
+    mAIAClearBtn->setEnabled(bStatus);
     mAIAAddBtn->setEnabled(bStatus);
     mAIATypeCombo->setEnabled(bStatus);
     mAIATargetCombo->setEnabled(bStatus);
@@ -484,6 +550,7 @@ void MakeCertProfileDlg::clickCRLDPUse()
 
     mCRLDPCriticalCheck->setEnabled( bStatus );
     mCRLDPCombo->setEnabled(bStatus);
+    mCRLDPClearBtn->setEnabled(bStatus);
     mCRLDPAddBtn->setEnabled(bStatus);
     mCRLDPText->setEnabled(bStatus);
     mCRLDPTable->setEnabled(bStatus);
@@ -495,6 +562,7 @@ void MakeCertProfileDlg::clickEKUUse()
 
     mEKUCriticalCheck->setEnabled( bStatus );
     mEKUCombo->setEnabled(bStatus);
+    mEKUClearBtn->setEnabled(bStatus);
     mEKUAddBtn->setEnabled(bStatus);
     mEKUList->setEnabled(bStatus);
 }
@@ -507,6 +575,7 @@ void MakeCertProfileDlg::clickIANUse()
     mIANCombo->setEnabled(bStatus);
     mIANText->setEnabled(bStatus);
     mIANTable->setEnabled(bStatus);
+    mIANClearBtn->setEnabled( bStatus );
     mIANAddBtn->setEnabled(bStatus);
 }
 
@@ -516,6 +585,7 @@ void MakeCertProfileDlg::clickKeyUsageUse()
 
     mKeyUsageCriticalCheck->setEnabled( bStatus );
     mKeyUsageCombo->setEnabled( bStatus );
+    mKeyUsageClearBtn->setEnabled( bStatus );
     mKeyUsageAddBtn->setEnabled( bStatus );
     mKeyUsageList->setEnabled( bStatus );
 }
@@ -526,6 +596,7 @@ void MakeCertProfileDlg::clickNCUse()
 
     mNCCriticalCheck->setEnabled(bStatus);
     mNCSubCombo->setEnabled(bStatus);
+    mNCClearBtn->setEnabled(bStatus);
     mNCAddBtn->setEnabled(bStatus);
     mNCTypeCombo->setEnabled(bStatus);
     mNCSubText->setEnabled(bStatus);
@@ -539,6 +610,7 @@ void MakeCertProfileDlg::clickPolicyUse()
     bool bStatus = mPolicyUseCheck->isChecked();
 
     mPolicyCriticalCheck->setEnabled( bStatus );
+    mPolicyClearBtn->setEnabled( bStatus );
     mPolicyAddBtn->setEnabled( bStatus );
     mPolicyOIDText->setEnabled( bStatus );
     mPolicyCPSText->setEnabled( bStatus );
@@ -560,6 +632,7 @@ void MakeCertProfileDlg::clickPMUse()
     bool bStatus = mPMUseCheck->isChecked();
 
     mPMCriticalCheck->setEnabled(bStatus);
+    mPMClearBtn->setEnabled( bStatus );
     mPMAddBtn->setEnabled(bStatus);
     mPMIssuerDomainPolicyText->setEnabled(bStatus);
     mPMSubjectDomainPolicyText->setEnabled(bStatus);
@@ -579,11 +652,23 @@ void MakeCertProfileDlg::clickSANUse()
 
     mSANCriticalCheck->setEnabled(bStatus);
     mSANCombo->setEnabled(bStatus);
+    mSANClearBtn->setEnabled(bStatus);
     mSANAddBtn->setEnabled(bStatus);
     mSANText->setEnabled(bStatus);
     mSANTable->setEnabled(bStatus);
 }
 
+void MakeCertProfileDlg::clickExtensionsUse()
+{
+    bool bStatus = mExtensionsUseCheck->isChecked();
+
+    mExtensionsAddBtn->setEnabled(bStatus);
+    mExtensionsClearBtn->setEnabled(bStatus);
+    mExtensionsOIDText->setEnabled(bStatus);
+    mExtensionsCriticalCheck->setEnabled(bStatus);
+    mExtensionsValueText->setEnabled(bStatus);
+    mExtensionsTable->setEnabled(bStatus);
+}
 
 void MakeCertProfileDlg::addKeyUsage()
 {
@@ -602,6 +687,7 @@ void MakeCertProfileDlg::addPolicy()
 
     mPolicyTable->setRowCount( row + 1 );
 
+    mPolicyTable->setRowHeight( row, 10 );
     mPolicyTable->setItem( row, 0, new QTableWidgetItem(strOID));
     mPolicyTable->setItem( row, 1, new QTableWidgetItem(strCPS));
     mPolicyTable->setItem( row, 2, new QTableWidgetItem(strUserNotice));
@@ -622,6 +708,7 @@ void MakeCertProfileDlg::addCRLDP()
     int row = mCRLDPTable->rowCount();
     mCRLDPTable->setRowCount( row + 1 );
 
+    mCRLDPTable->setRowHeight( row, 10 );
     mCRLDPTable->setItem( row, 0, new QTableWidgetItem( strType ));
     mCRLDPTable->setItem( row, 1, new QTableWidgetItem( strVal ));
 }
@@ -636,6 +723,7 @@ void MakeCertProfileDlg::addAIA()
 
     mAIATable->setRowCount( row + 1 );
 
+    mAIATable->setRowHeight( row, 10 );
     mAIATable->setItem( row, 0, new QTableWidgetItem( strTarget ));
     mAIATable->setItem( row, 1, new QTableWidgetItem( strType) );
     mAIATable->setItem( row, 2, new QTableWidgetItem( strVal ));
@@ -649,6 +737,7 @@ void MakeCertProfileDlg::addSAN()
     int row = mSANTable->rowCount();
     mSANTable->setRowCount( row + 1 );
 
+    mSANTable->setRowHeight( row, 10 );
     mSANTable->setItem( row, 0, new QTableWidgetItem(strType));
     mSANTable->setItem( row, 1, new QTableWidgetItem(strVal));
 }
@@ -661,6 +750,7 @@ void MakeCertProfileDlg::addIAN()
     int row = mIANTable->rowCount();
     mIANTable->setRowCount( row + 1 );
 
+    mIANTable->setRowHeight( row, 10 );
     mIANTable->setItem( row, 0, new QTableWidgetItem(strType));
     mIANTable->setItem( row, 1, new QTableWidgetItem(strVal));
 }
@@ -673,6 +763,7 @@ void MakeCertProfileDlg::addPM()
     int row = mPMTable->rowCount();
     mPMTable->setRowCount( row + 1 );
 
+    mPMTable->setRowHeight( row, 10 );
     mPMTable->setItem( row, 0, new QTableWidgetItem( "IssuerDomainPolicy"));
     mPMTable->setItem( row, 1, new QTableWidgetItem( strIDP));
     mPMTable->setItem( row, 2, new QTableWidgetItem( "SubjectDomainPolicy"));
@@ -690,11 +781,32 @@ void MakeCertProfileDlg::addNC()
     int row = mNCTable->rowCount();
     mNCTable->setRowCount( row + 1 );
 
+    mNCTable->setRowHeight( row, 10 );
     mNCTable->setItem( row, 0, new QTableWidgetItem(strType));
     mNCTable->setItem( row, 1, new QTableWidgetItem(strSubType));
     mNCTable->setItem( row, 2, new QTableWidgetItem(strVal));
     mNCTable->setItem( row, 3, new QTableWidgetItem(strMax));
     mNCTable->setItem( row, 4, new QTableWidgetItem(strMin));
+}
+
+void MakeCertProfileDlg::addExtensions()
+{
+    QString strOID = mExtensionsOIDText->text();
+    QString strValue = mExtensionsValueText->toPlainText();
+    bool bCrit = mExtensionsCriticalCheck->isChecked();
+    QString strCrit;
+
+    if( bCrit )
+        strCrit = "ture";
+    else
+        strCrit = "false";
+
+    int row = mExtensionsTable->rowCount();
+    mExtensionsTable->setRowCount( row + 1 );
+    mExtensionsTable->setRowHeight( row, 10 );
+    mExtensionsTable->setItem( row, 0, new QTableWidgetItem(strOID));
+    mExtensionsTable->setItem( row, 1, new QTableWidgetItem(strCrit));
+    mExtensionsTable->setItem( row, 2, new QTableWidgetItem(strValue));
 }
 
 void MakeCertProfileDlg::clearKeyUsage()
@@ -761,6 +873,14 @@ void MakeCertProfileDlg::clearNC()
 
     for( int i=0; i < nCnt; i++)
         mNCTable->removeRow(0);
+}
+
+void MakeCertProfileDlg::clearExtensions()
+{
+    int nCount = mExtensionsTable->rowCount();
+
+    for( int i = 0; i < nCount; i++ )
+        mExtensionsTable->removeRow(0);
 }
 
 void MakeCertProfileDlg::saveAIAUse(int nProfileNum )
@@ -1070,6 +1190,31 @@ void MakeCertProfileDlg::saveSANUse(int nProfileNum)
     JS_DB_resetProfileExt( &sProfileExt );
 }
 
+void MakeCertProfileDlg::saveExtensionsUse( int nProfileNum )
+{
+    JCC_ProfileExt   sProfileExt;
+    memset( &sProfileExt, 0x00, sizeof(sProfileExt));
+
+    int nCount = mExtensionsTable->rowCount();
+
+    for( int i = 0; i < nCount; i++ )
+    {
+        JCC_ProfileExt   sProfileExt;
+        memset( &sProfileExt, 0x00, sizeof(sProfileExt));
+
+        bool bCrit = false;
+        QString strOID = mExtensionsTable->takeItem( i, 0 )->text();
+        QString strCrit = mExtensionsTable->takeItem( i, 1 )->text();
+        QString strValue = mExtensionsTable->takeItem( i, 2)->text();
+
+        if( strCrit == "true" ) bCrit = true;
+
+        JS_DB_setProfileExt( &sProfileExt, -1, nProfileNum, bCrit, strOID.toStdString().c_str(), strValue.toStdString().c_str() );
+        manApplet->ccClient()->addCertProfileExt( nProfileNum, &sProfileExt );
+        JS_DB_resetProfileExt( &sProfileExt );
+    }
+}
+
 void MakeCertProfileDlg::setAIAUse( JCC_ProfileExt *pProfileExt )
 {
     mAIAUseCheck->setChecked(true);
@@ -1364,4 +1509,26 @@ void MakeCertProfileDlg::setSANUse( JCC_ProfileExt *pProfileExt )
         mSANTable->setItem( i, 0, new QTableWidgetItem(strType));
         mSANTable->setItem(i, 1, new QTableWidgetItem(strData));
     }
+}
+
+void MakeCertProfileDlg::setExtensionsUse( JCC_ProfileExt *pProfileExt )
+{
+    mExtensionsUseCheck->setChecked(true);
+    clickExtensionsUse();
+
+    QString strOID = pProfileExt->pSN;
+    QString strValue = pProfileExt->pValue;
+    QString strCrit;
+
+    if( pProfileExt->bCritical )
+        strCrit = "true";
+    else
+        strCrit = "false";
+
+    int row = mExtensionsTable->rowCount();
+    mExtensionsTable->setRowCount( row + 1 );
+    mExtensionsTable->setRowHeight( row, 10 );
+    mExtensionsTable->setItem( row, 0, new QTableWidgetItem(strOID));
+    mExtensionsTable->setItem( row, 1, new QTableWidgetItem(strCrit));
+    mExtensionsTable->setItem( row, 2, new QTableWidgetItem(strValue));
 }

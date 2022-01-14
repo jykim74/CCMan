@@ -88,6 +88,9 @@ const QStringList kRevokeReasonList = {
     "keyTime","CAKeyTime"
 };
 
+const QString kTableStyle = "QHeaderView::section {background-color:#404040;color:#FFFFFF;}";
+
+
 QString getDateTime( time_t tTime );
 QString getRecStatusName( int nStatus );
 QString getAdminTypeName( int nType );
