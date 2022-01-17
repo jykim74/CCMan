@@ -3,22 +3,22 @@
 #include "js_cc.h"
 #include "js_http.h"
 
-#include "reg_user_dlg.h"
+#include "user_dlg.h"
 #include "account_info.h"
 #include "cc_client.h"
 
-RegUserDlg::RegUserDlg(QWidget *parent) :
+UserDlg::UserDlg(QWidget *parent) :
     QDialog(parent)
 {
     setupUi(this);
 }
 
-RegUserDlg::~RegUserDlg()
+UserDlg::~UserDlg()
 {
 
 }
 
-void RegUserDlg::accept()
+void UserDlg::accept()
 {
     int     ret = 0;
     char    *pReq = NULL;

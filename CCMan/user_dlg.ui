@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RegUserDlg</class>
- <widget class="QDialog" name="RegUserDlg">
+ <class>UserDlg</class>
+ <widget class="QDialog" name="UserDlg">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -81,7 +81,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>RegUserDlg</receiver>
+   <receiver>UserDlg</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -97,7 +97,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>RegUserDlg</receiver>
+   <receiver>UserDlg</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

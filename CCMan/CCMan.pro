@@ -40,13 +40,13 @@ SOURCES += \
     man_tree_item.cpp \
     man_tree_model.cpp \
     man_tree_view.cpp \
-    reg_user_dlg.cpp \
     revoke_cert_dlg.cpp \
     search_menu.cpp \
     settings_dlg.cpp \
     settings_mgr.cpp \
     signer_dlg.cpp \
-    stat_form.cpp
+    stat_form.cpp \
+    user_dlg.cpp
 
 HEADERS += \
     about_dlg.h \
@@ -69,14 +69,14 @@ HEADERS += \
     man_tree_item.h \
     man_tree_model.h \
     man_tree_view.h \
-    reg_user_dlg.h \
     revoke_cert_dlg.h \
     search_menu.h \
     settings_dlg.h \
     settings_mgr.h \
     signer_dlg.h \
     singleton.h \
-    stat_form.h
+    stat_form.h \
+    user_dlg.h
 
 FORMS += \
     about_dlg.ui \
@@ -89,11 +89,11 @@ FORMS += \
     mainwindow.ui \
     make_cert_profile_dlg.ui \
     make_crl_profile_dlg.ui \
-    reg_user_dlg.ui \
     revoke_cert_dlg.ui \
     settings_dlg.ui \
     signer_dlg.ui \
-    stat_form.ui
+    stat_form.ui \
+    user_dlg.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

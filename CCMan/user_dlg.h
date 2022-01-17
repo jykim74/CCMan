@@ -2,19 +2,19 @@
 #define REG_USER_DLG_H
 
 #include <QDialog>
-#include "ui_reg_user_dlg.h"
+#include "ui_user_dlg.h"
 
 namespace Ui {
-class RegUserDlg;
+class UserDlg;
 }
 
-class RegUserDlg : public QDialog, public Ui::RegUserDlg
+class UserDlg : public QDialog, public Ui::UserDlg
 {
     Q_OBJECT
 
 public:
-    explicit RegUserDlg(QWidget *parent = nullptr);
-    ~RegUserDlg();
+    explicit UserDlg(QWidget *parent = nullptr);
+    ~UserDlg();
 
     virtual void accept();
 

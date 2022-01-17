@@ -82,6 +82,7 @@ public slots:
     void showRightMenu(QPoint point);
     void deleteUser();
     void modifyUser();
+    void modifyAdmin();
     void makeCertProfile();
     void makeCRLProfile();
     void regSigner();

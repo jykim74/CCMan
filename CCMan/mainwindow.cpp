@@ -11,7 +11,7 @@
 #include "man_tree_view.h"
 #include "man_right_widget.h"
 #include "search_menu.h"
-#include "reg_user_dlg.h"
+#include "user_dlg.h"
 #include "cc_client.h"
 #include "settings_dlg.h"
 #include "about_dlg.h"
@@ -181,7 +181,11 @@ void MainWindow::showRightMenu(QPoint point)
 
     QMenu menu(this);
 
-    if( right_table_->type() == ITEM_TYPE_USER )
+    if( right_table_->type() == ITEM_TYPE_ADMIN )
+    {
+        menu.addAction( tr("ModifyAdmin"), this, &MainWindow::modifyAdmin );
+    }
+    else if( right_table_->type() == ITEM_TYPE_USER )
     {
         menu.addAction( tr("DeleteUser"), this, &MainWindow::deleteUser );
         menu.addAction( tr("ModifyUser"), this, &MainWindow::modifyUser );
@@ -1700,8 +1704,8 @@ void MainWindow::removeAllRight()
 
 void MainWindow::regUser()
 {
-    RegUserDlg regUserDlg;
-    regUserDlg.exec();
+    UserDlg userDlg;
+    userDlg.exec();
 }
 
 void MainWindow::regAdmin()
@@ -1717,6 +1721,10 @@ void MainWindow::deleteUser()
 
     QTableWidgetItem* item = right_table_->item( row, 0 );
     int nSeq = item->text().toInt();
+    QString strMsg = tr( "Are you sure to delete user?" );
+
+    bool bVal = manApplet->yesOrNoBox( strMsg, NULL, false );
+    if( bVal == false ) return;
 
     manApplet->ccClient()->delUser( nSeq );
 
@@ -1730,6 +1738,19 @@ void MainWindow::modifyUser()
 
     QTableWidgetItem* item = right_table_->item( row, 0 );
     int nSeq = item->text().toInt();
+}
+
+void MainWindow::modifyAdmin()
+{
+    int row = right_table_->currentRow();
+    if( row < 0 ) return;
+
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+    int nSeq = item->text().toInt();
+
+    AdminDlg adminDlg;
+    adminDlg.setEditMode( nSeq );
+    adminDlg.exec();
 }
 
 void MainWindow::makeCertProfile()

@@ -1,6 +1,7 @@
 #include "admin_dlg.h"
 #include "common.h"
 #include "man_applet.h"
+#include "mainwindow.h"
 #include "cc_client.h"
 
 const QStringList kAdminType = { "Invalid", "Master", "Admin", "Audit" };
@@ -13,6 +14,7 @@ AdminDlg::AdminDlg(QWidget *parent) :
     connect( mRegisterBtn, SIGNAL(clicked()), this, SLOT(clickRegister()));
     connect( mModifyBtn, SIGNAL(clicked()), this, SLOT(clickModify()));
     connect( mDeleteBtn, SIGNAL(clicked()), this, SLOT(clickDelete()));
+    connect( mCloseBtn, SIGNAL(clicked()), this, SLOT(close()));
 
     initialize();
 }
@@ -57,6 +59,7 @@ void AdminDlg::setEditMode( int nSeq )
     mTypeCombo->setCurrentIndex( sAdmin.nType );
 
     JS_DB_resetAdmin( &sAdmin );
+    seq_ = nSeq;
 }
 
 void AdminDlg::showEvent( QShowEvent *event )
@@ -105,14 +108,52 @@ void AdminDlg::clickRegister()
 
     ccClient->addAdmin( &sAdmin );
     JS_DB_resetAdmin( &sAdmin );
+
+    manApplet->mainWindow()->createRightAdminList();
+    QDialog::accept();
 }
 
 void AdminDlg::clickModify()
 {
+    int ret = 0;
+    JCC_Admin sAdmin;
+    CCClient* ccClient = manApplet->ccClient();
 
+    memset( &sAdmin, 0x00, sizeof(sAdmin));
+
+    if( seq_ < 0 )
+    {
+        manApplet->warningBox( tr( "Admin is not selected"), this );
+        return;
+    }
+
+    JS_DB_setAdmin( &sAdmin,
+                    seq_,
+                    mNameText->text().toStdString().c_str(),
+                    mPasswordText->text().toStdString().c_str(),
+                    mEmailText->text().toStdString().c_str(),
+                    mStatusCombo->currentIndex(),
+                    mTypeCombo->currentIndex() );
+
+    ret = ccClient->modAdmin( seq_, &sAdmin );
+    JS_DB_resetAdmin( &sAdmin );
+
+    manApplet->mainWindow()->createRightAdminList();
+    QDialog::accept();
 }
 
 void AdminDlg::clickDelete()
 {
+    int ret = 0;
+    CCClient* ccClient = manApplet->ccClient();
 
+    if( seq_ < 0 )
+    {
+        manApplet->warningBox( tr( "Admin is not selected"), this );
+        return;
+    }
+
+    ret = ccClient->delAdmin( seq_ );
+    manApplet->mainWindow()->createRightAdminList();
+    QDialog::accept();
 }
