@@ -60,7 +60,7 @@ const QString kExtNameIDP = "issuingDistributionPoint";
 const QString kExtNameCRLReason = "CRLReason";
 
 const QStringList kStatusList = { "Invalid", "Stop", "Valid" };
-
+const QStringList kUserStatus = { "Invalid", "Reigster", "Issued", "Stop" };
 
 const QStringList kHashList = { "SHA1", "SHA224", "SHA256", "SHA384", "SHA512" };
 const QStringList kKeyUsageList = {

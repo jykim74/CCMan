@@ -6,11 +6,20 @@
 #include "user_dlg.h"
 #include "account_info.h"
 #include "cc_client.h"
+#include "common.h"
 
 UserDlg::UserDlg(QWidget *parent) :
     QDialog(parent)
 {
+    seq_ = -1;
     setupUi(this);
+
+    connect( mCloseBtn, SIGNAL(clicked()), this, SLOT(close()));
+    connect( mRegisterBtn, SIGNAL(clicked()), this, SLOT(clickRegister()));
+    connect( mModifyBtn, SIGNAL(clicked()), this, SLOT(clickModify()));
+    connect( mDeleteBtn, SIGNAL(clicked()), this ,SLOT(clickDelete()));
+
+    initialize();
 }
 
 UserDlg::~UserDlg()
@@ -18,7 +27,49 @@ UserDlg::~UserDlg()
 
 }
 
-void UserDlg::accept()
+void UserDlg::initialize()
+{
+    mStatusCombo->addItems( kUserStatus );
+
+    mStatusCombo->setEnabled( false );
+    mRefNumText->setEnabled( false );
+    mAuthCodeText->setEnabled( false );
+
+    mRegisterBtn->show();
+    mModifyBtn->hide();
+    mDeleteBtn->hide();
+}
+
+void UserDlg::setEditMode( int nSeq )
+{
+    int ret = 0;
+    CCClient* ccClient = manApplet->ccClient();
+
+    JCC_User sUser;
+
+    memset( &sUser, 0x00, sizeof(sUser));
+
+    ret = ccClient->getUser( nSeq, &sUser );
+
+    mRegisterBtn->hide();
+    mModifyBtn->show();
+    mDeleteBtn->show();
+
+    mNameText->setText( sUser.pName );
+    mSSNText->setText( sUser.pSSN );
+    mEmailText->setText( sUser.pEmail );
+
+    mStatusCombo->setCurrentIndex( sUser.nStatus );
+    mRefNumText->setText( sUser.pRefNum );
+    mAuthCodeText->setText( sUser.pAuthCode );
+    mRefNumText->setReadOnly(true);
+    mAuthCodeText->setReadOnly(true);
+
+    JS_DB_resetUser( &sUser );
+    seq_ = nSeq;
+}
+
+void UserDlg::clickRegister()
 {
     int     ret = 0;
     char    *pReq = NULL;
@@ -79,4 +130,53 @@ void UserDlg::accept()
     }
 
     manApplet->mainWindow()->createRightUserList();
+    QDialog::accept();
+}
+
+
+void UserDlg::clickModify()
+{
+    int ret = 0;
+    JCC_User sUser;
+    CCClient* ccClient = manApplet->ccClient();
+
+    memset( &sUser, 0x00, sizeof(sUser));
+
+    if(seq_ < 0 )
+    {
+        manApplet->warningBox(tr("User is not selected"), this);
+        return;
+    }
+
+    JS_DB_setUser( &sUser,
+                   seq_,
+                   -1,
+                   mNameText->text().toStdString().c_str(),
+                   mSSNText->text().toStdString().c_str(),
+                   mEmailText->text().toStdString().c_str(),
+                   mStatusCombo->currentIndex(),
+                   mRefNumText->text().toStdString().c_str(),
+                   mAuthCodeText->text().toStdString().c_str() );
+
+    ret = ccClient->modUser( seq_, &sUser );
+    JS_DB_resetUser( &sUser );
+
+    manApplet->mainWindow()->createRightUserList();
+    QDialog::accept();
+}
+
+void UserDlg::clickDelete()
+{
+    int ret = 0;
+    CCClient* ccClient = manApplet->ccClient();
+
+    if(seq_ < 0 )
+    {
+        manApplet->warningBox(tr("User is not selected"), this);
+        return;
+    }
+
+    ret = ccClient->delUser( seq_ );
+    manApplet->mainWindow()->createRightUserList();
+    QDialog::accept();
 }

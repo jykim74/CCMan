@@ -25,6 +25,7 @@ public:
     int searchUserList( const QString strTarget, const QString strWord, int nOffset, int nLimit, JCC_UserList **ppUserList );
     int getUser( int nNum, JCC_User *pUser );
     int delUser( int nNum );
+    int modUser( int nNum, JCC_User *pUser );
     int getAdmin( int nSeq, JCC_Admin *pAdmin );
     int addAdmin( JCC_Admin *pAdmin );
     int modAdmin( int nSeq, JCC_Admin *pAdmin );

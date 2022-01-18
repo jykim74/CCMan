@@ -19,6 +19,7 @@
 #include "cert_info_dlg.h"
 #include "crl_info_dlg.h"
 #include "admin_dlg.h"
+#include "user_dlg.h"
 
 #include "js_db.h"
 #include "js_db_data.h"
@@ -1738,6 +1739,10 @@ void MainWindow::modifyUser()
 
     QTableWidgetItem* item = right_table_->item( row, 0 );
     int nSeq = item->text().toInt();
+
+    UserDlg userDlg;
+    userDlg.setEditMode( nSeq );
+    userDlg.exec();
 }
 
 void MainWindow::modifyAdmin()

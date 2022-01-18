@@ -16,10 +16,16 @@ public:
     explicit UserDlg(QWidget *parent = nullptr);
     ~UserDlg();
 
-    virtual void accept();
+    void setEditMode( int nSeq );
+
+private slots:
+    void clickRegister();
+    void clickModify();
+    void clickDelete();
 
 private:
-
+    void initialize();
+    int seq_;
 };
 
 #endif // REG_USER_DLG_H
