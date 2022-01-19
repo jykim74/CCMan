@@ -1837,6 +1837,9 @@ void MainWindow::deleteSigner()
     QTableWidgetItem* item = right_table_->item( row, 0 );
 
     int num = item->text().toInt();
+    QString strMsg = tr("Are you sure to delete the signer?" );
+    bool bVal = manApplet->yesOrNoBox( strMsg, this, false );
+    if( bVal == false ) return;
 
     manApplet->ccClient()->delSigner( num );
     createRightSignerList( rightType() );

@@ -51,7 +51,7 @@ void ManTreeView::showContextMenu(QPoint point)
     }
     else if( item->type() == ITEM_TYPE_REG_SIGNER || item->type() == ITEM_TYPE_OCSP_SIGNER )
     {
-        menu.addAction(tr("RegigerSigner"), manApplet->mainWindow(), &MainWindow::regSigner );
+        menu.addAction(tr("RegSigner"), manApplet->mainWindow(), &MainWindow::regSigner );
     }
     else if( item->type() == ITEM_TYPE_CRL )
     {

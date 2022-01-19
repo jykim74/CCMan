@@ -11,6 +11,7 @@
 #include "js_db_data.h"
 #include "cc_client.h"
 #include "man_tree_item.h"
+#include "common.h"
 
 static QStringList sTypeList = { "REG Signer", "OCSP Signer" };
 
@@ -57,6 +58,7 @@ void SignerDlg::accept()
     char *pCert = NULL;
     JCC_Signer  sSigner;
     time_t now_t = time(NULL);
+    int nItemType = 0;
 
 
     memset( &sCertInfo, 0x00, sizeof(sCertInfo));
@@ -70,8 +72,9 @@ void SignerDlg::accept()
     JS_PKI_getCertInfo( &binCert, &sCertInfo, &pExtInfoList );
 
     int nType = mTypeCombo->currentIndex();
+    int nStatus = mStatusCombo->currentIndex();
 
-    JS_DB_setSigner( &sSigner, -1, now_t, nType, sCertInfo.pSubjectName, sCertInfo.pDNHash, mStatusText->text().toInt(), pCert, mDescText->toPlainText().toStdString().c_str() );
+    JS_DB_setSigner( &sSigner, -1, now_t, nType, sCertInfo.pSubjectName, sCertInfo.pDNHash, nStatus, pCert, mDescText->toPlainText().toStdString().c_str() );
     manApplet->ccClient()->addSigner( &sSigner );
 
     if( pCert ) JS_free( pCert );
@@ -81,12 +84,17 @@ void SignerDlg::accept()
 
     JS_DB_resetSigner( &sSigner );
     QDialog::accept();
-    manApplet->mainWindow()->createRightSignerList(nType);
+    if(nType == 0 )
+        nItemType = ITEM_TYPE_REG_SIGNER;
+    else
+        nItemType = ITEM_TYPE_OCSP_SIGNER;
+
+    manApplet->mainWindow()->createRightSignerList(nItemType);
 }
 
 void SignerDlg::initialize()
 {
-
+    mStatusCombo->addItems( kStatusList );
 }
 
 void SignerDlg::initUI()
