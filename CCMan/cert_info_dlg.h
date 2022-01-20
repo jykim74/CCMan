@@ -2,6 +2,8 @@
 #define CERT_INFO_DLG_H
 
 #include <QDialog>
+#include "js_db.h"
+#include "js_cc.h"
 #include "ui_cert_info_dlg.h"
 
 namespace Ui {
@@ -21,12 +23,15 @@ public:
 
 private slots:
     void showEvent(QShowEvent *event);
-    void clickClose();
     void clickField( QModelIndex index );
+    void clickCheck();
 
 private:
     int cert_num_;
+    JCC_CertList* cert_list_;
+
     void initialize();
+    void pathInit();
     void initUI();
     void clearTable();
 };

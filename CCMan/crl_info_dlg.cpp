@@ -7,6 +7,7 @@
 #include "js_pki_ext.h"
 #include "js_util.h"
 #include "cc_client.h"
+#include "common.h"
 
 
 CRLInfoDlg::CRLInfoDlg(QWidget *parent) :
@@ -19,11 +20,13 @@ CRLInfoDlg::CRLInfoDlg(QWidget *parent) :
     revoke_info_list_ = NULL;
 
     memset( &crl_info_, 0x00, sizeof(crl_info_));
+    tabWidget->setCurrentIndex(0);
 }
 
 CRLInfoDlg::~CRLInfoDlg()
 {
-
+    if( ext_info_list_ ) JS_PKI_resetExtensionInfoList( &ext_info_list_ );
+    if( revoke_info_list_ ) JS_PKI_resetRevokeInfoList( &revoke_info_list_ );
 }
 
 void CRLInfoDlg::showEvent(QShowEvent *event)
@@ -34,11 +37,6 @@ void CRLInfoDlg::showEvent(QShowEvent *event)
 void CRLInfoDlg::setCRLNum(int crl_num)
 {
     crl_num_ = crl_num;
-}
-
-void CRLInfoDlg::clickClose()
-{
-    this->hide();
 }
 
 void CRLInfoDlg::initialize()
@@ -74,11 +72,12 @@ void CRLInfoDlg::initialize()
     {
         manApplet->warningBox( tr("fail to get CRL information"), this );
         JS_BIN_reset( &binCRL );
-        this->hide();
+        close();
         return;
     }
 
     mCRLListTable->insertRow(i);
+    mCRLListTable->setRowHeight(i,10);
     mCRLListTable->setItem( i, 0, new QTableWidgetItem( QString("Version")));
     mCRLListTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(crl_info_.nVersion)));
     i++;
@@ -86,6 +85,7 @@ void CRLInfoDlg::initialize()
     if( crl_info_.pIssuerName )
     {
         mCRLListTable->insertRow(i);
+        mCRLListTable->setRowHeight(i,10);
         mCRLListTable->setItem( i, 0, new QTableWidgetItem( QString("IssuerName")));
         mCRLListTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(crl_info_.pIssuerName)));
         i++;
@@ -94,12 +94,14 @@ void CRLInfoDlg::initialize()
 
     JS_UTIL_getDateTime( crl_info_.uLastUpdate, sLastUpdate );
     mCRLListTable->insertRow(i);
+    mCRLListTable->setRowHeight(i,10);
     mCRLListTable->setItem( i, 0, new QTableWidgetItem( QString("LastUpdate")));
     mCRLListTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sLastUpdate)));
     i++;
 
     JS_UTIL_getDateTime( crl_info_.uNextUpdate, sNextUpdate );
     mCRLListTable->insertRow(i);
+    mCRLListTable->setRowHeight(i,10);
     mCRLListTable->setItem( i, 0, new QTableWidgetItem( QString("NextUpdate")));
     mCRLListTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sNextUpdate)));
     i++;
@@ -107,6 +109,7 @@ void CRLInfoDlg::initialize()
     if( crl_info_.pSignAlgorithm )
     {
         mCRLListTable->insertRow(i);
+        mCRLListTable->setRowHeight(i,10);
         mCRLListTable->setItem( i, 0, new QTableWidgetItem( QString("SignAlgorithm")));
         mCRLListTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(crl_info_.pSignAlgorithm)));
         i++;
@@ -115,6 +118,7 @@ void CRLInfoDlg::initialize()
     if( crl_info_.pSignature )
     {
         mCRLListTable->insertRow(i);
+        mCRLListTable->setRowHeight(i,10);
         mCRLListTable->setItem( i, 0, new QTableWidgetItem( QString("Signature")));
         mCRLListTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(crl_info_.pSignature)));
         i++;
@@ -131,6 +135,7 @@ void CRLInfoDlg::initialize()
             JS_PKI_transExtensionToDBRec( &pCurList->sExtensionInfo, &sProfileExt );
 
             mCRLListTable->insertRow(i);
+            mCRLListTable->setRowHeight(i,10);
             mCRLListTable->setItem(i,0, new QTableWidgetItem(QString("%1").arg( sProfileExt.pSN )));
             mCRLListTable->setItem(i,1, new QTableWidgetItem(QString("[%1]%2")
                                                                .arg( sProfileExt.bCritical )
@@ -151,6 +156,7 @@ void CRLInfoDlg::initialize()
         while( pCurRevList )
         {
             mRevokeListTable->insertRow(k);
+            mRevokeListTable->setRowHeight(i,10);
             mRevokeListTable->setItem( k, 0, new QTableWidgetItem(QString("%1").arg( pCurRevList->sRevokeInfo.pSerial)));
             mRevokeListTable->setItem( k, 1, new QTableWidgetItem(QString("%1").arg( pCurRevList->sRevokeInfo.uRevokeDate)));
 
@@ -172,6 +178,9 @@ void CRLInfoDlg::initUI()
     mCRLListTable->setColumnCount(2);
     mCRLListTable->setHorizontalHeaderLabels( sCRLLabels );
     mCRLListTable->verticalHeader()->setVisible(false);
+    mCRLListTable->horizontalHeader()->setStyleSheet( kTableStyle );
+    mCRLListTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    mCRLListTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     QStringList sRevokeLabels = { tr("Serial"), tr("RevokedDate") };
     mRevokeListTable->clear();
@@ -179,14 +188,20 @@ void CRLInfoDlg::initUI()
     mRevokeListTable->setColumnCount(2);
     mRevokeListTable->setHorizontalHeaderLabels( sRevokeLabels );
     mRevokeListTable->verticalHeader()->setVisible(false);
+    mRevokeListTable->horizontalHeader()->setStyleSheet( kTableStyle );
+    mRevokeListTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    mRevokeListTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     mRevokeDetailTable->clear();
     mRevokeDetailTable->horizontalHeader()->setStretchLastSection(true);
     mRevokeDetailTable->setColumnCount(2);
     mRevokeDetailTable->setHorizontalHeaderLabels(sCRLLabels);
     mRevokeDetailTable->verticalHeader()->setVisible(false);
+    mRevokeDetailTable->horizontalHeader()->setStyleSheet( kTableStyle );
+    mRevokeDetailTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    mRevokeDetailTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-    connect( mCloseBtn, SIGNAL(clicked()), this, SLOT(clickClose()));
+    connect( mCloseBtn, SIGNAL(clicked()), this, SLOT(close()));
     connect( mCRLListTable, SIGNAL(clicked(QModelIndex)), this, SLOT(clickCRLField(QModelIndex)));
     connect( mRevokeListTable, SIGNAL(clicked(QModelIndex)), this, SLOT(clickRevokeField(QModelIndex)));
 }
@@ -244,6 +259,7 @@ void CRLInfoDlg::clickRevokeField(QModelIndex index)
 
 
     mRevokeDetailTable->insertRow(0);
+    mRevokeDetailTable->setRowHeight(0,10);
     mRevokeDetailTable->setItem(0,0, new QTableWidgetItem(QString("%1")
                                                                 .arg( sProfileExt.pSN )));
     mRevokeDetailTable->setItem(0,1, new QTableWidgetItem(QString("[%1]%2")

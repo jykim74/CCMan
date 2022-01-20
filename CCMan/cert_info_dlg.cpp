@@ -6,7 +6,7 @@
 #include "js_pki_ext.h"
 #include "js_util.h"
 #include "cc_client.h"
-
+#include "common.h"
 
 CertInfoDlg::CertInfoDlg(QWidget *parent) :
     QDialog(parent)
@@ -15,11 +15,12 @@ CertInfoDlg::CertInfoDlg(QWidget *parent) :
 
     initUI();
     cert_num_ = -1;
+    cert_list_ = NULL;
 }
 
 CertInfoDlg::~CertInfoDlg()
 {
-
+    if( cert_list_ ) JS_DB_resetCertList( &cert_list_ );
 }
 
 void CertInfoDlg::setCertNum(int cert_num)
@@ -30,6 +31,7 @@ void CertInfoDlg::setCertNum(int cert_num)
 void CertInfoDlg::showEvent(QShowEvent *event)
 {
     initialize();
+    pathInit();
 }
 
 void CertInfoDlg::initialize()
@@ -49,7 +51,7 @@ void CertInfoDlg::initialize()
     if( cert_num_ < 0 )
     {
         manApplet->warningBox( tr( "Select certificate"), this );
-        this->hide();
+        close();
         return;
     }
 
@@ -70,6 +72,7 @@ void CertInfoDlg::initialize()
     }
 
     mFieldTable->insertRow(i);
+    mFieldTable->setRowHeight(i,10);
     mFieldTable->setItem( i, 0, new QTableWidgetItem( QString("Version")));
     mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.nVersion)));
     i++;
@@ -77,6 +80,7 @@ void CertInfoDlg::initialize()
     if( sCertInfo.pSerial )
     {
         mFieldTable->insertRow(i);
+        mFieldTable->setRowHeight(i,10);
         mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("Serial")));
         mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSerial)));
         i++;
@@ -84,12 +88,14 @@ void CertInfoDlg::initialize()
 
     JS_UTIL_getDateTime( sCertInfo.uNotBefore, sNotBefore );
     mFieldTable->insertRow(i);
+    mFieldTable->setRowHeight(i,10);
     mFieldTable->setItem( i, 0, new QTableWidgetItem( QString("NotBefore")));
     mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sNotBefore)));
     i++;
 
     JS_UTIL_getDateTime( sCertInfo.uNotAfter, sNotAfter );
     mFieldTable->insertRow(i);
+    mFieldTable->setRowHeight(i,10);
     mFieldTable->setItem( i, 0, new QTableWidgetItem( QString("NotAfter")));
     mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sNotAfter)));
     i++;
@@ -99,6 +105,7 @@ void CertInfoDlg::initialize()
         QString name = QString::fromUtf8( sCertInfo.pSubjectName );
 
         mFieldTable->insertRow(i);
+        mFieldTable->setRowHeight(i,10);
         mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("SubjectName")));
         mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg( name )));
         i++;
@@ -107,6 +114,7 @@ void CertInfoDlg::initialize()
     if( sCertInfo.pPublicKey )
     {
         mFieldTable->insertRow(i);
+        mFieldTable->setRowHeight(i,10);
         mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("PublicKey")));
         mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pPublicKey)));
         i++;
@@ -115,6 +123,7 @@ void CertInfoDlg::initialize()
     if( sCertInfo.pIssuerName )
     {
         mFieldTable->insertRow(i);
+        mFieldTable->setRowHeight(i,10);
         mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("IssuerName")));
         mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pIssuerName)));
         i++;
@@ -123,6 +132,7 @@ void CertInfoDlg::initialize()
     if( sCertInfo.pSignAlgorithm )
     {
         mFieldTable->insertRow(i);
+        mFieldTable->setRowHeight(i,10);
         mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("SigAlgorithm")));
         mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSignAlgorithm)));
         i++;
@@ -131,6 +141,7 @@ void CertInfoDlg::initialize()
     if( sCertInfo.pSignature )
     {
         mFieldTable->insertRow(i);
+        mFieldTable->setRowHeight(i,10);
         mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("Signature")));
         mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSignature)));
         i++;
@@ -147,6 +158,7 @@ void CertInfoDlg::initialize()
             JS_PKI_transExtensionToDBRec( &pCurList->sExtensionInfo, &sProfileRec );
 
             mFieldTable->insertRow(i);
+            mFieldTable->setRowHeight(i,10);
             mFieldTable->setItem(i,0, new QTableWidgetItem(QString("%1").arg( sProfileRec.pSN )));
             mFieldTable->setItem(i,1, new QTableWidgetItem(QString("[%1]%2")
                                                                .arg( sProfileRec.bCritical )
@@ -166,6 +178,60 @@ void CertInfoDlg::initialize()
     JS_DB_resetCert( &sCert );
 }
 
+void CertInfoDlg::pathInit()
+{
+    int i = 0;
+    JCC_Cert sCert;
+    JCC_CertList *pCurList = NULL;
+    CCClient* ccClient = manApplet->ccClient();
+
+    memset( &sCert, 0x00, sizeof(sCert));
+
+    ccClient->getCert( cert_num_, &sCert );
+    JS_DB_createCertList( &sCert, &cert_list_ );
+
+    int nIssuerNum = sCert.nIssuerNum;
+    JS_DB_resetCert( &sCert );
+
+    while( nIssuerNum > 0 )
+    {
+        ccClient->getCert( nIssuerNum, &sCert );
+        JS_DB_appendCertList( cert_list_, &sCert );
+
+        nIssuerNum = sCert.nIssuerNum;
+        JS_DB_resetCert( &sCert );
+    }
+
+    mCertPathTree->clear();
+    mCertPathTree->header()->setVisible(false);
+    mCertPathTree->setColumnCount(1);
+
+    pCurList = cert_list_;
+    QList<QTreeWidgetItem *> items;
+    QTreeWidgetItem* pPrevItem = NULL;
+
+    while( pCurList )
+    {
+        QTreeWidgetItem *item = new QTreeWidgetItem(0);
+        item->setText( 0, pCurList->sCert.pSubjectDN );
+
+        if( i == 0 )
+        {
+            mCertPathTree->insertTopLevelItem(0, item );
+        }
+        else
+        {
+            pPrevItem->addChild( item );
+        }
+
+        pPrevItem = item;
+        pCurList = pCurList->pNext;
+        i++;
+    }
+
+    mCertPathTree->expandAll();
+}
+
 void CertInfoDlg::initUI()
 {
     QStringList sBaseLabels = { tr("Field"), tr("Value") };
@@ -175,15 +241,15 @@ void CertInfoDlg::initUI()
     mFieldTable->setColumnCount(2);
     mFieldTable->setHorizontalHeaderLabels( sBaseLabels );
     mFieldTable->verticalHeader()->setVisible(false);
+    mFieldTable->horizontalHeader()->setStyleSheet( kTableStyle );
+    mFieldTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    mFieldTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-    connect( mCloseBtn, SIGNAL(clicked()), this, SLOT(clickClose()));
+    connect( mCloseBtn, SIGNAL(clicked()), this, SLOT(close()));
     connect( mFieldTable, SIGNAL(clicked(QModelIndex)), this, SLOT(clickField(QModelIndex)));
+    connect( mCheckBtn, SIGNAL(clicked()), this, SLOT(clickCheck()));
 }
 
-void CertInfoDlg::clickClose()
-{
-    this->hide();
-}
 
 void CertInfoDlg::clickField(QModelIndex index)
 {
@@ -193,7 +259,52 @@ void CertInfoDlg::clickField(QModelIndex index)
     QTableWidgetItem* item = mFieldTable->item( row, 1 );
     if( item == NULL ) return;
 
-    mDetailText->setText( item->text() );
+    mDetailText->setPlainText( item->text() );
+}
+
+void CertInfoDlg::clickCheck()
+{
+    int ret = 0;
+    int i = 0;
+    tabWidget->setCurrentIndex(1);
+
+    BINList *pChainList = NULL;
+    BIN     binCert = {0,0};
+    JCC_CertList *pCurList = NULL;
+
+    int nCount = JS_DB_countCertList( cert_list_ );
+    pCurList = cert_list_;
+
+    while( pCurList )
+    {
+        if( i == nCount - 1 )
+        {
+            JS_BIN_decodeHex( pCurList->sCert.pCert, &binCert );
+        }
+        else
+        {
+            BIN bin = {0,0};
+            JS_BIN_decodeHex( pCurList->sCert.pCert, &bin );
+
+            if( pChainList == NULL )
+                JS_BIN_createList( &bin, &pChainList );
+            else
+                JS_BIN_appendList( pChainList, &bin );
+
+            JS_BIN_reset( &bin );
+        }
+
+        i++;
+        pCurList = pCurList->pNext;
+    }
+
+    ret = JS_PKI_checkValidPath( pChainList, NULL, &binCert );
+
+    QString strRes = QString( "Ret: %1").arg( ret );
+    mCertStatusText->setPlainText( strRes );
+
+    if( pChainList ) JS_BIN_resetList( &pChainList );
+    JS_BIN_reset( &binCert );
 }
 
 void CertInfoDlg::clearTable()
