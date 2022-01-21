@@ -3,6 +3,8 @@
 #include "search_menu.h"
 #include "mainwindow.h"
 #include "man_applet.h"
+#include "settings_mgr.h"
+#include "man_tree_item.h"
 
 static QStringList s_condBaseList = {"Page"};
 static QStringList  s_condCertList = { "Page", "SubjectDN", "Serial" };
@@ -27,7 +29,6 @@ SearchMenu::SearchMenu(QWidget *parent) : QWidget(parent)
 
     cur_page_ = 0;
     total_count_ = 0;
-    limit_ = 0;
 
     connect( left_end_btn_, SIGNAL(clicked()), this, SLOT(leftEndPage()));
     connect( left_btn_, SIGNAL(clicked()), this, SLOT(leftPage()));
@@ -42,6 +43,8 @@ void SearchMenu::setupUI()
 {
     QGridLayout *layout = new QGridLayout;
 
+    cond_combo_->setMinimumWidth( 80 );
+
     layout->addWidget( left_end_btn_, 0, 0 );
     layout->addWidget( left_btn_, 0, 1 );
     layout->addWidget( page_label_, 0, 2 );
@@ -55,13 +58,38 @@ void SearchMenu::setupUI()
     setLayout( layout );
 }
 
+void SearchMenu::setCondCombo()
+{
+    cond_combo_->clear();
+    input_text_->clear();
+    int nType = manApplet->mainWindow()->rightType();
+
+    if( nType == ITEM_TYPE_CERT )
+        cond_combo_->addItems( s_condCertList );
+    else if( nType == ITEM_TYPE_REVOKE )
+        cond_combo_->addItems( s_condRevokeList );
+    else if( nType == ITEM_TYPE_USER  )
+        cond_combo_->addItems( s_condUserList );
+    else if( nType == ITEM_TYPE_CRL )
+        cond_combo_->addItems( s_condCRLList );
+    else
+        cond_combo_->addItems( s_condBaseList );
+}
+
+
 void SearchMenu::updatePageLabel()
 {
-    int nOffset = cur_page_ * limit_;
+    int nOffset = cur_page_ * manApplet->settingsMgr()->listCount();
     int nEnd = nOffset + manApplet->mainWindow()->rightCount();
 
-    QString label = QString( "%1-%2 of %3" ).arg( nOffset + 1 ).arg( nEnd ).arg( total_count_ );
+    QString label = QString( "%1-%2 of %3 [%4p]" )
+            .arg( nOffset + 1 )
+            .arg( nEnd )
+            .arg( total_count_ )
+            .arg( cur_page_ + 1 );
+
     page_label_->setText( label );
+    setCondCombo();
 }
 
 void SearchMenu::setTotalCount( int count )
@@ -72,11 +100,6 @@ void SearchMenu::setTotalCount( int count )
 void SearchMenu::setCurPage( int page )
 {
     cur_page_ = page;
-}
-
-void SearchMenu::setLimit( int limit )
-{
-    limit_ = limit;
 }
 
 QString SearchMenu::getCondName()
@@ -108,32 +131,31 @@ void SearchMenu::leftEndPage()
 
 void SearchMenu::rightPage()
 {
-    if( limit_ <= 0 ) return;
-
-    int end_page = int ( total_count_ / limit_ );
+    int nListCount = manApplet->settingsMgr()->listCount();
+    int end_page = int ( (total_count_ - 1 ) / nListCount );
     int type = manApplet->mainWindow()->rightType();
 
     fprintf( stderr, "cur_page : %d, end_page : %d\n", cur_page_, end_page );
 
     cur_page_ = cur_page_ + 1;
-    if( cur_page_ >= end_page ) cur_page_ =  ( end_page - 1 );
+    if( cur_page_ >= end_page ) cur_page_ = end_page;
 
     manApplet->mainWindow()->createRightList( type );
 }
 
 void SearchMenu::rightEndPage()
 {
-    if( limit_ <= 0 ) return;
-
+    int nListCount = manApplet->settingsMgr()->listCount();
     int type = manApplet->mainWindow()->rightType();
-    cur_page_ = int( (total_count_ / limit_) - 1 );
+    int end_page = int(( total_count_ - 1 ) / nListCount);
+
+    cur_page_ = end_page;
+
     manApplet->mainWindow()->createRightList( type );
 }
 
 void SearchMenu::search()
 {
-    if( limit_ <= 0 ) return;
-
     QString strTarget = cond_combo_->currentText();
     QString strWord = input_text_->text();
     int type = manApplet->mainWindow()->rightType();
@@ -141,6 +163,9 @@ void SearchMenu::search()
     if( strTarget == "Page" )
     {
         cur_page_ = strWord.toInt();
+        cur_page_--;
+        if( cur_page_ < 0 ) cur_page_ = 0;
+
         input_text_->clear();
     }
 

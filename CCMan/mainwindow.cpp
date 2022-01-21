@@ -144,26 +144,52 @@ void MainWindow::createActions()
     toolsMenu->addAction(regUserAct);
     toolsToolBar->addAction(regUserAct);
 
-    QAction *makeCertProfileAct = toolsMenu->addAction(tr("&MakeCertProfile"), this, &MainWindow::makeCertProfile);
-    makeCertProfileAct->setStatusTip(tr( "Make certificate profile"));
-
-    QAction *makeCRLProfileAct = toolsMenu->addAction(tr("&MakeCRLProfile"), this, &MainWindow::makeCRLProfile);
-    makeCRLProfileAct->setStatusTip(tr( "Make CRL Profile"));
-
-    QAction *regSignerAct = toolsMenu->addAction(tr("&RegSigner"), this, &MainWindow::regSigner);
-    regSignerAct->setStatusTip(tr("Register Signer"));
-
-    QAction *issueCertAct = toolsMenu->addAction(tr("&IssueCert"), this, &MainWindow::issueCert);
+    const QIcon certIcon = QIcon::fromTheme( "document-cert", QIcon(":/images/cert.png"));
+    QAction *issueCertAct = new QAction( certIcon, tr("&IssueCert"), this );
     issueCertAct->setStatusTip(tr("Issue certificate") );
+    connect( issueCertAct, &QAction::triggered, this, &MainWindow::issueCert );
+    toolsMenu->addAction(issueCertAct);
+    toolsToolBar->addAction(issueCertAct);
+
+    const QIcon signerRegIcon = QIcon::fromTheme("signer-register", QIcon(":/images/signer_reg.png"));
+    QAction *regSignerAct = new QAction( signerRegIcon, tr("Register&Signer"), this );
+    regSignerAct->setStatusTip(tr( "Register Signer"));
+    connect( regSignerAct, &QAction::triggered, this, &MainWindow::regSigner );
+    toolsMenu->addAction( regSignerAct );
+    toolsToolBar->addAction( regSignerAct );
 
     QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
     QToolBar *helpToolBar = addToolBar(tr("Help"));
 
-    QAction *aboutAct = helpMenu->addAction(tr("About"), this, &MainWindow::about );
-    aboutAct->setStatusTip( tr("About CCMan"));
-
-    QAction *settingsAct = helpMenu->addAction(tr("Settings"), this, &MainWindow::settings );
+    const QIcon settingIcon = QIcon::fromTheme("setting", QIcon(":/images/setting.png"));
+    QAction *settingsAct = new QAction( settingIcon, tr("&Settings"), this);
+    connect( settingsAct, &QAction::triggered, this, &MainWindow::settings);
     settingsAct->setStatusTip(tr("Settings CCMan"));
+    helpMenu->addAction( settingsAct );
+    helpToolBar->addAction( settingsAct );
+
+    const QIcon caManIcon = QIcon::fromTheme("certman", QIcon(":/images/caman.png"));
+    QAction *aboutAct = new QAction( caManIcon, tr("&About CCMan"), this);
+    connect( aboutAct, &QAction::triggered, this, &MainWindow::about);
+    helpMenu->addAction( aboutAct );
+    helpToolBar->addAction( aboutAct );
+    aboutAct->setStatusTip(tr("About CertMan"));
+
+    const QIcon certProfileIcon = QIcon::fromTheme("cert-profile", QIcon(":/images/cert_profile.png"));
+    QAction *makeCertProfileAct = new QAction( certProfileIcon, tr("MakeCert&Profile"), this );
+    makeCertProfileAct->setStatusTip(tr( "Make certificate profile"));
+    connect( makeCertProfileAct, &QAction::triggered, this, &MainWindow::makeCertProfile );
+    toolsMenu->addAction( makeCertProfileAct );
+    toolsToolBar->addAction( makeCertProfileAct );
+
+    const QIcon crlProfileIcon = QIcon::fromTheme("crl-profile", QIcon(":/images/crl_profile.png"));
+    QAction *makeCRLProfileAct = new QAction( crlProfileIcon, tr("MakeC&RLProfile"), this );
+    connect( makeCRLProfileAct, &QAction::triggered, this, &MainWindow::makeCRLProfile);
+    toolsMenu->addAction( makeCRLProfileAct );
+    toolsToolBar->addAction( makeCRLProfileAct );
+    makeCRLProfileAct->setStatusTip(tr( "Make CRL Profile"));
+
+
 }
 
 void MainWindow::createStatusBar()
@@ -774,7 +800,8 @@ void MainWindow::createRightList(int nItemType)
     if( nItemType == ITEM_TYPE_CERT_PROFILE ||
             nItemType == ITEM_TYPE_CRL_PROFILE ||
             nItemType == ITEM_TYPE_REG_SIGNER ||
-            nItemType == ITEM_TYPE_OCSP_SIGNER )
+            nItemType == ITEM_TYPE_OCSP_SIGNER ||
+            nItemType == ITEM_TYPE_CA )
     {
         right_menu_->hide();
     }
@@ -867,8 +894,7 @@ void MainWindow::createRightUserList()
     QString strTarget = right_menu_->getCondName();
     QString strWord = right_menu_->getInputWord();
 
-    right_menu_->setLimit( nLimit );
-    right_menu_->setTotalCount( nTotalCnt );
+
 
 
     JDB_UserList    *pDBUserList = NULL;
@@ -926,6 +952,7 @@ void MainWindow::createRightUserList()
         i++;
     }
 
+    right_menu_->setTotalCount( nTotalCnt );
     right_menu_->updatePageLabel();
     if( pDBUserList ) JS_DB_resetUserList( &pDBUserList );
 }
@@ -1130,8 +1157,7 @@ void MainWindow::createRightCertList()
     int nTotalCnt = 0;
     char    sRegTime[64];
 
-    right_menu_->setLimit( nLimit );
-    right_menu_->setTotalCount( nTotalCnt );
+
     QString strTarget = right_menu_->getCondName();
     QString strWord = right_menu_->getInputWord();
 
@@ -1186,6 +1212,7 @@ void MainWindow::createRightCertList()
         i++;
     }
 
+    right_menu_->setTotalCount( nTotalCnt );
     right_menu_->updatePageLabel();
     if( pCertList ) JS_DB_resetCertList( &pCertList );
 }
@@ -1201,8 +1228,7 @@ void MainWindow::createRightCRLList()
     int nTotalCnt = 0;
     char    sRegTime[64];
 
-    right_menu_->setLimit( nLimit );
-    right_menu_->setTotalCount( nTotalCnt );
+
     QString strTarget = right_menu_->getCondName();
     QString strWord = right_menu_->getInputWord();
 
@@ -1261,6 +1287,7 @@ void MainWindow::createRightCRLList()
         i++;
     }
 
+    right_menu_->setTotalCount( nTotalCnt );
     right_menu_->updatePageLabel();
     if( pCRLList ) JS_DB_resetCRLList( &pCRLList );
 }
@@ -1277,8 +1304,7 @@ void MainWindow::createRightRevokedList()
     char    sDateTime[64];
     CCClient *ccClient = manApplet->ccClient();
 
-    right_menu_->setLimit( nLimit );
-    right_menu_->setTotalCount( nTotalCnt );
+
     QString strTarget = right_menu_->getCondName();
     QString strWord = right_menu_->getInputWord();
 
@@ -1336,6 +1362,7 @@ void MainWindow::createRightRevokedList()
     }
 
 
+    right_menu_->setTotalCount( nTotalCnt );
     right_menu_->updatePageLabel();
     if( pRevokedList ) JS_DB_resetRevokedList( &pRevokedList );
 }
@@ -1476,7 +1503,6 @@ void MainWindow::createRightKMS()
     char    sDateTime[64];
     CCClient* ccClient = manApplet->ccClient();
 
-    right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
     QString strTarget = right_menu_->getCondName();
     QString strWord = right_menu_->getInputWord();
@@ -1535,6 +1561,7 @@ void MainWindow::createRightKMS()
     }
 
 
+    right_menu_->setTotalCount( nTotalCnt );
     right_menu_->updatePageLabel();
     if( pKMSList ) JS_DB_resetKMSList( &pKMSList );
 }
@@ -1551,7 +1578,6 @@ void MainWindow::createRightTSP()
     int nTotalCnt = 0;
     char    sDateTime[64];
 
-    right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
     QString strTarget = right_menu_->getCondName();
     QString strWord = right_menu_->getInputWord();
@@ -1604,6 +1630,7 @@ void MainWindow::createRightTSP()
     }
 
 
+    right_menu_->setTotalCount( nTotalCnt );
     right_menu_->updatePageLabel();
     if( pTSPList ) JS_DB_resetTSPList( &pTSPList );
 }
@@ -1620,7 +1647,6 @@ void MainWindow::createRightAudit()
     int nTotalCnt = 0;
     char    sDateTime[64];
 
-    right_menu_->setLimit( nLimit );
     right_menu_->setTotalCount( nTotalCnt );
     QString strTarget = right_menu_->getCondName();
     QString strWord = right_menu_->getInputWord();
@@ -1679,6 +1705,7 @@ void MainWindow::createRightAudit()
     }
 
 
+    right_menu_->setTotalCount( nTotalCnt );
     right_menu_->updatePageLabel();
     if( pAuditList ) JS_DB_resetAuditList( &pAuditList );
 }
