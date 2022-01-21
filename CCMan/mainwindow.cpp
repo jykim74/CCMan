@@ -1647,7 +1647,6 @@ void MainWindow::createRightAudit()
     int nTotalCnt = 0;
     char    sDateTime[64];
 
-    right_menu_->setTotalCount( nTotalCnt );
     QString strTarget = right_menu_->getCondName();
     QString strWord = right_menu_->getInputWord();
 
