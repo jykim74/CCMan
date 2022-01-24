@@ -36,6 +36,7 @@
 #include "stat_form.h"
 #include "js_kms.h"
 #include "js_gen.h"
+#include "js_pki.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -246,6 +247,10 @@ void MainWindow::showRightMenu(QPoint point)
     else if( rightType() == ITEM_TYPE_REVOKE )
     {
         menu.addAction( tr("DeleteRevoke"), this, &MainWindow::deleteRevoke );
+    }
+    else if( rightType() == ITEM_TYPE_AUDIT )
+    {
+        menu.addAction( tr("VerifyAudit"), this, &MainWindow::verifyAudit );
     }
 
     menu.exec(QCursor::pos());
@@ -2029,4 +2034,66 @@ void MainWindow::certStatus()
 end :
     JS_DB_resetCert( &sCert );
     JS_CC_resetCertStatus( &sCertStatus );
+}
+
+int verifyAuditData( const JCC_Audit *pAudit )
+{
+    int ret = 0;
+    char sData[1024];
+    BIN binData = {0,0};
+    BIN binKey = {0,0};
+    BIN binHMAC = {0,0};
+    BIN binSrcMAC = {0,0};
+
+    if( pAudit == NULL ) return -1;
+
+    sprintf( sData, "%d_%d_%d_%s_%d_%s",
+             pAudit->nSeq,
+             pAudit->nKind,
+             pAudit->nOperation,
+             pAudit->pInfo,
+             pAudit->nRegTime,
+             pAudit->pUserName );
+
+    JS_BIN_set( &binData, (unsigned char *)sData, strlen(sData));
+    JS_BIN_set( &binKey, (unsigned char *)JS_GEN_HMAC_KEY, strlen(JS_GEN_HMAC_KEY));
+    JS_BIN_decodeHex( pAudit->pMAC, &binSrcMAC );
+
+    ret = JS_PKI_genHMAC( "SHA256", &binData, &binKey, &binHMAC );
+    if( ret != 0 ) goto end;
+
+    ret = JS_BIN_cmp( &binHMAC, &binSrcMAC );
+
+end :
+    JS_BIN_reset( &binData );
+    JS_BIN_reset( &binKey );
+    JS_BIN_reset( &binHMAC );
+    JS_BIN_reset( &binSrcMAC );
+
+    return ret;
+}
+
+void MainWindow::verifyAudit()
+{
+    int ret = 0;
+    JCC_Audit sAudit;
+
+    int row = right_table_->currentRow();
+    if( row < 0 ) return;
+
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+    int num = item->text().toInt();
+
+    memset( &sAudit, 0x00, sizeof(sAudit));
+    ret = manApplet->ccClient()->getAudit( num, &sAudit );
+
+    if( ret < 1 ) return;
+
+    ret = verifyAuditData( &sAudit );
+    if( ret == 0 )
+        manApplet->messageBox( tr( "MAC Verify OK" ), this );
+    else
+        manApplet->warningBox( tr( "MAC is not valid" ), this );
+
+    JS_DB_resetAudit( &sAudit );
 }

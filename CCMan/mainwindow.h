@@ -101,6 +101,7 @@ public slots:
     void certInfo();
     void crlInfo();
     void certStatus();
+    void verifyAudit();
 
 private:
     QSplitter   *hsplitter_;
