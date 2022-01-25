@@ -2087,7 +2087,7 @@ void MainWindow::verifyAudit()
     memset( &sAudit, 0x00, sizeof(sAudit));
     ret = manApplet->ccClient()->getAudit( num, &sAudit );
 
-    if( ret < 1 ) return;
+    if( ret != 0 ) return;
 
     ret = verifyAuditData( &sAudit );
     if( ret == 0 )

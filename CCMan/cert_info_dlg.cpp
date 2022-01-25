@@ -181,8 +181,8 @@ void CertInfoDlg::initialize()
 void CertInfoDlg::pathInit()
 {
     int i = 0;
+    int count = 0;
     JCC_Cert sCert;
-    JCC_CertList *pCurList = NULL;
     CCClient* ccClient = manApplet->ccClient();
 
     memset( &sCert, 0x00, sizeof(sCert));
@@ -206,14 +206,23 @@ void CertInfoDlg::pathInit()
     mCertPathTree->header()->setVisible(false);
     mCertPathTree->setColumnCount(1);
 
-    pCurList = cert_list_;
     QList<QTreeWidgetItem *> items;
     QTreeWidgetItem* pPrevItem = NULL;
 
-    while( pCurList )
+    count = JS_DB_countCertList( cert_list_ );
+
+    for( int i = 0; i < count; i++ )
     {
+        int ret = 0;
+        JCC_Cert sCurCert;
         QTreeWidgetItem *item = new QTreeWidgetItem(0);
-        item->setText( 0, pCurList->sCert.pSubjectDN );
+
+        memset( &sCurCert, 0x00, sizeof(sCurCert));
+
+        ret = JS_DB_getCertFromList( count - i - 1, cert_list_, &sCurCert );
+        if( ret != 0 ) continue;
+
+        item->setText( 0, sCurCert.pSubjectDN );
 
         if( i == 0 )
         {
@@ -225,8 +234,7 @@ void CertInfoDlg::pathInit()
         }
 
         pPrevItem = item;
-        pCurList = pCurList->pNext;
-        i++;
+        JS_DB_resetCert( &sCurCert );
     }
 
     mCertPathTree->expandAll();
