@@ -35,13 +35,13 @@ int CCClient::getCount(int nType)
     QString strType;
 
     if( nType == ITEM_TYPE_USER )
-        strType = "users";
+        strType = "user";
     else if( nType == ITEM_TYPE_CERT )
-        strType = "certs";
+        strType = "cert";
     else if( nType == ITEM_TYPE_CRL )
-        strType = "crls";
+        strType = "crl";
     else if( nType == ITEM_TYPE_REVOKE )
-        strType = "revokeds";
+        strType = "revoked";
     else if( nType == ITEM_TYPE_KMS )
         strType = "kms";
     else if( nType == ITEM_TYPE_TSP )
