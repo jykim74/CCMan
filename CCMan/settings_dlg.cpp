@@ -7,6 +7,8 @@
 #include "man_applet.h"
 #include "auto_update_service.h"
 
+const QStringList kListCountList = { "10", "15", "20", "25", "30" };
+
 SettingsDlg::SettingsDlg(QWidget *parent) :
     QDialog(parent)
 {
@@ -33,7 +35,7 @@ void SettingsDlg::updateSettings()
     }
 #endif
 
-    mgr->setListCount( mListCountText->text().toInt() );
+    mgr->setListCount( mListCountCombo->currentText().toInt() );
 
     bool language_changed = false;
 
@@ -60,7 +62,8 @@ void SettingsDlg::initialize()
     Qt::CheckState state;
 
     int nListCnt = mgr->listCount();
-    mListCountText->setText( QString("%1").arg( nListCnt ));
+    mListCountCombo->addItems( kListCountList );
+    mListCountCombo->setCurrentText( QString("%1").arg( nListCnt )  );
 
 #ifdef _AUTO_UPDATE
     if( AutoUpdateService::instance()->shouldSupportAutoUpdate()) {

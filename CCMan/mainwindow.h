@@ -103,6 +103,9 @@ public slots:
     void certStatus();
     void verifyAudit();
 
+    void viewTSTInfo();
+    void verifyTSMessage();
+
 private:
     QSplitter   *hsplitter_;
     QSplitter   *vsplitter_;

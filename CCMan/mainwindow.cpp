@@ -20,6 +20,7 @@
 #include "crl_info_dlg.h"
 #include "admin_dlg.h"
 #include "user_dlg.h"
+#include "tst_info_dlg.h"
 
 #include "js_db.h"
 #include "js_db_data.h"
@@ -37,6 +38,8 @@
 #include "js_kms.h"
 #include "js_gen.h"
 #include "js_pki.h"
+#include "js_tsp.h"
+#include "js_pkcs7.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -251,6 +254,11 @@ void MainWindow::showRightMenu(QPoint point)
     else if( rightType() == ITEM_TYPE_AUDIT )
     {
         menu.addAction( tr("VerifyAudit"), this, &MainWindow::verifyAudit );
+    }
+    else if( rightType() == ITEM_TYPE_TSP )
+    {
+        menu.addAction( tr("View TSTInfo"), this, &MainWindow::viewTSTInfo );
+        menu.addAction( tr("VerifyTSMessage"), this, &MainWindow::verifyTSMessage );
     }
 
     menu.exec(QCursor::pos());
@@ -2096,4 +2104,59 @@ void MainWindow::verifyAudit()
         manApplet->warningBox( tr( "MAC is not valid" ), this );
 
     JS_DB_resetAudit( &sAudit );
+}
+
+void MainWindow::viewTSTInfo()
+{
+    int ret = 0;
+    int row = right_table_->currentRow();
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+
+    int num = item->text().toInt();
+
+    TSTInfoDlg tstInfoDlg;
+    tstInfoDlg.setSeq( num );
+    tstInfoDlg.exec();
+}
+
+void MainWindow::verifyTSMessage()
+{
+    int ret = 0;
+    BIN binTS = {0,0};
+    BIN binCert = {0,0};
+    BIN binData = {0,0};
+    JDB_TSP sTSP;
+
+    int row = right_table_->currentRow();
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+    SettingsMgr *smgr = manApplet->settingsMgr();
+    QString strVerify;
+
+    int num = item->text().toInt();
+
+    memset( &sTSP, 0x00, sizeof(sTSP));
+
+    ret = manApplet->ccClient()->getTSP( num, &sTSP );
+    if( ret != 0 )
+    {
+        manApplet->warningBox( "fail to get tsp message", this );
+        goto end;
+    }
+
+    JS_BIN_decodeHex( sTSP.pData, &binTS );
+
+    if( smgr )
+    {
+        JS_BIN_fileRead( smgr->getTSPSrvCertPath().toStdString().c_str(), &binCert );
+    }
+
+    ret = JS_PKCS7_verifySignedData( &binTS, &binCert, &binData );
+    strVerify = QString( "Verify val:%1" ).arg( ret );
+
+    manApplet->messageBox( strVerify );
+end :
+    JS_BIN_reset( &binTS );
+    JS_BIN_reset( &binCert );
+    JS_BIN_reset( &binData );
+    JS_DB_resetTSP( &sTSP );
 }

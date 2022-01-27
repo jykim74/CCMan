@@ -6,6 +6,7 @@
 namespace  {
     const char *kSetBehaviorGroup = "CCMan";
     const char *kSetListCount = "listCount";
+    const char *kTSPSrvCertPath = "TSPSrvCertPath";
 }
 
 SettingsMgr::SettingsMgr( QObject *parent ) : QObject( parent )
@@ -40,4 +41,25 @@ int SettingsMgr::listCount()
     settings.endGroup();
 
     return nCount;
+}
+
+void SettingsMgr::setTSPSrvCertPath(QString strPath)
+{
+    QSettings   settings;
+
+    settings.beginGroup( kSetBehaviorGroup );
+    settings.setValue( kTSPSrvCertPath, strPath );
+    settings.endGroup();
+}
+
+QString SettingsMgr::getTSPSrvCertPath()
+{
+    QString strPath;
+
+    QSettings   settings;
+    settings.beginGroup( kSetBehaviorGroup );
+    strPath = settings.value( kTSPSrvCertPath, "").toString();
+    settings.endGroup();
+
+    return strPath;
 }

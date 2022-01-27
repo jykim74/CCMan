@@ -15,6 +15,9 @@ public:
 
     void loadSettings();
 
+    void setTSPSrvCertPath(QString strPath);
+    QString getTSPSrvCertPath();
+
 private:
     Q_DISABLE_COPY(SettingsMgr)
 };

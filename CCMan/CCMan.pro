@@ -46,6 +46,7 @@ SOURCES += \
     settings_mgr.cpp \
     signer_dlg.cpp \
     stat_form.cpp \
+    tst_info_dlg.cpp \
     user_dlg.cpp
 
 HEADERS += \
@@ -76,6 +77,7 @@ HEADERS += \
     signer_dlg.h \
     singleton.h \
     stat_form.h \
+    tst_info_dlg.h \
     user_dlg.h
 
 FORMS += \
@@ -93,6 +95,7 @@ FORMS += \
     settings_dlg.ui \
     signer_dlg.ui \
     stat_form.ui \
+    tst_info_dlg.ui \
     user_dlg.ui
 
 # Default rules for deployment.
