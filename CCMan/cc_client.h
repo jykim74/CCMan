@@ -85,6 +85,12 @@ public:
     int getCRLDPList( JCC_NameValList **ppCRLDPList );
     int getCertStatus( const char *pSerial, JCC_CertStatus *pCertStatus );
 
+    int getConfig( int nNum, JCC_Config *pConfig );
+    int addConfig( JCC_Config *pConfig );
+    int modConfig( int nNum, JCC_Config *pConfig );
+    int delConfig( int nNum );
+    int getConfigList( JCC_ConfigList **ppConfigList );
+
 private:
     QString     base_url_;
 };

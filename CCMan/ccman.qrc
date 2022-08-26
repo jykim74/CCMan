@@ -61,5 +61,6 @@
         <file>images/timestamp.jpg</file>
         <file>images/timestamp.png</file>
         <file>images/user_reg.png</file>
+        <file>images/config.png</file>
     </qresource>
 </RCC>

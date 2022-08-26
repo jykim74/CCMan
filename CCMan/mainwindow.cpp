@@ -21,6 +21,7 @@
 #include "admin_dlg.h"
 #include "user_dlg.h"
 #include "tst_info_dlg.h"
+#include "config_dlg.h"
 
 #include "js_db.h"
 #include "js_db_data.h"
@@ -141,6 +142,13 @@ void MainWindow::createActions()
     QMenu *toolsMenu = menuBar()->addMenu(tr("&Tools"));
     QToolBar *toolsToolBar = addToolBar(tr("Tools"));
 
+    const QIcon configIcon = QIcon::fromTheme( "make-config", QIcon(":/images/config.png"));
+    QAction *configAct = new QAction( configIcon, tr( "&MakeConfig"), this );
+    configAct->setStatusTip( tr( "Make Config" ));
+    connect( configAct, &QAction::triggered, this, &MainWindow::makeConfig );
+    toolsMenu->addAction( configAct );
+    toolsToolBar->addAction( configAct );
+
     const QIcon regIcon = QIcon::fromTheme( "reg-user", QIcon(":/images/user_add.png"));
     QAction *regUserAct = new QAction( regIcon, tr("&RegisterUser"), this );
     regUserAct->setStatusTip( tr("Register a user"));
@@ -215,6 +223,11 @@ void MainWindow::showRightMenu(QPoint point)
     if( right_table_->type() == ITEM_TYPE_ADMIN )
     {
         menu.addAction( tr("ModifyAdmin"), this, &MainWindow::modifyAdmin );
+    }
+    else if( right_table_->type() == ITEM_TYPE_CONFIG )
+    {
+        menu.addAction( tr("ModifyConfig"), this, &MainWindow::editConfig );
+        menu.addAction( tr("DeleteConfig"), this, &MainWindow::deleteConfig );
     }
     else if( right_table_->type() == ITEM_TYPE_USER )
     {
@@ -297,6 +310,8 @@ void MainWindow::rightTableClick(QModelIndex index )
 
     if( nType == ITEM_TYPE_ADMIN )
         logAdmin( nSeq );
+    else if( nType == ITEM_TYPE_CONFIG )
+        logConfig( nSeq );
     else if( nType == ITEM_TYPE_USER )
         logUser( nSeq );
     else if( nType == ITEM_TYPE_CERT_PROFILE )
@@ -342,6 +357,27 @@ void MainWindow::logAdmin( int nSeq )
 
     logCursorTop();
     JS_DB_resetAdmin( &sAdmin );
+}
+
+void MainWindow::logConfig( int nNum )
+{
+    JCC_Config sConfig;
+    memset( &sConfig, 0x00, sizeof(sConfig));
+
+    manApplet->ccClient()->getConfig( nNum, &sConfig );
+
+    logClear();
+
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( "== Config Information\n" );
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( QString("Num          : %1\n").arg(sConfig.nNum));
+    manApplet->log( QString("Kind         : %1\n").arg(sConfig.nKind));
+    manApplet->log( QString("Name         : %1\n").arg(sConfig.pName));
+    manApplet->log( QString("Value        : %1\n").arg(sConfig.pValue));
+
+    logCursorTop();
+    JS_DB_resetConfig( &sConfig );
 }
 
 void MainWindow::logUser( int nSeq )
@@ -737,6 +773,11 @@ void MainWindow::createTreeMenu()
     pAdminItem->setType( ITEM_TYPE_ADMIN );
     pTopItem->appendRow( pAdminItem );
 
+    ManTreeItem *pConfigItem = new ManTreeItem( QString("Config"));
+    pConfigItem->setIcon(QIcon(":/images/config.png"));
+    pConfigItem->setType( ITEM_TYPE_CONFIG );
+    pTopItem->appendRow( pConfigItem );
+
     ManTreeItem *pUserItem = new ManTreeItem( QString("User") );
     pUserItem->setIcon(QIcon(":/images/user.jpg"));
     pUserItem->setType( ITEM_TYPE_USER );
@@ -825,6 +866,8 @@ void MainWindow::createRightList(int nItemType)
 
     if( nItemType == ITEM_TYPE_ADMIN )
         createRightAdminList();
+    else if( nItemType == ITEM_TYPE_CONFIG )
+        createRightConfigList();
     else if( nItemType == ITEM_TYPE_USER )
         createRightUserList();
     else if( nItemType == ITEM_TYPE_CERT_PROFILE )
@@ -894,6 +937,48 @@ void MainWindow::createRightAdminList()
     }
 
     if( pAdminList ) JS_DB_resetAdminList( &pAdminList );
+}
+
+void MainWindow::createRightConfigList()
+{
+    int i = 0;
+    removeAllRight();
+    JDB_ConfigList  *pConfigList = NULL;
+    JDB_ConfigList  *pCurList = NULL;
+
+    QStringList titleList = { tr("Num"), tr("Kind"), tr("Name"), tr("Value") };
+
+    right_table_->clear();
+    right_table_->horizontalHeader()->setStretchLastSection(true);
+    right_table_->setType( ITEM_TYPE_CONFIG );
+
+    right_table_->setColumnCount(titleList.size());
+    right_table_->setHorizontalHeaderLabels( titleList );
+    right_table_->verticalHeader()->setVisible(false);
+
+    manApplet->ccClient()->getConfigList( &pConfigList );
+    pCurList = pConfigList;
+
+    right_table_->setColumnWidth( 0, 40 );
+    right_table_->setColumnWidth( 1, 60 );
+    right_table_->setColumnWidth( 2, 60 );
+
+
+    while( pCurList )
+    {
+        right_table_->insertRow(i);
+
+        right_table_->setRowHeight(i, 10 );
+        right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sConfig.nNum ) ));
+        right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( pCurList->sConfig.nKind ) ));
+        right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( pCurList->sConfig.pName )));
+        right_table_->setItem( i, 3, new QTableWidgetItem( QString("%1").arg( pCurList->sConfig.pValue )));
+
+        pCurList = pCurList->pNext;
+        i++;
+    }
+
+    if( pConfigList ) JS_DB_resetConfigList( &pConfigList );
 }
 
 void MainWindow::createRightUserList()
@@ -2079,6 +2164,38 @@ end :
     JS_BIN_reset( &binSrcMAC );
 
     return ret;
+}
+
+void MainWindow::makeConfig()
+{
+    ConfigDlg configDlg;
+    configDlg.exec();
+}
+
+void MainWindow::editConfig()
+{
+    int row = right_table_->currentRow();
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+
+    int num = item->text().toInt();
+
+    ConfigDlg configDlg;
+    configDlg.setCurNum( num );
+    configDlg.exec();
+}
+
+void MainWindow::deleteConfig()
+{
+    bool bVal = manApplet->yesOrCancelBox( tr( "Are you sure to delete this config?" ), this, false );
+    if( bVal == false ) return;
+
+    int row = right_table_->currentRow();
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+
+    int num = item->text().toInt();
+
+    manApplet->ccClient()->delConfig( num );
+    createRightConfigList();
 }
 
 void MainWindow::verifyAudit()

@@ -38,6 +38,7 @@ public:
 
     void createRightList( int nItemType );
     void createRightAdminList();
+    void createRightConfigList();
     void createRightUserList();
     void createRightCertProfileList();
     void createRightCRLProfileList();
@@ -52,6 +53,7 @@ public:
     void createRightAudit();
 
     void logAdmin( int nSeq );
+    void logConfig( int nNum );
     void logUser( int nSeq );
     void logCertProfile( int nNum );
     void logCRLProfile( int nNum );
@@ -102,6 +104,10 @@ public slots:
     void crlInfo();
     void certStatus();
     void verifyAudit();
+
+    void makeConfig();
+    void editConfig();
+    void deleteConfig();
 
     void viewTSTInfo();
     void verifyTSMessage();
