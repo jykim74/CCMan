@@ -949,8 +949,8 @@ void MakeCertProfileDlg::addNC()
     mNCTable->setItem( row, 0, new QTableWidgetItem(strType));
     mNCTable->setItem( row, 1, new QTableWidgetItem(strSubType));
     mNCTable->setItem( row, 2, new QTableWidgetItem(strVal));
-    mNCTable->setItem( row, 3, new QTableWidgetItem(strMax));
-    mNCTable->setItem( row, 4, new QTableWidgetItem(strMin));
+    mNCTable->setItem( row, 3, new QTableWidgetItem(strMin));
+    mNCTable->setItem( row, 4, new QTableWidgetItem(strMax));
 }
 
 void MakeCertProfileDlg::addExtensions()
