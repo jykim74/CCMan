@@ -45,6 +45,8 @@ void CRLInfoDlg::initialize()
     int i = 0;
 
     BIN binCRL = {0,0};
+    BIN binFinger = {0,0};
+
     char    sLastUpdate[64];
     char    sNextUpdate[64];
     JDB_CRL sCRL;
@@ -76,10 +78,12 @@ void CRLInfoDlg::initialize()
         return;
     }
 
+    JS_PKI_genHash( "SHA1", &binCRL, &binFinger );
+
     mCRLListTable->insertRow(i);
     mCRLListTable->setRowHeight(i,10);
     mCRLListTable->setItem( i, 0, new QTableWidgetItem( QString("Version")));
-    mCRLListTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(crl_info_.nVersion)));
+    mCRLListTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(crl_info_.nVersion + 1)));
     i++;
 
     if( crl_info_.pIssuerName )
@@ -130,23 +134,32 @@ void CRLInfoDlg::initialize()
 
         while( pCurList )
         {
-            JDB_ProfileExt   sProfileExt;
-            memset( &sProfileExt, 0x00, sizeof(sProfileExt));
-            JS_PKI_transExtensionToDBRec( &pCurList->sExtensionInfo, &sProfileExt );
+            QString strValue;
+            QString strSN = pCurList->sExtensionInfo.pOID;
+            bool bCrit = pCurList->sExtensionInfo.bCritical;
+            getInfoValue( &pCurList->sExtensionInfo, strValue );
+
+            QTableWidgetItem *item = new QTableWidgetItem( strValue );
+            if( bCrit )
+                item->setIcon(QIcon(":/images/critical.png"));
+            else
+                item->setIcon(QIcon(":/images/normal.png"));
 
             mCRLListTable->insertRow(i);
             mCRLListTable->setRowHeight(i,10);
-            mCRLListTable->setItem(i,0, new QTableWidgetItem(QString("%1").arg( sProfileExt.pSN )));
-            mCRLListTable->setItem(i,1, new QTableWidgetItem(QString("[%1]%2")
-                                                               .arg( sProfileExt.bCritical )
-                                                               .arg( sProfileExt.pValue )));
-
+            mCRLListTable->setItem(i,0, new QTableWidgetItem(QString("%1").arg(strSN)));
+            mCRLListTable->setItem(i,1, item );
 
             pCurList = pCurList->pNext;
-            JS_DB_resetProfileExt( &sProfileExt );
             i++;
         }
     }
+
+    mCRLListTable->insertRow(i);
+    mCRLListTable->setRowHeight(i,10);
+    mCRLListTable->setItem(i, 0, new QTableWidgetItem(tr("FingerPrint")));
+    mCRLListTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(getHexString(binFinger.pVal, binFinger.nLen))));
+    i++;
 
     if( revoke_info_list_ )
     {
@@ -166,6 +179,8 @@ void CRLInfoDlg::initialize()
     }
 
     JS_BIN_reset( &binCRL );
+    JS_BIN_reset( &binFinger );
+
     JS_DB_resetCRL( &sCRL );
 }
 

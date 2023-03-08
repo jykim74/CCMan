@@ -2,6 +2,8 @@
 #define COMMON_H
 
 #include <QStringList>
+#include "js_pki.h"
+#include "js_pki_x509.h"
 
 #define     JS_REC_STATUS_NOT_USED          0
 #define     JS_REC_STATUS_USED              1
@@ -102,5 +104,9 @@ QString getSignerTypeName( int nType );
 QString getCertStatusName( int nStatus );
 QString getCertStatusSName( int nStatus );
 QString getRevokeReasonName( int nReason );
+
+QString getHexString( unsigned char *pData, int nDataLen );
+
+void getInfoValue( const JExtensionInfo *pExtInfo, QString& strVal );
 
 #endif // COMMON_H

@@ -16,6 +16,7 @@ CertInfoDlg::CertInfoDlg(QWidget *parent) :
     initUI();
     cert_num_ = -1;
     cert_list_ = NULL;
+    tabWidget->setCurrentIndex(0);
 }
 
 CertInfoDlg::~CertInfoDlg()
@@ -40,6 +41,8 @@ void CertInfoDlg::initialize()
     int i = 0;
 
     BIN binCert = {0,0};
+    BIN binFinger = {0,0};
+
     JCertInfo  sCertInfo;
     JDB_Cert    sCert;
     JExtensionInfoList *pExtInfoList = NULL;
@@ -71,10 +74,12 @@ void CertInfoDlg::initialize()
         return;
     }
 
+    JS_PKI_genHash( "SHA1", &binCert, &binFinger );
+
     mFieldTable->insertRow(i);
     mFieldTable->setRowHeight(i,10);
     mFieldTable->setItem( i, 0, new QTableWidgetItem( QString("Version")));
-    mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.nVersion)));
+    mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.nVersion + 1)));
     i++;
 
     if( sCertInfo.pSerial )
@@ -153,26 +158,38 @@ void CertInfoDlg::initialize()
 
         while( pCurList )
         {
-            JDB_ProfileExt sProfileRec;
-            memset( &sProfileRec, 0x00, sizeof(sProfileRec));
-            JS_PKI_transExtensionToDBRec( &pCurList->sExtensionInfo, &sProfileRec );
+            QString strValue;
+            QString strSN = pCurList->sExtensionInfo.pOID;
+            bool bCrit = pCurList->sExtensionInfo.bCritical;
+            getInfoValue( &pCurList->sExtensionInfo, strValue );
+
+            QTableWidgetItem *item = new QTableWidgetItem( strValue );
+            if( bCrit )
+                item->setIcon(QIcon(":/images/critical.png"));
+            else
+                item->setIcon(QIcon(":/images/normal.png"));
 
             mFieldTable->insertRow(i);
             mFieldTable->setRowHeight(i,10);
-            mFieldTable->setItem(i,0, new QTableWidgetItem(QString("%1").arg( sProfileRec.pSN )));
-            mFieldTable->setItem(i,1, new QTableWidgetItem(QString("[%1]%2")
-                                                               .arg( sProfileRec.bCritical )
-                                                               .arg( sProfileRec.pValue )));
+            mFieldTable->setItem(i,0, new QTableWidgetItem( QString("%1").arg(strSN)));
+            mFieldTable->setItem(i, 1, item );
 
 
             pCurList = pCurList->pNext;
-
-            JS_DB_resetProfileExt( &sProfileRec );
             i++;
         }
     }
 
+
+    mFieldTable->insertRow(i);
+    mFieldTable->setRowHeight(i,10);
+    mFieldTable->setItem(i, 0, new QTableWidgetItem(tr("FingerPrint")));
+    mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(getHexString(binFinger.pVal, binFinger.nLen))));
+    i++;
+
     JS_BIN_reset( &binCert );
+    JS_BIN_reset( &binFinger );
+
     JS_PKI_resetCertInfo( &sCertInfo );
     if( pExtInfoList ) JS_PKI_resetExtensionInfoList( &pExtInfoList );
     JS_DB_resetCert( &sCert );
