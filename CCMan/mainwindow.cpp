@@ -238,11 +238,13 @@ void MainWindow::showRightMenu(QPoint point)
     {
         menu.addAction( tr("ModifyCertProfile"), this, &MainWindow::modifyCertProfile );
         menu.addAction( tr("DeleteCertProfile"), this, &MainWindow::deleteCertProfile );
+        menu.addAction( tr( "CopyCertProfile" ), this, &MainWindow::copyCertProfile );
     }
     else if( rightType() == ITEM_TYPE_CRL_PROFILE )
     {
         menu.addAction( tr("ModifyCRLProfile"), this, &MainWindow::modifyCRLProfile );
         menu.addAction( tr("DeleteCRLProfile"), this, &MainWindow::deleteCRLProfile );
+        menu.addAction( tr("CopyCRLProfile"), this, &MainWindow::copyCRLProfile );
     }
     else if( rightType() == ITEM_TYPE_REG_SIGNER || rightType() == ITEM_TYPE_OCSP_SIGNER )
     {
@@ -1914,9 +1916,7 @@ void MainWindow::modifyCertProfile()
     int num = item->text().toInt();
 
     MakeCertProfileDlg makeCertProfileDlg;
-    makeCertProfileDlg.setEdit(true);
-    makeCertProfileDlg.setProfileNum(num);
-
+    makeCertProfileDlg.setEdit(num);
     makeCertProfileDlg.exec();
 }
 
@@ -1928,8 +1928,7 @@ void MainWindow::modifyCRLProfile()
     int num = item->text().toInt();
 
     MakeCRLProfileDlg makeCRLProfileDlg;
-    makeCRLProfileDlg.setEdit(true);
-    makeCRLProfileDlg.setProfileNum(num);
+    makeCRLProfileDlg.setEdit(num);
     makeCRLProfileDlg.exec();
 }
 
@@ -1953,6 +1952,30 @@ void MainWindow::deleteCRLProfile()
 
     manApplet->ccClient()->delCRLProfile( num );
     createRightCRLProfileList();
+}
+
+void MainWindow::copyCertProfile()
+{
+    int row = right_table_->currentRow();
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+
+    int num = item->text().toInt();
+
+    MakeCertProfileDlg makeCertProfileDlg;
+    makeCertProfileDlg.loadProfile( num, true );
+    makeCertProfileDlg.exec();
+}
+
+void MainWindow::copyCRLProfile()
+{
+    int row = right_table_->currentRow();
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+
+    int num = item->text().toInt();
+
+    MakeCRLProfileDlg makeCRLProfileDlg;
+    makeCRLProfileDlg.loadProfile( num, true );
+    makeCRLProfileDlg.exec();
 }
 
 void MainWindow::deleteSigner()

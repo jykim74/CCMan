@@ -92,6 +92,8 @@ public slots:
     void modifyCRLProfile();
     void deleteCertProfile();
     void deleteCRLProfile();
+    void copyCertProfile();
+    void copyCRLProfile();
     void deleteSigner();
     void revokeCert();
     void deleteRevoke();

@@ -19,13 +19,13 @@ public:
     explicit MakeCRLProfileDlg(QWidget *parent = nullptr);
     ~MakeCRLProfileDlg();
 
-    void setEdit( bool is_edit );
+    void setEdit( int nProfileNum );
     bool isEdit() { return is_edit_; };
-    void setProfileNum( int profile_num );
     int profileNum() { return profile_num_; };
 
+    void loadProfile( int nProfileNum, bool bCopy = false );
+
 private slots:
-    void showEvent(QShowEvent *event);
     virtual void accept();
 
     void slotIANMenuRequested(QPoint pos);
@@ -70,7 +70,6 @@ private:
     void setExtensionsUse( JCC_ProfileExt *pProfileExt );
 
     void initialize();
-    void loadProfile();
     void defaultProfile();
 
     bool is_edit_;

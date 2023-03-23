@@ -25,6 +25,8 @@ MakeCRLProfileDlg::MakeCRLProfileDlg(QWidget *parent) :
 
     is_edit_ = false;
     profile_num_ = -1;
+
+    initialize();
 }
 
 MakeCRLProfileDlg::~MakeCRLProfileDlg()
@@ -32,14 +34,12 @@ MakeCRLProfileDlg::~MakeCRLProfileDlg()
 
 }
 
-void MakeCRLProfileDlg::setEdit(bool is_edit)
+void MakeCRLProfileDlg::setEdit( int nProfileNum )
 {
-    is_edit_ = is_edit;
-}
+    is_edit_ = true;
+    profile_num_ = nProfileNum;
 
-void MakeCRLProfileDlg::setProfileNum(int profile_num)
-{
-    profile_num_ = profile_num;
+    loadProfile( profile_num_ );
 }
 
 
@@ -47,24 +47,23 @@ void MakeCRLProfileDlg::initialize()
 {
     mCRLTab->setCurrentIndex(0);
 
-    if( is_edit_ )
-        loadProfile();
-    else
-        defaultProfile();
+    defaultProfile();
 }
 
-void MakeCRLProfileDlg::showEvent(QShowEvent *event)
-{
-    initialize();
-}
 
-void MakeCRLProfileDlg::loadProfile()
+void MakeCRLProfileDlg::loadProfile( int nProfileNum, bool bCopy )
 {    
     JCC_CRLProfile sCRLProfile;
     memset( &sCRLProfile, 0x00, sizeof(sCRLProfile));
-    manApplet->ccClient()->getCRLProfile( profile_num_, &sCRLProfile );
+    manApplet->ccClient()->getCRLProfile( nProfileNum, &sCRLProfile );
 
-    mNameText->setText( sCRLProfile.pName );
+    QString strName = sCRLProfile.pName;
+
+    if( bCopy == true )
+        mNameText->setText( strName + "_Copy" );
+    else
+        mNameText->setText( strName );
+
     mVersionCombo->setCurrentIndex( sCRLProfile.nVersion );
     mHashCombo->setCurrentText( sCRLProfile.pHash );
 
@@ -75,6 +74,8 @@ void MakeCRLProfileDlg::loadProfile()
     }
     else
     {
+        mUseFromNowCheck->setChecked(false);
+
         QDateTime lastUpdate;
         QDateTime nextUpdate;
 
@@ -90,7 +91,7 @@ void MakeCRLProfileDlg::loadProfile()
     JCC_ProfileExtList   *pProfileExtList = NULL;
     JCC_ProfileExtList   *pCurList = NULL;
 
-    manApplet->ccClient()->getCRLProfileExtList( profile_num_, &pProfileExtList );
+    manApplet->ccClient()->getCRLProfileExtList( nProfileNum, &pProfileExtList );
     pCurList = pProfileExtList;
 
     while( pCurList )

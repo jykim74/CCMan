@@ -45,6 +45,7 @@ void SearchMenu::setupUI()
 
     cond_combo_->setMinimumWidth( 80 );
 
+
     layout->addWidget( left_end_btn_, 0, 0 );
     layout->addWidget( left_btn_, 0, 1 );
     layout->addWidget( page_label_, 0, 2 );

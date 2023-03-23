@@ -22,6 +22,8 @@ MakeCertProfileDlg::MakeCertProfileDlg(QWidget *parent) :
 
     is_edit_ = false;
     profile_num_ = -1;
+
+    initialize();
 }
 
 MakeCertProfileDlg::~MakeCertProfileDlg()
@@ -29,34 +31,21 @@ MakeCertProfileDlg::~MakeCertProfileDlg()
 
 }
 
-void MakeCertProfileDlg::setEdit(bool is_edit)
+void MakeCertProfileDlg::setEdit( int nProfileNum )
 {
-    is_edit_ = is_edit;
-}
-
-void MakeCertProfileDlg::setProfileNum(int profile_num)
-{
-    profile_num_ = profile_num;
-}
-
-void MakeCertProfileDlg::showEvent(QShowEvent *event)
-{
-    initialize();
-
-
+    is_edit_ = true;
+    profile_num_ = nProfileNum;
+    loadProfile( profile_num_ );
 }
 
 void MakeCertProfileDlg::initialize()
 {
     mCertTab->setCurrentIndex(0);
 
-    if( is_edit_ )
-        loadProfile();
-    else
-        defaultProfile();
+    defaultProfile();
 }
 
-void MakeCertProfileDlg::loadProfile()
+void MakeCertProfileDlg::loadProfile( int nProfileNum, bool bCopy )
 {
     JCC_CertProfile      sCertProfile;
     memset( &sCertProfile, 0x00, sizeof(sCertProfile));
@@ -64,9 +53,14 @@ void MakeCertProfileDlg::loadProfile()
     QDateTime notBefore;
     QDateTime notAfter;
 
-    manApplet->ccClient()->getCertProfile( profile_num_, &sCertProfile );
+    manApplet->ccClient()->getCertProfile( nProfileNum, &sCertProfile );
+    QString strName = sCertProfile.pName;
 
-    mNameText->setText( sCertProfile.pName );
+    if( bCopy == true )
+        mNameText->setText( strName + "_Copy" );
+    else
+        mNameText->setText( strName );
+
     mVersionCombo->setCurrentIndex( sCertProfile.nVersion );
     mHashCombo->setCurrentText( sCertProfile.pHash );
     mSubjectDNText->setText( sCertProfile.pDNTemplate );
@@ -77,6 +71,8 @@ void MakeCertProfileDlg::loadProfile()
         mDaysText->setText( QString("%1").arg(sCertProfile.nNotAfter));
     }
     else {
+        mUseDaysCheck->setChecked(false);
+
         notBefore.setTime_t( sCertProfile.nNotBefore );
         notAfter.setTime_t( sCertProfile.nNotAfter );
 
@@ -89,7 +85,7 @@ void MakeCertProfileDlg::loadProfile()
     JCC_ProfileExtList   *pProfileExtList = NULL;
     JCC_ProfileExtList   *pCurList = NULL;
 
-    manApplet->ccClient()->getCertProfileExtList( profile_num_, &pProfileExtList );
+    manApplet->ccClient()->getCertProfileExtList( nProfileNum, &pProfileExtList );
     pCurList = pProfileExtList;
 
     while( pCurList )
