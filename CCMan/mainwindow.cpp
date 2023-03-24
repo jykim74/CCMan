@@ -926,11 +926,14 @@ void MainWindow::createRightAdminList()
     {
         right_table_->insertRow(i);
 
+        QTableWidgetItem *item = new QTableWidgetItem( pCurList->sAdmin.pName );
+        item->setIcon(QIcon(":/images/admin.png"));
+
         right_table_->setRowHeight(i, 10 );
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sAdmin.nSeq ) ));
         right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( getStatusName( pCurList->sAdmin.nStatus ) ) ));
         right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( getAdminTypeName( pCurList->sAdmin.nType ) )));
-        right_table_->setItem( i, 3, new QTableWidgetItem( QString("%1").arg( pCurList->sAdmin.pName )));
+        right_table_->setItem( i, 3, item );
         right_table_->setItem( i, 4, new QTableWidgetItem( QString("%1").arg( pCurList->sAdmin.pPassword )));
         right_table_->setItem( i, 5, new QTableWidgetItem( pCurList->sAdmin.pEmail ));
 
@@ -970,10 +973,13 @@ void MainWindow::createRightConfigList()
     {
         right_table_->insertRow(i);
 
+        QTableWidgetItem *item = new QTableWidgetItem( pCurList->sConfig.pName );
+        item->setIcon(QIcon(":/images/config.png"));
+
         right_table_->setRowHeight(i, 10 );
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sConfig.nNum ) ));
         right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( pCurList->sConfig.nKind ) ));
-        right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( pCurList->sConfig.pName )));
+        right_table_->setItem( i, 2, item );
         right_table_->setItem( i, 3, new QTableWidgetItem( QString("%1").arg( pCurList->sConfig.pValue )));
 
         pCurList = pCurList->pNext;
@@ -993,9 +999,6 @@ void MainWindow::createRightUserList()
 
     QString strTarget = right_menu_->getCondName();
     QString strWord = right_menu_->getInputWord();
-
-
-
 
     JDB_UserList    *pDBUserList = NULL;
     JDB_UserList    *pCurList = NULL;
@@ -1041,9 +1044,12 @@ void MainWindow::createRightUserList()
 
         JS_UTIL_getDateTime( pCurList->sUser.nRegTime, sRegTime );
 
+        QTableWidgetItem *item = new QTableWidgetItem( pCurList->sUser.pName );
+        item->setIcon(QIcon(":/images/user.jpg"));
+
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.nNum )));
         right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( sRegTime )));
-        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pName )));
+        right_table_->setItem(i,2, item );
         right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pSSN )));
         right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pEmail )));
         right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( getUserStatusName( pCurList->sUser.nStatus ) )));
@@ -1091,6 +1097,9 @@ void MainWindow::createRightCertProfileList()
         QString strNotAfter;
         QString strDNTemplate;
 
+        QTableWidgetItem *item = new QTableWidgetItem( pCurList->sCertProfile.pName );
+        item->setIcon(QIcon(":/images/cert_profile.png"));
+
         strVersion = QString( "V%1" ).arg( pCurList->sCertProfile.nVersion + 1);
 
         if( pCurList->sCertProfile.nNotBefore == 0 )
@@ -1113,7 +1122,7 @@ void MainWindow::createRightCertProfileList()
         right_table_->setRowHeight(i, 10 );
 
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCertProfile.nNum ) ));
-        right_table_->setItem( i, 1, new QTableWidgetItem( pCurList->sCertProfile.pName ));
+        right_table_->setItem( i, 1, item );
         right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( strVersion )));
         right_table_->setItem( i, 3, new QTableWidgetItem( QString("%1").arg( strNotBefore )));
         right_table_->setItem( i, 4, new QTableWidgetItem( QString("%1").arg( strNotAfter )));
@@ -1161,6 +1170,9 @@ void MainWindow::createRightCRLProfileList()
         QString strLastUpdate;
         QString strNextUpdate;
 
+        QTableWidgetItem *item = new QTableWidgetItem( pCurList->sCRLProfile.pName );
+        item->setIcon(QIcon(":/images/crl_profile.png"));
+
         strVersion = QString( "V%1" ).arg( pCurList->sCRLProfile.nVersion + 1);
 
         if( pCurList->sCRLProfile.nLastUpdate == 0 )
@@ -1178,7 +1190,7 @@ void MainWindow::createRightCRLProfileList()
         right_table_->setRowHeight(i, 10 );
 
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCRLProfile.nNum )) );
-        right_table_->setItem( i, 1, new QTableWidgetItem( pCurList->sCRLProfile.pName) );
+        right_table_->setItem( i, 1, item );
         right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( strVersion )) );
         right_table_->setItem( i, 3, new QTableWidgetItem( QString("%1").arg( strLastUpdate )) );
         right_table_->setItem( i, 4, new QTableWidgetItem( QString("%1").arg( strNextUpdate )) );
@@ -1232,10 +1244,17 @@ void MainWindow::createRightSignerList( int nItemType )
 
         JS_UTIL_getDateTime( pCurList->sSigner.nRegTime, sRegTime );
 
+        QTableWidgetItem *item = new QTableWidgetItem( pCurList->sSigner.pDN );
+
+        if( nType == 0 )
+            item->setIcon(QIcon(":/images/reg_signer.png"));
+        else if( nType == 1 )
+            item->setIcon(QIcon(":/images/ocsp_signer.png"));
+
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sSigner.nNum )));
         right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( sRegTime )));
         right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( getSignerTypeName( pCurList->sSigner.nType ) )));
-        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sSigner.pDN )));
+        right_table_->setItem(i,3, item );
         right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( getStatusName(pCurList->sSigner.nStatus) )));
         right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sSigner.pDNHash )));
 
@@ -1294,9 +1313,15 @@ void MainWindow::createRightCertList()
     {
         QString strDNInfo;
         if( pCurList->sCert.bSelf ) strDNInfo += "[Self]";
-        if( pCurList->sCert.bCA ) strDNInfo += "[CA]";
+
         strDNInfo += QString( "[%1] " ).arg( pCurList->sCert.nStatus );
         strDNInfo += pCurList->sCert.pSubjectDN;
+
+        QTableWidgetItem *item = new QTableWidgetItem( strDNInfo );
+        if( pCurList->sCert.bCA )
+            item->setIcon(QIcon(":/images/ca.png"));
+        else
+            item->setIcon(QIcon(":/images/cert.png"));
 
         JS_UTIL_getDateTime( pCurList->sCert.nRegTime, sRegTime );
         right_table_->insertRow(i);
@@ -1306,7 +1331,7 @@ void MainWindow::createRightCertList()
         right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( sRegTime ) ));
         right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg(pCurList->sCert.pSerial)));
         right_table_->setItem( i, 3, new QTableWidgetItem( pCurList->sCert.pSignAlg ));
-        right_table_->setItem( i, 4, new QTableWidgetItem( strDNInfo ));
+        right_table_->setItem( i, 4, item );
 
         pCurList = pCurList->pNext;
         i++;
@@ -1371,6 +1396,9 @@ void MainWindow::createRightCRLList()
         manApplet->ccClient()->getCert( pCurList->sCRL.nIssuerNum, &sIssuer );
         strIssuerName = sIssuer.pSubjectDN;
 
+        QTableWidgetItem *item = new QTableWidgetItem( strIssuerName );
+        item->setIcon(QIcon(":/images/crl.png"));
+
         JS_UTIL_getDateTime( pCurList->sCRL.nRegTime, sRegTime );
 
         right_table_->insertRow(i);
@@ -1378,7 +1406,7 @@ void MainWindow::createRightCRLList()
 
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCRL.nNum )));
         right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( sRegTime )));
-        right_table_->setItem( i, 2, new QTableWidgetItem(QString("%1").arg( strIssuerName )));
+        right_table_->setItem( i, 2, item );
         right_table_->setItem( i, 3, new QTableWidgetItem( pCurList->sCRL.pSignAlg ));
         right_table_->setItem( i, 4, new QTableWidgetItem( pCurList->sCRL.pCRLDP ));
 
@@ -1444,13 +1472,16 @@ void MainWindow::createRightRevokedList()
         QString strCertName = ccClient->getDN( pCurList->sRevoked.nCertNum );
         QString strIssuerName = ccClient->getDN( pCurList->sRevoked.nIssuerNum );
 
+        QTableWidgetItem *item = new QTableWidgetItem( strCertName );
+        item->setIcon(QIcon(":/images/revoke.png"));
+
         right_table_->insertRow(i);
         right_table_->setRowHeight(i, 10 );
 
         JS_UTIL_getDateTime( pCurList->sRevoked.nRevokedDate, sDateTime );
 
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nSeq )));
-        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( strCertName )));
+        right_table_->setItem(i,1, item );
         right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( strIssuerName )));
         right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.pSerial )));
         right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( sDateTime )));
@@ -1789,12 +1820,16 @@ void MainWindow::createRightAudit()
         QString strKind = JS_GEN_getKindName( pCurList->sAudit.nKind );
         QString strOper = JS_GEN_getOperationName( pCurList->sAudit.nOperation );
 
+
+        QTableWidgetItem *item = new QTableWidgetItem( strOper );
+        item->setIcon(QIcon(":/images/audit.png"));
+
         JS_UTIL_getDateTime( pCurList->sAudit.nRegTime, sDateTime );
 
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.nSeq )));
         right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( sDateTime )));
         right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( strKind )));
-        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( strOper )));
+        right_table_->setItem(i,3, item );
         right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.pUserName )));
         right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.pInfo )));
         right_table_->setItem(i,6, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.pMAC )));
