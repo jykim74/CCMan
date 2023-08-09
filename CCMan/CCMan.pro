@@ -32,6 +32,7 @@ SOURCES += \
     i18n_helper.cpp \
     issue_cert_dlg.cpp \
     issue_crl_dlg.cpp \
+    lcn_info_dlg.cpp \
     login_dlg.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -65,6 +66,7 @@ HEADERS += \
     i18n_helper.h \
     issue_cert_dlg.h \
     issue_crl_dlg.h \
+    lcn_info_dlg.h \
     login_dlg.h \
     mainwindow.h \
     make_cert_profile_dlg.h \
@@ -93,6 +95,7 @@ FORMS += \
     crl_info_dlg.ui \
     issue_cert_dlg.ui \
     issue_crl_dlg.ui \
+    lcn_info_dlg.ui \
     login_dlg.ui \
     mainwindow.ui \
     make_cert_profile_dlg.ui \

@@ -48,6 +48,8 @@ int CCClient::getCount(int nType)
         strType = "tsp";
     else if( nType == ITEM_TYPE_AUDIT )
         strType = "audit";
+    else if( nType == ITEM_TYPE_LICENSE )
+        strType = "license";
 
 
     strURL = base_url_;

@@ -16,8 +16,13 @@ public:
     explicit MakeLCNDlg(QWidget *parent = nullptr);
     ~MakeLCNDlg();
 
-private:
+private slots:
+    void clickClear();
+    void clickMake();
+    void checkUseDays();
 
+private:
+    void initialize();
 };
 
 #endif // MAKE_LCN_DLG_H

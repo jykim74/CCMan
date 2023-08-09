@@ -23,6 +23,7 @@
 #include "tst_info_dlg.h"
 #include "config_dlg.h"
 #include "make_lcn_dlg.h"
+#include "lcn_info_dlg.h"
 
 #include "js_db.h"
 #include "js_db_data.h"
@@ -284,6 +285,7 @@ void MainWindow::showRightMenu(QPoint point)
     else if( rightType() == ITEM_TYPE_LICENSE )
     {
         menu.addAction( tr("DeleteLicense"), this, &MainWindow::deleteLicense );
+        menu.addAction( tr("ViewLicense"), this, &MainWindow::viewLicense );
     }
 
     menu.exec(QCursor::pos());
@@ -783,9 +785,12 @@ void MainWindow::logLCN( int nSeq )
     manApplet->log( "========================================================================\n" );
     manApplet->log( QString("Seq          : %1\n").arg( sLCN.nSeq));
     manApplet->log( QString("RegTime      : %1\n").arg( getDateTime( sLCN.nRegTime )));
-    manApplet->log( QString("Name         : %1\n").arg( sLCN.pName ));
-    manApplet->log( QString("StartDate    : %1\n").arg( sLCN.pStartDate ));
-    manApplet->log( QString("EndDate      : %1\n").arg( sLCN.pEndDate ));
+    manApplet->log( QString("SID          : %1\n").arg( sLCN.pSID ));
+    manApplet->log( QString("User         : %1\n").arg( sLCN.pUser ));
+    manApplet->log( QString("IssueDate    : %1\n").arg( sLCN.pIssueDate ));
+    manApplet->log( QString("ExpireDate   : %1\n").arg( sLCN.pExpireDate ));
+    manApplet->log( QString("ProductName  : %1\n").arg( sLCN.pProductName));
+    manApplet->log( QString("Extension    : %1\n").arg( sLCN.pExtension ));
     manApplet->log( QString("Key          : %1\n").arg( sLCN.pKey ));
     manApplet->log( QString("License      : %1\n").arg( sLCN.pLicense ));
 
@@ -1903,7 +1908,7 @@ void MainWindow::createRightLCNList()
     QString strTarget = right_menu_->getCondName();
     QString strWord = right_menu_->getInputWord();
 
-    QStringList titleList = { tr("Num"), tr("RegDate"), tr("Name"), tr("StartDate"), tr("EndDate"), tr("Status") };
+    QStringList titleList = { tr("Num"), tr("RegDate"), tr("SID"), tr("User"), tr("ProductName"), tr("Status") };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -1929,24 +1934,26 @@ void MainWindow::createRightLCNList()
     right_table_->setColumnWidth( 1, 120 );
     right_table_->setColumnWidth( 2, 180 );
     right_table_->setColumnWidth( 3, 80 );
-    right_table_->setColumnWidth( 4, 80 );
+    right_table_->setColumnWidth( 4, 180 );
 
 
     pCurList = pLCNList;
 
     while( pCurList )
     {
-        QTableWidgetItem *item = new QTableWidgetItem( pCurList->sLCN.pName );
+        QTableWidgetItem *item = new QTableWidgetItem( pCurList->sLCN.pSID );
         item->setIcon(QIcon(":/images/license.png"));
+
+        JS_UTIL_getDateTime( pCurList->sLCN.nRegTime, sDateTime );
 
         right_table_->insertRow(i);
         right_table_->setRowHeight(i, 10 );
 
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sLCN.nSeq )));
-        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( pCurList->sLCN.nRegTime )));
+        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( sDateTime )));
         right_table_->setItem(i,2, item );
-        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sLCN.pStartDate )));
-        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sLCN.pEndDate )));
+        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sLCN.pUser )));
+        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sLCN.pProductName )));
         right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sLCN.nStatus )));
 
         pCurList = pCurList->pNext;
@@ -2392,6 +2399,18 @@ void MainWindow::deleteLicense()
 
     manApplet->ccClient()->delLCN( num );
     createRightLCNList();
+}
+
+void MainWindow::viewLicense()
+{
+    int row = right_table_->currentRow();
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+
+    int num = item->text().toInt();
+
+    LCNInfoDlg lcnInfoDlg;
+    lcnInfoDlg.setSeq( num );
+    lcnInfoDlg.exec();
 }
 
 void MainWindow::verifyAudit()
