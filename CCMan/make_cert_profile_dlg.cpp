@@ -259,9 +259,11 @@ void MakeCertProfileDlg::accept()
     JS_DB_setCertProfile( &sCertProfile,
                          nProfileNum,
                          strName.toStdString().c_str(),
+                          0,
                          mVersionCombo->currentIndex(),
                          nNotBefore,
                          nNotAfter,
+                          0,
                          mHashCombo->currentText().toStdString().c_str(),
                          strSubjectDN.toStdString().c_str() );
 

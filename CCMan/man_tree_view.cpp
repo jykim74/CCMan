@@ -65,6 +65,10 @@ void ManTreeView::showContextMenu(QPoint point)
     {
         menu.addAction(tr("PublishCACert"), manApplet->mainWindow(), &MainWindow::publishLDAP );
     }
+    else if( item->type() == ITEM_TYPE_LICENSE )
+    {
+        menu.addAction(tr("MakeLicense"), manApplet->mainWindow(), &MainWindow::makeLicense );
+    }
 
     menu.exec(QCursor::pos());
 }

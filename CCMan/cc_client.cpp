@@ -103,6 +103,8 @@ int CCClient::searchCount(int nType, const QString strTarget, const QString strW
         strType = "tsp";
     else if( nType == ITEM_TYPE_AUDIT )
         strType = "audit";
+    else if( nType == ITEM_TYPE_LICENSE )
+        strType = "license";
 
 
     strURL = base_url_;
@@ -2637,5 +2639,218 @@ int CCClient::getConfigList( JCC_ConfigList **ppConfigList )
     if( pRsp ) JS_free( pRsp );
 
     if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+    return 0;
+}
+
+int CCClient::addLCN( JCC_LCN *pLCN )
+{
+    int ret = 0;
+    int status = 0;
+
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+    JCC_CodeMsg sCodeMsg;
+
+    char *pRsp = NULL;
+    char *pReq = NULL;
+
+    memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
+
+    strURL = base_url_;
+    strURL += JS_CC_PATH_LICENSE;
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    JS_CC_encodeLCN( pLCN, &pReq );
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                NULL,
+                NULL,
+                JS_HTTP_METHOD_POST,
+                NULL,
+                pHeaderList,
+                pReq,
+                &status,
+                &pRsp );
+
+    JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
+
+    JS_CC_resetCodeMsg( &sCodeMsg );
+    if( pRsp ) JS_free( pRsp );
+    if( pReq ) JS_free( pReq );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
+int CCClient::getLCN( int nSeq, JCC_LCN *pLCN )
+{
+    int ret = 0;
+    int status = 0;
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+
+    char *pRsp = NULL;
+
+
+    strURL = base_url_;
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_LICENSE ).arg( nSeq );
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                NULL,
+                NULL,
+                JS_HTTP_METHOD_GET,
+                NULL,
+                pHeaderList,
+                NULL,
+                &status,
+                &pRsp );
+
+    JS_CC_decodeLCN( pRsp, pLCN );
+    if( pRsp ) JS_free( pRsp );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
+int CCClient::delLCN( int nSeq )
+{
+    int ret = 0;
+    int status = 0;
+    QString strURL;
+    JNameValList *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+    JCC_CodeMsg sCodeMsg;
+
+    char *pRsp = NULL;
+
+    memset( &sCodeMsg, 0x00, sizeof(sCodeMsg));
+
+    strURL = base_url_;
+    strURL += QString( "%1/%2" ).arg( JS_CC_PATH_LICENSE ).arg( nSeq );
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                NULL,
+                NULL,
+                JS_HTTP_METHOD_DELETE,
+                NULL,
+                pHeaderList,
+                NULL,
+                &status,
+                &pRsp );
+
+    JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
+
+    JS_CC_resetCodeMsg( &sCodeMsg );
+    if( pRsp ) JS_free( pRsp );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
+int CCClient::getLCNList( int nOffset, int nLimit, JCC_LCNList **ppLCNList )
+{
+    int ret = 0;
+    int status = 0;
+    QString strURL;
+    JNameValList    *pParamList = NULL;
+    JNameValList    *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+
+    char    *pRsp = NULL;
+
+    strURL = base_url_;
+    strURL += JS_CC_PATH_LICENSE;
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    if( nOffset >= 0 && nLimit >= 0 )
+    {
+        QString strOffset = QString( "%1").arg(nOffset);
+        QString strLimit = QString( "%1").arg( nLimit );
+
+        JS_UTIL_createNameValList2( "offset", strOffset.toStdString().c_str(), &pParamList );
+        JS_UTIL_appendNameValList2( pParamList, "limit", strLimit.toStdString().c_str() );
+    }
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                NULL,
+                NULL,
+                JS_HTTP_METHOD_GET,
+                pParamList,
+                pHeaderList,
+                NULL,
+                &status,
+                &pRsp );
+
+    fprintf( stderr, "Rsp : %s\n", pRsp );
+
+    JS_CC_decodeLCNList( pRsp, ppLCNList );
+
+    if( pRsp ) JS_free( pRsp );
+
+    if( pParamList ) JS_UTIL_resetNameValList( &pParamList );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
+    return 0;
+}
+
+int CCClient::searchLCNList( const QString strTarget, const QString strWord, int nOffset, int nLimit, JCC_LCNList **ppLCNList )
+{
+    int ret = 0;
+    int status = 0;
+    QString strURL;
+    JNameValList    *pParamList = NULL;
+    JNameValList    *pHeaderList = NULL;
+    QString strToken = manApplet->accountInfo()->token();
+
+    char    *pRsp = NULL;
+
+    strURL = base_url_;
+    strURL += JS_CC_PATH_LICENSE;
+
+    JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
+
+    if( nOffset >= 0 && nLimit >= 0 )
+    {
+        QString strOffset = QString( "%1").arg(nOffset);
+        QString strLimit = QString( "%1").arg( nLimit );
+
+        JS_UTIL_createNameValList2( "offset", strOffset.toStdString().c_str(), &pParamList );
+        JS_UTIL_appendNameValList2( pParamList, "limit", strLimit.toStdString().c_str() );
+        JS_UTIL_appendNameValList2( pParamList, "target", strTarget.toStdString().c_str() );
+        JS_UTIL_appendNameValList2( pParamList, "word", strWord.toStdString().c_str() );
+    }
+
+    ret = JS_HTTP_requestResponse(
+                strURL.toStdString().c_str(),
+                NULL,
+                NULL,
+                JS_HTTP_METHOD_GET,
+                pParamList,
+                pHeaderList,
+                NULL,
+                &status,
+                &pRsp );
+
+    fprintf( stderr, "Rsp : %s\n", pRsp );
+
+    JS_CC_decodeLCNList( pRsp, ppLCNList );
+
+    if( pRsp ) JS_free( pRsp );
+
+    if( pParamList ) JS_UTIL_resetNameValList( &pParamList );
+    if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+
     return 0;
 }

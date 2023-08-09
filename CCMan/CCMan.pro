@@ -37,6 +37,7 @@ SOURCES += \
     mainwindow.cpp \
     make_cert_profile_dlg.cpp \
     make_crl_profile_dlg.cpp \
+    make_lcn_dlg.cpp \
     man_applet.cpp \
     man_right_widget.cpp \
     man_tree_item.cpp \
@@ -68,6 +69,7 @@ HEADERS += \
     mainwindow.h \
     make_cert_profile_dlg.h \
     make_crl_profile_dlg.h \
+    make_lcn_dlg.h \
     man_applet.h \
     man_right_widget.h \
     man_tree_item.h \
@@ -95,6 +97,7 @@ FORMS += \
     mainwindow.ui \
     make_cert_profile_dlg.ui \
     make_crl_profile_dlg.ui \
+    make_lcn_dlg.ui \
     revoke_cert_dlg.ui \
     settings_dlg.ui \
     signer_dlg.ui \

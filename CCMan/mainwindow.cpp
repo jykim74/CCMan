@@ -22,6 +22,7 @@
 #include "user_dlg.h"
 #include "tst_info_dlg.h"
 #include "config_dlg.h"
+#include "make_lcn_dlg.h"
 
 #include "js_db.h"
 #include "js_db_data.h"
@@ -201,7 +202,12 @@ void MainWindow::createActions()
     toolsToolBar->addAction( makeCRLProfileAct );
     makeCRLProfileAct->setStatusTip(tr( "Make CRL Profile"));
 
-
+    const QIcon lcnIcon = QIcon::fromTheme("make-lcn", QIcon(":/images/license.png"));
+    QAction *makeLCNAct = new QAction( lcnIcon, tr("MakeL&icense"), this );
+    connect( makeLCNAct, &QAction::triggered, this, &MainWindow::makeLicense);
+    toolsMenu->addAction( makeLCNAct );
+    toolsToolBar->addAction( makeLCNAct );
+    makeCRLProfileAct->setStatusTip(tr( "Make License"));
 }
 
 void MainWindow::createStatusBar()
@@ -275,6 +281,10 @@ void MainWindow::showRightMenu(QPoint point)
         menu.addAction( tr("View TSTInfo"), this, &MainWindow::viewTSTInfo );
         menu.addAction( tr("VerifyTSMessage"), this, &MainWindow::verifyTSMessage );
     }
+    else if( rightType() == ITEM_TYPE_LICENSE )
+    {
+        menu.addAction( tr("DeleteLicense"), this, &MainWindow::deleteLicense );
+    }
 
     menu.exec(QCursor::pos());
 }
@@ -336,6 +346,8 @@ void MainWindow::rightTableClick(QModelIndex index )
         logTSP( nSeq );
     else if( nType == ITEM_TYPE_AUDIT )
         logAudit( nSeq );
+    else if( nType == ITEM_TYPE_LICENSE )
+        logLCN( nSeq );
 }
 
 void MainWindow::logAdmin( int nSeq )
@@ -548,7 +560,7 @@ void MainWindow::logSigner(int nNum)
     manApplet->log( QString("DNHash       : %1\n").arg( sSigner.pDNHash));
     manApplet->log( QString("Cert         : %1\n").arg( sSigner.pCert ));
     manApplet->log( QString("Status       : %1 - %2\n").arg( sSigner.nStatus).arg(getStatusName( sSigner.nStatus )));
-    manApplet->log( QString("Desc         : %1\n").arg( sSigner.pDesc ));
+    manApplet->log( QString("Info         : %1\n").arg( sSigner.pInfo ));
 
     logCursorTop();
     JS_DB_resetSigner( &sSigner );
@@ -758,6 +770,30 @@ void MainWindow::logAudit( int nSeq )
     JS_DB_resetAudit( &sAudit );
 }
 
+void MainWindow::logLCN( int nSeq )
+{
+    JCC_LCN sLCN;
+    memset( &sLCN, 0x00, sizeof(sLCN));
+
+    manApplet->ccClient()->getLCN( nSeq, &sLCN );
+
+    manApplet->mainWindow()->logClear();
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( "== License Information\n" );
+    manApplet->log( "========================================================================\n" );
+    manApplet->log( QString("Seq          : %1\n").arg( sLCN.nSeq));
+    manApplet->log( QString("RegTime      : %1\n").arg( getDateTime( sLCN.nRegTime )));
+    manApplet->log( QString("Name         : %1\n").arg( sLCN.pName ));
+    manApplet->log( QString("StartDate    : %1\n").arg( sLCN.pStartDate ));
+    manApplet->log( QString("EndDate      : %1\n").arg( sLCN.pEndDate ));
+    manApplet->log( QString("Key          : %1\n").arg( sLCN.pKey ));
+    manApplet->log( QString("License      : %1\n").arg( sLCN.pLicense ));
+
+
+    logCursorTop();
+    JS_DB_resetLCN( &sLCN );
+}
+
 void MainWindow::createTreeMenu()
 {
     left_model_->clear();
@@ -845,6 +881,11 @@ void MainWindow::createTreeMenu()
     pAuditItem->setType( ITEM_TYPE_AUDIT );
     pTopItem->appendRow( pAuditItem );
 
+    ManTreeItem *pLCNItem = new ManTreeItem( QString( "License") );
+    pLCNItem->setIcon( QIcon(":/images/license.png"));
+    pLCNItem->setType( ITEM_TYPE_LICENSE );
+    pTopItem->appendRow( pLCNItem );
+
     QModelIndex ri = left_model_->index(0,0);
     left_tree_->expand(ri);
 }
@@ -894,6 +935,8 @@ void MainWindow::createRightList(int nItemType)
         createRightStatistics();
     else if( nItemType == ITEM_TYPE_AUDIT )
         createRightAudit();
+    else if( nItemType == ITEM_TYPE_LICENSE )
+        createRightLCNList();
 }
 
 void MainWindow::createRightAdminList()
@@ -1844,6 +1887,79 @@ void MainWindow::createRightAudit()
     if( pAuditList ) JS_DB_resetAuditList( &pAuditList );
 }
 
+void MainWindow::createRightLCNList()
+{
+    removeAllRight();
+
+    int i = 0;
+    int nLimit = manApplet->settingsMgr()->listCount();
+    int nPage = right_menu_->curPage();
+    int nOffset = nPage * nLimit;
+    int nTotalCnt = 0;
+    char    sDateTime[64];
+    CCClient *ccClient = manApplet->ccClient();
+
+
+    QString strTarget = right_menu_->getCondName();
+    QString strWord = right_menu_->getInputWord();
+
+    QStringList titleList = { tr("Num"), tr("RegDate"), tr("Name"), tr("StartDate"), tr("EndDate"), tr("Status") };
+
+    right_table_->clear();
+    right_table_->horizontalHeader()->setStretchLastSection(true);
+    right_table_->setColumnCount( titleList.size() );
+    right_table_->setHorizontalHeaderLabels(titleList);
+    right_table_->verticalHeader()->setVisible(false);
+
+    JCC_LCNList     *pLCNList = NULL;
+    JCC_LCNList     *pCurList = NULL;
+
+    if( strTarget.length() > 0 && strWord.length() > 0 )
+    {
+        nTotalCnt = manApplet->ccClient()->searchCount( ITEM_TYPE_LICENSE, strTarget, strWord );
+        manApplet->ccClient()->searchLCNList( strTarget, strWord, nOffset, nLimit, &pLCNList );
+    }
+    else
+    {
+        nTotalCnt = manApplet->ccClient()->getCount( ITEM_TYPE_LICENSE );
+        manApplet->ccClient()->getLCNList( nOffset, nLimit, &pLCNList );
+    }
+
+    right_table_->setColumnWidth( 0, 40 );
+    right_table_->setColumnWidth( 1, 120 );
+    right_table_->setColumnWidth( 2, 180 );
+    right_table_->setColumnWidth( 3, 80 );
+    right_table_->setColumnWidth( 4, 80 );
+
+
+    pCurList = pLCNList;
+
+    while( pCurList )
+    {
+        QTableWidgetItem *item = new QTableWidgetItem( pCurList->sLCN.pName );
+        item->setIcon(QIcon(":/images/license.png"));
+
+        right_table_->insertRow(i);
+        right_table_->setRowHeight(i, 10 );
+
+        right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sLCN.nSeq )));
+        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( pCurList->sLCN.nRegTime )));
+        right_table_->setItem(i,2, item );
+        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sLCN.pStartDate )));
+        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sLCN.pEndDate )));
+        right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sLCN.nStatus )));
+
+        pCurList = pCurList->pNext;
+        i++;
+    }
+
+
+    right_menu_->setTotalCount( nTotalCnt );
+    right_menu_->updatePageLabel();
+    if( pLCNList ) JS_DB_resetLCNList( &pLCNList );
+}
+
+
 void MainWindow::logClear()
 {
     log_text_->clear();
@@ -2242,6 +2358,8 @@ void MainWindow::editConfig()
     configDlg.exec();
 }
 
+
+
 void MainWindow::deleteConfig()
 {
     bool bVal = manApplet->yesOrCancelBox( tr( "Are you sure to delete this config?" ), this, false );
@@ -2254,6 +2372,26 @@ void MainWindow::deleteConfig()
 
     manApplet->ccClient()->delConfig( num );
     createRightConfigList();
+}
+
+void MainWindow::makeLicense()
+{
+    MakeLCNDlg makeLCNDlg;
+    makeLCNDlg.exec();
+}
+
+void MainWindow::deleteLicense()
+{
+    bool bVal = manApplet->yesOrCancelBox( tr( "Are you sure to delete this license?" ), this, false );
+    if( bVal == false ) return;
+
+    int row = right_table_->currentRow();
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+
+    int num = item->text().toInt();
+
+    manApplet->ccClient()->delLCN( num );
+    createRightLCNList();
 }
 
 void MainWindow::verifyAudit()

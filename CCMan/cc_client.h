@@ -91,6 +91,12 @@ public:
     int delConfig( int nNum );
     int getConfigList( JCC_ConfigList **ppConfigList );
 
+    int addLCN( JCC_LCN *pLCN );
+    int getLCN( int nSeq, JCC_LCN *pLCN );
+    int delLCN( int nSeq );
+    int getLCNList( int nOffset, int nLimit, JCC_LCNList **ppLCNList );
+    int searchLCNList( const QString strTarget, const QString strWord, int nOffset, int nLimit, JCC_LCNList **ppLCNList );
+
 private:
     QString     base_url_;
 };

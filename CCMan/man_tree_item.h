@@ -18,7 +18,8 @@ enum {
     ITEM_TYPE_KMS,
     ITEM_TYPE_TSP,
     ITEM_TYPE_STATISTICS,
-    ITEM_TYPE_AUDIT
+    ITEM_TYPE_AUDIT,
+    ITEM_TYPE_LICENSE,
 };
 
 class ManTreeItem : public QStandardItem

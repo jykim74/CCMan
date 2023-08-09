@@ -51,6 +51,7 @@ public:
     void createRightKMS();
     void createRightTSP();
     void createRightAudit();
+    void createRightLCNList();
 
     void logAdmin( int nSeq );
     void logConfig( int nNum );
@@ -65,6 +66,7 @@ public:
     void logKMS( int nSeq );
     void logTSP( int nSeq );
     void logAudit( int nSeq );
+    void logLCN( int nSeq );
 
     int rightType();
     int rightCount();
@@ -113,6 +115,9 @@ public slots:
 
     void viewTSTInfo();
     void verifyTSMessage();
+
+    void makeLicense();
+    void deleteLicense();
 
 private:
     QSplitter   *hsplitter_;
