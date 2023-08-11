@@ -286,6 +286,7 @@ void MainWindow::showRightMenu(QPoint point)
     {
         menu.addAction( tr("DeleteLicense"), this, &MainWindow::deleteLicense );
         menu.addAction( tr("ViewLicense"), this, &MainWindow::viewLicense );
+        menu.addAction( tr( "SaveLicense"), this, &MainWindow::saveLicense );
     }
 
     menu.exec(QCursor::pos());
@@ -785,12 +786,15 @@ void MainWindow::logLCN( int nSeq )
     manApplet->log( "========================================================================\n" );
     manApplet->log( QString("Seq          : %1\n").arg( sLCN.nSeq));
     manApplet->log( QString("RegTime      : %1\n").arg( getDateTime( sLCN.nRegTime )));
+    manApplet->log( QString("Type         : %1\n").arg( sLCN.nType));
+    manApplet->log( QString("QTY          : %1\n").arg( sLCN.nQTY));
     manApplet->log( QString("SID          : %1\n").arg( sLCN.pSID ));
     manApplet->log( QString("User         : %1\n").arg( sLCN.pUser ));
-    manApplet->log( QString("IssueDate    : %1\n").arg( sLCN.pIssueDate ));
-    manApplet->log( QString("ExpireDate   : %1\n").arg( sLCN.pExpireDate ));
-    manApplet->log( QString("ProductName  : %1\n").arg( sLCN.pProductName));
-    manApplet->log( QString("Extension    : %1\n").arg( sLCN.pExtension ));
+    manApplet->log( QString("Issued       : %1\n").arg( sLCN.pIssued ));
+    manApplet->log( QString("Expire       : %1\n").arg( sLCN.pExpire ));
+    manApplet->log( QString("Product      : %1\n").arg( sLCN.pProduct));
+    manApplet->log( QString("Ref          : %1\n").arg( sLCN.pRef));
+    manApplet->log( QString("Ext          : %1\n").arg( sLCN.pExt ));
     manApplet->log( QString("Key          : %1\n").arg( sLCN.pKey ));
     manApplet->log( QString("License      : %1\n").arg( sLCN.pLicense ));
 
@@ -1908,7 +1912,7 @@ void MainWindow::createRightLCNList()
     QString strTarget = right_menu_->getCondName();
     QString strWord = right_menu_->getInputWord();
 
-    QStringList titleList = { tr("Num"), tr("RegDate"), tr("SID"), tr("User"), tr("ProductName"), tr("Status") };
+    QStringList titleList = { tr("Num"), tr("RegDate"), tr("SID"), tr("User"), tr("Product"), tr("Status") };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -1953,7 +1957,7 @@ void MainWindow::createRightLCNList()
         right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( sDateTime )));
         right_table_->setItem(i,2, item );
         right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sLCN.pUser )));
-        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sLCN.pProductName )));
+        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sLCN.pProduct )));
         right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sLCN.nStatus )));
 
         pCurList = pCurList->pNext;
@@ -2411,6 +2415,53 @@ void MainWindow::viewLicense()
     LCNInfoDlg lcnInfoDlg;
     lcnInfoDlg.setSeq( num );
     lcnInfoDlg.exec();
+}
+
+void MainWindow::saveLicense()
+{
+    QString selectedFilter;
+    QString strFilter;
+    QString fileName;
+    QString strPath = "js_license.lcn";
+
+    QFileDialog::Options options;
+    options |= QFileDialog::DontUseNativeDialog;
+
+
+    int row = right_table_->currentRow();
+    QTableWidgetItem* item = right_table_->item( row, 0 );
+
+    JCC_LCN sLCN;
+    BIN binLCN = {0,0};
+    memset( &sLCN, 0x00, sizeof(sLCN));
+
+    int num = item->text().toInt();
+    manApplet->ccClient()->getLCN( num, &sLCN );
+
+    JS_BIN_decodeHex( sLCN.pLicense, &binLCN );
+    if( binLCN.nLen < 1 )
+    {
+        manApplet->warningBox( tr( "License info is empty" ), this );
+        goto end;
+    }
+
+
+    fileName = QFileDialog::getSaveFileName( this,
+                                                     tr("Save Files"),
+                                                     strPath,
+                                                     strFilter,
+                                                     &selectedFilter,
+                                                     options );
+
+    if( fileName.length() > 0 )
+    {
+        JS_BIN_fileWrite( &binLCN, fileName.toLocal8Bit().toStdString().c_str() );
+        manApplet->messageBox( tr( "licensed saved" ), this );
+    }
+
+end :
+    JS_DB_resetLCN( &sLCN );
+    JS_BIN_reset( &binLCN );
 }
 
 void MainWindow::verifyAudit()

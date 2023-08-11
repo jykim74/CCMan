@@ -119,6 +119,7 @@ public slots:
     void makeLicense();
     void deleteLicense();
     void viewLicense();
+    void saveLicense();
 
 private:
     QSplitter   *hsplitter_;

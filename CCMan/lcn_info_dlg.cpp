@@ -39,6 +39,7 @@ void LCNInfoDlg::initialize()
         JS_BIN_decodeHex( sLCN.pLicense, &binLCN );
         memcpy( &sLCNInfo, binLCN.pVal, binLCN.nLen );
 
+        mTypeText->setText( QString("%1").arg( sLCNInfo.nType ));
         mSIDText->setText( sLCNInfo.sSID );
         mUserText->setText( sLCNInfo.sUser );
         mProductText->setText( sLCNInfo.sProduct );

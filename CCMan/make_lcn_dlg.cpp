@@ -7,6 +7,8 @@
 #include "cc_client.h"
 
 const QStringList kLCNStatus = { "None", "Issue" };
+const QStringList kLCNTypeList = { "Normal", "Update" };
+const QStringList kExtList = { "Base", "Person", "Company", "Group", "Demo" };
 
 MakeLCNDlg::MakeLCNDlg(QWidget *parent) :
     QDialog(parent)
@@ -30,18 +32,19 @@ void MakeLCNDlg::initialize()
 {
     QString strSID = "jykim74@gmail.com";
     QString strUser = "JSInc";
-    QString strProductName = "BerEditor|CertMan|CryptokiMan";
+    QString strProduct = "BerEditor|CertMan|CryptokiMan";
     QString strQuantity = "1";
     QString strExtension = "Base";
     QString strDays = "90";
 
     mStatusCombo->addItems( kLCNStatus );
+    mTypeCombo->addItems( kLCNTypeList );
 
     mSIDText->setText( strSID );
     mUserText->setText( strUser );
-    mProductNameText->setText( strProductName );
+    mProductText->setText( strProduct );
     mQuantityText->setText( strQuantity );
-    mExtensionText->setText( strExtension );
+    mExtensionCombo->addItems( kExtList );
     mDaysText->setText( strDays );
 
     mIssueDateTime->setDateTime( QDateTime::currentDateTime() );
@@ -55,9 +58,9 @@ void MakeLCNDlg::clickClear()
 {
     mSIDText->clear();
     mUserText->clear();
-    mProductNameText->clear();
+    mProductText->clear();
+    mRefText->clear();
     mQuantityText->clear();
-    mExtensionText->clear();
     mDaysText->clear();
 }
 
@@ -78,12 +81,14 @@ void MakeLCNDlg::clickMake()
     CCClient* ccClient = manApplet->ccClient();
     JCC_LCN sLCN;
 
+    int nType = mTypeCombo->currentIndex();
     QString strSID = mSIDText->text();
     QString strUser = mUserText->text();
     int nStatus = mStatusCombo->currentIndex();
     QString strQuantity = mQuantityText->text();
-    QString strProductName = mProductNameText->text();
-    QString strExtension = mExtensionText->text();
+    QString strProduct = mProductText->text();
+    QString strRef = mRefText->text();
+    QString strExtension = mExtensionCombo->currentText();
 
     QString strIssueDate;
     QString strExpireDate;
@@ -100,27 +105,29 @@ void MakeLCNDlg::clickMake()
         QDateTime dateTime;
 
         dateTime.setTime_t( now_t );
-        strIssueDate = dateTime.toString( LICENSE_TIME_FORMAT );
+        strIssueDate = dateTime.toString( JS_LCN_TIME_FORMAT );
 
         dateTime.setTime_t( now_t + strValidPeriod.toInt() * 86400 );
-        strExpireDate = dateTime.toString( LICENSE_TIME_FORMAT );
+        strExpireDate = dateTime.toString( JS_LCN_TIME_FORMAT );
     }
     else
     {
-        strIssueDate = mIssueDateTime->dateTime().toString( LICENSE_TIME_FORMAT );
-        strExpireDate = mExpireDateTime->dateTime().toString( LICENSE_TIME_FORMAT );
+        strIssueDate = mIssueDateTime->dateTime().toString( JS_LCN_TIME_FORMAT );
+        strExpireDate = mExpireDateTime->dateTime().toString( JS_LCN_TIME_FORMAT );
     }
 
     JS_DB_setLCN( &sLCN,
                   -1,
                   now_t,
                   nStatus,
+                  nType,
                   strQuantity.toInt(),
                   strSID.toStdString().c_str(),
                   strUser.toStdString().c_str(),
                   strIssueDate.toStdString().c_str(),
                   strExpireDate.toStdString().c_str(),
-                  strProductName.toStdString().c_str(),
+                  strProduct.toStdString().c_str(),
+                  strRef.toStdString().c_str(),
                   strExtension.toStdString().c_str(),
                   NULL,
                   NULL );
