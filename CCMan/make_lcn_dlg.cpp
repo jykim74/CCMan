@@ -9,6 +9,7 @@
 const QStringList kLCNStatus = { "None", "Issue" };
 const QStringList kLCNTypeList = { "Normal", "Update" };
 const QStringList kExtList = { "Base", "Person", "Company", "Group", "Demo" };
+const QStringList kIssuedMethodList = { "Normal", "#Start" };
 
 MakeLCNDlg::MakeLCNDlg(QWidget *parent) :
     QDialog(parent)
@@ -39,6 +40,7 @@ void MakeLCNDlg::initialize()
 
     mStatusCombo->addItems( kLCNStatus );
     mTypeCombo->addItems( kLCNTypeList );
+    mIssuedMethodCombo->addItems( kIssuedMethodList );
 
     mSIDText->setText( strSID );
     mUserText->setText( strUser );
