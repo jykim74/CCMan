@@ -1,3 +1,5 @@
+#include <QFile>
+
 #include "mainwindow.h"
 
 #include <QApplication>
