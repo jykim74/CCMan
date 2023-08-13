@@ -9,7 +9,7 @@
 const QStringList kLCNStatus = { "None", "Issue" };
 const QStringList kLCNTypeList = { "Normal", "Update" };
 const QStringList kExtList = { "Base", "Person", "Company", "Group", "Demo" };
-const QStringList kIssuedMethodList = { "Normal", "#Start" };
+const QStringList kDaysMethodList = { "Normal", "#Start" };
 
 MakeLCNDlg::MakeLCNDlg(QWidget *parent) :
     QDialog(parent)
@@ -40,7 +40,7 @@ void MakeLCNDlg::initialize()
 
     mStatusCombo->addItems( kLCNStatus );
     mTypeCombo->addItems( kLCNTypeList );
-    mIssuedMethodCombo->addItems( kIssuedMethodList );
+    mDaysMethodCombo->addItems( kDaysMethodList );
 
     mSIDText->setText( strSID );
     mUserText->setText( strUser );
@@ -70,6 +70,7 @@ void MakeLCNDlg::checkUseDays()
 {
     bool bVal = mUseDaysCheck->isChecked();
 
+    mDaysMethodCombo->setEnabled( bVal );
     mDaysText->setEnabled( bVal );
     mDaysLabel->setEnabled( bVal );
     mIssueDateLabel->setEnabled( !bVal );
@@ -103,14 +104,22 @@ void MakeLCNDlg::clickMake()
 
     if( mUseDaysCheck->isChecked() )
     {
-
         QDateTime dateTime;
+        QString strMethod = mDaysMethodCombo->currentText();
 
-        dateTime.setTime_t( now_t );
-        strIssueDate = dateTime.toString( JS_LCN_TIME_FORMAT );
+        if( strMethod == "Normal" )
+        {
+            dateTime.setTime_t( now_t );
+            strIssueDate = dateTime.toString( JS_LCN_TIME_FORMAT );
 
-        dateTime.setTime_t( now_t + strValidPeriod.toInt() * 86400 );
-        strExpireDate = dateTime.toString( JS_LCN_TIME_FORMAT );
+            dateTime.setTime_t( now_t + strValidPeriod.toInt() * 86400 );
+            strExpireDate = dateTime.toString( JS_LCN_TIME_FORMAT );
+        }
+        else
+        {
+            strIssueDate = strMethod;
+            strExpireDate = strValidPeriod;
+        }
     }
     else
     {

@@ -262,7 +262,7 @@
       </widget>
      </item>
      <item row="0" column="3">
-      <widget class="QComboBox" name="mIssuedMethodCombo"/>
+      <widget class="QComboBox" name="mDaysMethodCombo"/>
      </item>
     </layout>
    </item>
