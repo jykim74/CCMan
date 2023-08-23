@@ -43,6 +43,7 @@
 #include "js_pki.h"
 #include "js_tsp.h"
 #include "js_pkcs7.h"
+#include "js_license.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -2419,6 +2420,7 @@ void MainWindow::viewLicense()
 
 void MainWindow::saveLicense()
 {
+    bool bPEM = false;
     QString selectedFilter;
     QString strFilter;
     QString fileName;
@@ -2445,6 +2447,8 @@ void MainWindow::saveLicense()
         goto end;
     }
 
+    bPEM = manApplet->yesOrNoBox( "Are you save the license as PEM", this );
+
 
     fileName = QFileDialog::getSaveFileName( this,
                                                      tr("Save Files"),
@@ -2455,7 +2459,11 @@ void MainWindow::saveLicense()
 
     if( fileName.length() > 0 )
     {
-        JS_BIN_fileWrite( &binLCN, fileName.toLocal8Bit().toStdString().c_str() );
+        if( bPEM == true )
+            JS_LCN_fileWrite( &binLCN, fileName.toLocal8Bit().toStdString().c_str() );
+        else
+            JS_BIN_fileWrite( &binLCN, fileName.toLocal8Bit().toStdString().c_str() );
+
         manApplet->messageBox( tr( "licensed saved" ), this );
     }
 
