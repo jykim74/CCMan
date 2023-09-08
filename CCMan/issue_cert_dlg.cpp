@@ -82,9 +82,7 @@ void IssueCertDlg::accept()
         }
         else if( mAlgCombo->currentText() == "EC" )
         {
-            nAlg = JS_PKI_KEY_TYPE_ECC;
-            int nGroupID = JS_PKI_getNidFromSN( mOptionCombo->currentText().toStdString().c_str() );
-            ret = JS_PKI_ECCGenKeyPair( nGroupID, &binPub, &binPri );
+            ret = JS_PKI_ECCGenKeyPair( mOptionCombo->currentText().toStdString().c_str(), &binPub, &binPri );
         }
 
         ret = JS_PKI_makeCSR( nAlg, "SHA256", strSubjectDn.toStdString().c_str(), NULL, &binPri, NULL, &binCSR );
