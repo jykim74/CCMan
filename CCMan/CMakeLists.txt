@@ -177,7 +177,7 @@ elseif(APPLE)
 
     # And the following tells CMake where to find and install the file itself.
 
-    set_source_files_properties(certman.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
+    set_source_files_properties(ccman.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
 
     set_target_properties( ${PROJECT_NAME} PROPERTIES
         MACOSX_BUNDLE true

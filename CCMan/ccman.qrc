@@ -68,5 +68,6 @@
         <file>ccman.icns</file>
         <file>ccman.ico</file>
         <file>cm.rc</file>
+        <file>Info.plist</file>
     </qresource>
 </RCC>
