@@ -247,7 +247,7 @@ target_compile_definitions( ${PROJECT_NAME} PRIVATE
 
 
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools REQUIRED)
-set(TS_FILES certman_ko_KR.ts)
+set(TS_FILES ccman_ko_KR.ts)
 #qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
 if(WIN32)
