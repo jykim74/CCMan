@@ -65,7 +65,7 @@
         <file>images/critical.png</file>
         <file>images/normal.png</file>
         <file>images/license.png</file>
-        <file>caman.icns</file>
+        <file>ccman.icns</file>
         <file>ccman.ico</file>
         <file>cm.rc</file>
     </qresource>
