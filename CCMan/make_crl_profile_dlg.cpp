@@ -67,7 +67,7 @@ void MakeCRLProfileDlg::loadProfile( int nProfileNum, bool bCopy )
     mVersionCombo->setCurrentIndex( sCRLProfile.nVersion );
     mHashCombo->setCurrentText( sCRLProfile.pHash );
 
-    if( sCRLProfile.nLastUpdate == 0 )
+    if( sCRLProfile.nThisUpdate == 0 )
     {
         mUseFromNowCheck->setChecked(true);
         mValidDaysText->setText( QString("%1").arg(sCRLProfile.nNextUpdate));
@@ -79,7 +79,7 @@ void MakeCRLProfileDlg::loadProfile( int nProfileNum, bool bCopy )
         QDateTime lastUpdate;
         QDateTime nextUpdate;
 
-        lastUpdate.setTime_t( sCRLProfile.nLastUpdate );
+        lastUpdate.setTime_t( sCRLProfile.nThisUpdate );
         nextUpdate.setTime_t( sCRLProfile.nNextUpdate );
 
         mLastUpdateDateTime->setDateTime(lastUpdate);

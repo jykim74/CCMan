@@ -498,19 +498,19 @@ void MainWindow::logCRLProfile( int nNum )
     manApplet->ccClient()->getCRLProfile( nNum, &sCRLProfile );
 
     QString strVersion;
-    QString strLastUpdate;
+    QString strThisUpdate;
     QString strNextUpdate;
 
     strVersion = QString( "V%1" ).arg( sCRLProfile.nVersion + 1);
 
-    if( sCRLProfile.nLastUpdate == 0 )
+    if( sCRLProfile.nThisUpdate == 0 )
     {
-        strLastUpdate = "GenTime";
+        strThisUpdate = "GenTime";
         strNextUpdate = QString( "%1 Days" ).arg( sCRLProfile.nNextUpdate );
     }
     else
     {
-        strLastUpdate = getDateTime( sCRLProfile.nLastUpdate );
+        strThisUpdate = getDateTime( sCRLProfile.nThisUpdate );
         strNextUpdate = getDateTime( sCRLProfile.nNextUpdate );
     }
 
@@ -521,7 +521,7 @@ void MainWindow::logCRLProfile( int nNum )
     manApplet->log( QString("Num          : %1\n").arg(sCRLProfile.nNum));
     manApplet->log( QString("Name         : %1\n").arg(sCRLProfile.pName));
     manApplet->log( QString("Version      : %1 - %2\n").arg(sCRLProfile.nVersion).arg(strVersion));
-    manApplet->log( QString("LastUpdate   : %1 - %2\n").arg(sCRLProfile.nLastUpdate).arg(strLastUpdate));
+    manApplet->log( QString("ThisUpdate   : %1 - %2\n").arg(sCRLProfile.nThisUpdate).arg(strThisUpdate));
     manApplet->log( QString("NextUpdate   : %1 - %2\n").arg(sCRLProfile.nNextUpdate).arg(strNextUpdate));
     manApplet->log( QString("Hash         : %1\n").arg(sCRLProfile.pHash));
     manApplet->log( "======================= Extension Information ==========================\n" );
@@ -1220,7 +1220,7 @@ void MainWindow::createRightCRLProfileList()
     while( pCurList )
     {
         QString strVersion;
-        QString strLastUpdate;
+        QString strThisUpdate;
         QString strNextUpdate;
 
         QTableWidgetItem *item = new QTableWidgetItem( pCurList->sCRLProfile.pName );
@@ -1228,14 +1228,14 @@ void MainWindow::createRightCRLProfileList()
 
         strVersion = QString( "V%1" ).arg( pCurList->sCRLProfile.nVersion + 1);
 
-        if( pCurList->sCRLProfile.nLastUpdate == 0 )
+        if( pCurList->sCRLProfile.nThisUpdate == 0 )
         {
-            strLastUpdate = "GenTime";
+            strThisUpdate = "GenTime";
             strNextUpdate = QString( "%1 Days" ).arg( pCurList->sCRLProfile.nNextUpdate );
         }
         else
         {
-            strLastUpdate = getDateTime( pCurList->sCRLProfile.nLastUpdate );
+            strThisUpdate = getDateTime( pCurList->sCRLProfile.nThisUpdate );
             strNextUpdate = getDateTime( pCurList->sCRLProfile.nNextUpdate );
         }
 
@@ -1245,7 +1245,7 @@ void MainWindow::createRightCRLProfileList()
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCRLProfile.nNum )) );
         right_table_->setItem( i, 1, item );
         right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( strVersion )) );
-        right_table_->setItem( i, 3, new QTableWidgetItem( QString("%1").arg( strLastUpdate )) );
+        right_table_->setItem( i, 3, new QTableWidgetItem( QString("%1").arg( strThisUpdate )) );
         right_table_->setItem( i, 4, new QTableWidgetItem( QString("%1").arg( strNextUpdate )) );
         right_table_->setItem( i, 5, new QTableWidgetItem( pCurList->sCRLProfile.pHash) );
 
