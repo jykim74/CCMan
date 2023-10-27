@@ -51,6 +51,7 @@ void SignerDlg::findCert()
 
 void SignerDlg::accept()
 {
+    int ret = 0;
     BIN binCert = {0,0};
     JCertInfo   sCertInfo;
     JExtensionInfoList  *pExtInfoList = NULL;
@@ -65,31 +66,41 @@ void SignerDlg::accept()
     memset( &sSigner, 0x00, sizeof(sSigner));
 
     QString strCertPath = mCertPathText->text();
-
-    JS_BIN_fileRead( strCertPath.toStdString().c_str(), &binCert );
-    JS_BIN_encodeHex( &binCert, &pCert );
-
-    JS_PKI_getCertInfo( &binCert, &sCertInfo, &pExtInfoList );
-
     int nType = mTypeCombo->currentIndex();
     int nStatus = mStatusCombo->currentIndex();
+
+    JS_BIN_fileReadBER( strCertPath.toStdString().c_str(), &binCert );
+    JS_BIN_encodeHex( &binCert, &pCert );
+
+    ret = JS_PKI_getCertInfo( &binCert, &sCertInfo, &pExtInfoList );
+    if( ret != 0 )
+    {
+        goto end;
+    }
+
+
 
     JS_DB_setSigner( &sSigner, -1, now_t, nType, sCertInfo.pSubjectName, sCertInfo.pDNHash, nStatus, pCert, mDescText->toPlainText().toStdString().c_str() );
     manApplet->ccClient()->addSigner( &sSigner );
 
+end :
     if( pCert ) JS_free( pCert );
     JS_BIN_reset( &binCert );
     JS_PKI_resetCertInfo( &sCertInfo );
     if( pExtInfoList ) JS_PKI_resetExtensionInfoList( &pExtInfoList );
 
     JS_DB_resetSigner( &sSigner );
-    QDialog::accept();
-    if(nType == 0 )
-        nItemType = ITEM_TYPE_REG_SIGNER;
-    else
-        nItemType = ITEM_TYPE_OCSP_SIGNER;
 
-    manApplet->mainWindow()->createRightSignerList(nItemType);
+    if( ret == 0 )
+    {
+        QDialog::accept();
+        if(nType == 0 )
+            nItemType = ITEM_TYPE_REG_SIGNER;
+        else
+            nItemType = ITEM_TYPE_OCSP_SIGNER;
+
+        manApplet->mainWindow()->createRightSignerList(nItemType);
+    }
 }
 
 void SignerDlg::initialize()

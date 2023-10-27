@@ -2538,7 +2538,7 @@ void MainWindow::verifyTSMessage()
 
     if( smgr )
     {
-        JS_BIN_fileRead( smgr->getTSPSrvCertPath().toStdString().c_str(), &binCert );
+        JS_BIN_fileReadBER( smgr->getTSPSrvCertPath().toStdString().c_str(), &binCert );
     }
 
     ret = JS_PKCS7_verifySignedData( &binTS, &binCert, &binData );

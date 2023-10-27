@@ -14,20 +14,20 @@ SINGLETON_IMPL(AutoUpdateService)
 
 namespace  {
 #ifdef Q_OS_WIN32
-    const char *kSparkleAppcastURI = "https://www.aaa.bbb/update/win_appcast.xml";
-    const char *kWinSparkleRegPath = "SOFTWARE\\BerViewer\\WinSparkle";
+    const char *kSparkleAppcastURI = "https://jykim74.github.io/appcast/ccman_appcast_win.xml";
+    const char *kWinSparkleRegPath = "SOFTWARE\\JS Inc\\CCMan\\WinSparkle";
 #else
-    const char *kSparkleAppcastURI = "https://www.aaa.bbb/update/mac_appcast.xml";
+    const char *kSparkleAppcastURI = "https://jykim74.github.io/appcast/ccman_appcast_mac.xml";
 #endif
     const char *kSparkleAlreadyEnableUpdateByDefault = "SparkleAlreadyEnableUpdateByDefault";
 }
 
 QString getAppcastURI() {
-    QString url_from_env = qgetenv("BERVIEWER_APPCAST_URI");
+    QString url_from_env = qgetenv("CCMAN_APPCAST_URI");
 
     if( !url_from_env.isEmpty() )
     {
-        qWarning( "winsparkle: using app cast url from BERVIEWER_APPCAST_URI: "
+        qWarning( "winsparkle: using app cast url from CCMAN_APPCAST_URI: "
                   "%s", url_from_env.toUtf8().data() );
 
         return url_from_env;
@@ -53,9 +53,9 @@ public:
         win_sparkle_set_registry_path(kWinSparkleRegPath);
         win_sparkle_set_appcast_url(getAppcastURI().toUtf8().data());
         win_sparkle_set_app_details(
-                    L"BerViewer",
-                    L"ASN Decoder",
-                    QString(STRINGIZE(BER_VIEWER_VERSION)).toStdWString().c_str() );
+                    L"JS Inc",
+                    L"CCMAN",
+                    QString(STRINGIZE(CCMAN_VERSION)).toStdWString().c_str() );
     }
 
     void start() {
@@ -150,7 +150,7 @@ void AutoUpdateService::checkUpdate()
 }
 
 bool AutoUpdateService::shouldSupportAutoUpdate() const {
-    return QString("BerViewer") == "BerViewer";
+    return QString("CCMan") == manApplet->getBrand();
 }
 
 bool AutoUpdateService::autoUpdateEnabled() const {

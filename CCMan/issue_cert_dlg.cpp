@@ -65,7 +65,7 @@ void IssueCertDlg::accept()
     {
         QString strCSRPath = mCSRPathText->text();
 
-        JS_BIN_fileRead( strCSRPath.toStdString().c_str(), &binCSR );
+        JS_BIN_fileReadBER( strCSRPath.toStdString().c_str(), &binCSR );
     }
     else
     {

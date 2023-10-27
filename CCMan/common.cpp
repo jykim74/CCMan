@@ -1,4 +1,5 @@
 #include <QDateTime>
+#include <QRegularExpression>
 
 #include "common.h"
 #include "js_pki_tools.h"
@@ -120,6 +121,183 @@ QString getHexString( unsigned char *pData, int nDataLen )
 
     return strHex;
 }
+
+int getDataLen( int nType, const QString strData )
+{
+    int nLen = 0;
+    if( strData.isEmpty() ) return 0;
+
+    QString strMsg = strData;
+
+
+    if( nType != DATA_STRING )
+    {
+        strMsg.remove( QRegularExpression("[\t\r\n\\s]") );
+    }
+
+    if( nType == DATA_HEX )
+    {
+        nLen = strMsg.length() / 2;
+
+        if( strMsg.length() % 2 ) nLen++;
+
+        return nLen;
+    }
+    else if( nType == DATA_BASE64 )
+    {
+        BIN bin = {0,0};
+        JS_BIN_decodeBase64( strMsg.toStdString().c_str(), &bin );
+        nLen = bin.nLen;
+        JS_BIN_reset( &bin );
+        return nLen;
+    }
+
+    return strData.length();
+}
+
+int getDataLen( const QString strType, const QString strData )
+{
+    int nType = DATA_STRING;
+
+    QString strLower = strType.toLower();
+
+    if( strLower == "hex" )
+        nType = DATA_HEX;
+    else if( strLower == "base64" )
+        nType = DATA_BASE64;
+
+    return getDataLen( nType, strData );
+}
+
+
+void getBINFromString( BIN *pBin, const QString& strType, const QString& strString )
+{
+    int nType = 0;
+
+    if( strType.toUpper() == "HEX" )
+        nType = DATA_HEX;
+    else if( strType.toUpper() == "BASE64" )
+        nType = DATA_BASE64;
+    else if( strType.toUpper() == "URL" )
+        nType = DATA_URL;
+    else
+        nType = DATA_STRING;
+
+    getBINFromString( pBin, nType, strString );
+}
+
+void getBINFromString( BIN *pBin, int nType, const QString& strString )
+{
+    QString srcString = strString;
+
+    if( pBin == NULL ) return;
+
+    if( nType == DATA_HEX )
+    {
+        srcString.remove( QRegularExpression("[\t\r\n\\s]") );
+        JS_BIN_decodeHex( srcString.toStdString().c_str(), pBin );
+    }
+    else if( nType == DATA_BASE64 )
+    {
+        srcString.remove( QRegularExpression("[\t\r\n\\s]") );
+        JS_BIN_decodeBase64( srcString.toStdString().c_str(), pBin );
+    }
+    else if( nType == DATA_URL )
+    {
+        char *pStr = NULL;
+
+        JS_UTIL_decodeURL( srcString.toStdString().c_str(), &pStr );
+
+        if( pStr )
+        {
+            JS_BIN_set( pBin, (unsigned char *)pStr, strlen(pStr));
+            JS_free( pStr );
+        }
+    }
+    else
+    {
+        JS_BIN_set( pBin, (unsigned char *)srcString.toStdString().c_str(), srcString.length() );
+    }
+}
+
+QString getStringFromBIN( const BIN *pBin, const QString& strType, bool bSeenOnly )
+{
+    int nType = 0;
+
+    if( strType.toUpper() == "HEX" )
+        nType = DATA_HEX;
+    else if( strType.toUpper() == "BASE64" )
+        nType = DATA_BASE64;
+    else if( strType.toUpper() == "URL" )
+        nType = DATA_URL;
+    else
+        nType = DATA_STRING;
+
+    return getStringFromBIN( pBin, nType, bSeenOnly );
+}
+
+static char _getch( unsigned char c )
+{
+    if( isprint(c) )
+        return c;
+    else {
+        return '.';
+    }
+}
+
+QString getStringFromBIN( const BIN *pBin, int nType, bool bSeenOnly )
+{
+    QString strOut;
+    char *pOut = NULL;
+
+    if( pBin == NULL || pBin->nLen <= 0 ) return "";
+
+    if( nType == DATA_HEX )
+    {
+        JS_BIN_encodeHex( pBin, &pOut );
+        strOut = pOut;
+    }
+    else if( nType == DATA_BASE64 )
+    {
+        JS_BIN_encodeBase64( pBin, &pOut );
+        strOut = pOut;
+    }
+    else if( nType == DATA_URL )
+    {
+        char *pStr = NULL;
+        JS_BIN_string( pBin, &pStr );
+        JS_UTIL_encodeURL( pStr, &pOut );
+        strOut = pOut;
+        if( pStr ) JS_free( pStr );
+    }
+    else
+    {
+        int i = 0;
+
+        if( bSeenOnly )
+        {
+            if( pBin->nLen > 0 )
+            {
+                pOut = (char *)JS_malloc(pBin->nLen + 1);
+
+                for( i=0; i < pBin->nLen; i++ )
+                    pOut[i] = _getch( pBin->pVal[i] );
+
+                pOut[i] = 0x00;
+            }
+        }
+        else
+        {
+            JS_BIN_string( pBin, &pOut );
+        }
+
+        strOut = pOut;
+    }
+
+    if( pOut ) JS_free( pOut );
+    return strOut;
+}
+
 
 static int _getKeyUsage( const BIN *pBinExt, bool bShow, QString& strVal )
 {

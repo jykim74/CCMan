@@ -30,6 +30,13 @@
 #define     JS_CERT_STATUS_REVOKE       2
 #define     JS_CERT_STATUS_HOLD         3
 
+enum {
+    DATA_STRING,
+    DATA_HEX,
+    DATA_BASE64,
+    DATA_URL
+};
+
 const int   kListCount = 15;
 
 const QStringList kMechList = { "RSA", "EC" };
@@ -106,6 +113,15 @@ QString getCertStatusSName( int nStatus );
 QString getRevokeReasonName( int nReason );
 
 QString getHexString( unsigned char *pData, int nDataLen );
+
+int getDataLen( int nType, const QString strData );
+int getDataLen( const QString strType, const QString strData );
+
+void getBINFromString( BIN *pBin, const QString& strType, const QString& strString );
+void getBINFromString( BIN *pBin, int nType, const QString& strString );
+QString getStringFromBIN( const BIN *pBin, const QString& strType, bool bSeenOnly = false );
+QString getStringFromBIN( const BIN *pBin, int nType, bool bSeenOnly = false );
+
 
 void getInfoValue( const JExtensionInfo *pExtInfo, QString& strVal );
 
