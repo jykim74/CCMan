@@ -46,6 +46,7 @@ SOURCES += \
     man_tree_view.cpp \
     revoke_cert_dlg.cpp \
     search_menu.cpp \
+    search_form.cpp \
     settings_dlg.cpp \
     settings_mgr.cpp \
     signer_dlg.cpp \
@@ -79,6 +80,7 @@ HEADERS += \
     man_tree_view.h \
     revoke_cert_dlg.h \
     search_menu.h \
+    search_form.h \
     settings_dlg.h \
     settings_mgr.h \
     signer_dlg.h \
@@ -106,6 +108,7 @@ FORMS += \
     signer_dlg.ui \
     stat_form.ui \
     tst_info_dlg.ui \
+    search_form.ui \
     user_dlg.ui
 
 # Default rules for deployment.

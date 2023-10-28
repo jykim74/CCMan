@@ -10,7 +10,8 @@
 #include "man_tree_model.h"
 #include "man_tree_view.h"
 #include "man_right_widget.h"
-#include "search_menu.h"
+//#include "search_menu.h"
+#include "search_form.h"
 #include "user_dlg.h"
 #include "cc_client.h"
 #include "settings_dlg.h"
@@ -78,15 +79,19 @@ void MainWindow::initialize()
 
     left_tree_ = new ManTreeView(this);
     left_model_ = new ManTreeModel(this);
-    right_menu_ = new SearchMenu;
+//    right_menu_ = new SearchMenu;
+    right_menu_ = new SearchForm;
     log_text_ = new QTextEdit;
 
     right_table_ = new ManRightWidget;
 
+#ifdef Q_OS_MAC
+    right_menu_->setMaximumHeight( 30 );
+#else
     right_menu_->setMaximumHeight(20);
-    left_tree_->setModel(left_model_);
+#endif
 
-    log_text_->setFont( QFont("굴림체") );
+    left_tree_->setModel(left_model_);
     log_text_->setReadOnly(true);
 
     right_table_->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -2075,6 +2080,7 @@ void MainWindow::modifyCertProfile()
 {
     int row = right_table_->currentRow();
     QTableWidgetItem* item = right_table_->item( row, 0 );
+    if( item == NULL ) return;
 
     int num = item->text().toInt();
 
@@ -2087,6 +2093,7 @@ void MainWindow::modifyCRLProfile()
 {
     int row = right_table_->currentRow();
     QTableWidgetItem* item = right_table_->item( row, 0 );
+    if( item == NULL ) return;
 
     int num = item->text().toInt();
 
@@ -2099,6 +2106,7 @@ void MainWindow::deleteCertProfile()
 {
     int row = right_table_->currentRow();
     QTableWidgetItem* item = right_table_->item( row, 0 );
+    if( item == NULL ) return;
 
     int num = item->text().toInt();
 
@@ -2110,6 +2118,7 @@ void MainWindow::deleteCRLProfile()
 {
     int row = right_table_->currentRow();
     QTableWidgetItem* item = right_table_->item( row, 0 );
+    if( item == NULL ) return;
 
     int num = item->text().toInt();
 
@@ -2121,6 +2130,7 @@ void MainWindow::copyCertProfile()
 {
     int row = right_table_->currentRow();
     QTableWidgetItem* item = right_table_->item( row, 0 );
+    if( item == NULL ) return;
 
     int num = item->text().toInt();
 
@@ -2133,6 +2143,7 @@ void MainWindow::copyCRLProfile()
 {
     int row = right_table_->currentRow();
     QTableWidgetItem* item = right_table_->item( row, 0 );
+    if( item == NULL ) return;
 
     int num = item->text().toInt();
 
@@ -2145,6 +2156,7 @@ void MainWindow::deleteSigner()
 {
     int row = right_table_->currentRow();
     QTableWidgetItem* item = right_table_->item( row, 0 );
+    if( item == NULL ) return;
 
     int num = item->text().toInt();
     QString strMsg = tr("Are you sure to delete the signer?" );
@@ -2161,6 +2173,8 @@ void MainWindow::revokeCert()
     if( row < 0 ) return;
 
     QTableWidgetItem* item = right_table_->item( row, 0 );
+    if( item == NULL ) return;
+
     int num = item->text().toInt();
 
     RevokeCertDlg revokeCertDlg;
@@ -2172,6 +2186,7 @@ void MainWindow::deleteRevoke()
 {
     int row = right_table_->currentRow();
     QTableWidgetItem* item = right_table_->item( row, 0 );
+    if( item == NULL ) return;
 
     int num = item->text().toInt();
 
@@ -2379,6 +2394,7 @@ void MainWindow::deleteConfig()
 
     int row = right_table_->currentRow();
     QTableWidgetItem* item = right_table_->item( row, 0 );
+    if( item == NULL ) return;
 
     int num = item->text().toInt();
 
@@ -2399,6 +2415,7 @@ void MainWindow::deleteLicense()
 
     int row = right_table_->currentRow();
     QTableWidgetItem* item = right_table_->item( row, 0 );
+    if( item == NULL ) return;
 
     int num = item->text().toInt();
 

@@ -12,7 +12,8 @@ class ManTreeView;
 class ManTreeItem;
 class ManTreeModel;
 class ManRightWidget;
-class SearchMenu;
+//class SearchMenu;
+class SearchForm;
 class StatForm;
 
 QT_BEGIN_NAMESPACE
@@ -130,7 +131,8 @@ private:
 
     ManRightWidget*  right_table_;
     QTextEdit*      log_text_;
-    SearchMenu*     right_menu_;
+//    SearchMenu*     right_menu_;
+    SearchForm*      right_menu_;
 
     QStackedLayout  *stack_;
     StatForm*       stat_;

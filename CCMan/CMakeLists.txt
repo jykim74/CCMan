@@ -136,6 +136,9 @@ add_executable(${PROJECT_NAME}
     ${RESOURCE_ADDED}
     cm.rc
     ccman.icns
+    search_form.h
+    search_form.cpp
+    search_form.ui
 )
 
 target_link_options( ${PROJECT_NAME} PRIVATE -mwindows -MD )
