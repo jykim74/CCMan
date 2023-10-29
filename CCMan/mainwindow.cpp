@@ -836,15 +836,20 @@ void MainWindow::createTreeMenu()
     pUserItem->setType( ITEM_TYPE_USER );
     pTopItem->appendRow( pUserItem );
 
+    ManTreeItem *pProfileItem = new ManTreeItem( QString("Profile"));
+    pProfileItem->setIcon( QIcon(":/images/policy.png"));
+//   pCertProfileItem->setType( ITEM_TYPE_CERT_PROFILE );
+    pTopItem->appendRow( pProfileItem );
+
     ManTreeItem *pCertProfileItem = new ManTreeItem( QString("CertProfile"));
     pCertProfileItem->setIcon( QIcon(":/images/policy.png"));
     pCertProfileItem->setType( ITEM_TYPE_CERT_PROFILE );
-    pTopItem->appendRow( pCertProfileItem );
+    pProfileItem->appendRow( pCertProfileItem );
 
     ManTreeItem *pCRLProfileItem = new ManTreeItem( QString("CRLProfile"));
     pCRLProfileItem->setIcon( QIcon(":/images/policy.png"));
     pCRLProfileItem->setType( ITEM_TYPE_CRL_PROFILE );
-    pTopItem->appendRow( pCRLProfileItem );
+    pProfileItem->appendRow( pCRLProfileItem );
 
     ManTreeItem *pRegSignerItem = new ManTreeItem( QString("RegSigner"));
     pRegSignerItem->setIcon( QIcon(":/images/reg_signer.png"));
@@ -864,17 +869,31 @@ void MainWindow::createTreeMenu()
     ManTreeItem *pCertItem = new ManTreeItem( QString("Certificate"));
     pCertItem->setType( ITEM_TYPE_CERT );
     pCertItem->setIcon(QIcon(":/images/cert.png"));
-    pTopItem->appendRow( pCertItem );
+ //   pTopItem->appendRow( pCertItem );
+    pCAItem->appendRow( pCertItem );
 
     ManTreeItem *pCRLItem = new ManTreeItem( QString("CRL") );
     pCRLItem->setType( ITEM_TYPE_CRL );
     pCRLItem->setIcon(QIcon(":/images/crl.png"));
-    pTopItem->appendRow( pCRLItem );
+//    pTopItem->appendRow( pCRLItem );
+    pCAItem->appendRow( pCRLItem );
 
     ManTreeItem *pRevokeItem = new ManTreeItem( QString("Revoke"));
     pRevokeItem->setType( ITEM_TYPE_REVOKE );
     pRevokeItem->setIcon(QIcon(":/images/revoke.png"));
-    pTopItem->appendRow( pRevokeItem );
+//    pTopItem->appendRow( pRevokeItem );
+    pCAItem->appendRow( pRevokeItem );
+
+
+    ManTreeItem *pAuditItem = new ManTreeItem( QString( "Audit") );
+    pAuditItem->setIcon( QIcon(":/images/audit.png"));
+    pAuditItem->setType( ITEM_TYPE_AUDIT );
+    pTopItem->appendRow( pAuditItem );
+
+    ManTreeItem *pStatisticsItem = new ManTreeItem( QString( "Statistics" ));
+    pStatisticsItem->setIcon(QIcon(":/images/statistics.png"));
+    pStatisticsItem->setType( ITEM_TYPE_STATISTICS );
+    pAuditItem->appendRow( pStatisticsItem );
 
     ManTreeItem *pKMSItem = new ManTreeItem( QString( "KMS" ));
     pKMSItem->setIcon(QIcon(":/images/kms.png"));
@@ -886,23 +905,14 @@ void MainWindow::createTreeMenu()
     pTSPItem->setType( ITEM_TYPE_TSP );
     pTopItem->appendRow( pTSPItem );
 
-    ManTreeItem *pStatisticsItem = new ManTreeItem( QString( "Statistics" ));
-    pStatisticsItem->setIcon(QIcon(":/images/statistics.png"));
-    pStatisticsItem->setType( ITEM_TYPE_STATISTICS );
-    pTopItem->appendRow( pStatisticsItem );
-
-    ManTreeItem *pAuditItem = new ManTreeItem( QString( "Audit") );
-    pAuditItem->setIcon( QIcon(":/images/audit.png"));
-    pAuditItem->setType( ITEM_TYPE_AUDIT );
-    pTopItem->appendRow( pAuditItem );
-
     ManTreeItem *pLCNItem = new ManTreeItem( QString( "License") );
     pLCNItem->setIcon( QIcon(":/images/license.png"));
     pLCNItem->setType( ITEM_TYPE_LICENSE );
     pTopItem->appendRow( pLCNItem );
 
     QModelIndex ri = left_model_->index(0,0);
-    left_tree_->expand(ri);
+//    left_tree_->expand(ri);
+    left_tree_->expandAll();
 }
 
 void MainWindow::createRightList(int nItemType)

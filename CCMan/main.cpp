@@ -27,5 +27,15 @@ int main(int argc, char *argv[])
     manApplet = &mApplet;
     manApplet->start();
 
+    QFont font;
+#ifdef Q_OS_MAC
+    QString strFont = "Monaco";
+#else
+    QString strFont = "Consolas";
+#endif
+
+    font.setFamily( strFont );
+    app.setFont( font );
+
     return app.exec();
 }
