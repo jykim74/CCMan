@@ -1617,6 +1617,7 @@ void MainWindow::createRightRevokedList()
 
 void MainWindow::createRightCA()
 {
+    int ret = 0;
     int     i = 0;
     removeAllRight();
 
@@ -1645,12 +1646,17 @@ void MainWindow::createRightCA()
     manApplet->ccClient()->getCA( &sNameVal );
     JS_BIN_decodeHex( sNameVal.pValue, &binCert );
 
-    JS_PKI_getCertInfo( &binCert, &sCertInfo, &pExtInfoList );
+    ret = JS_PKI_getCertInfo( &binCert, &sCertInfo, &pExtInfoList );
+    if( ret != 0 )
+    {
+        manApplet->warningBox( tr( "fail to decode certificate" ), this );
+        goto end;
+    }
 
     right_table_->insertRow(i);
     right_table_->setRowHeight(i, 10 );
     right_table_->setItem( i, 0, new QTableWidgetItem( "Version" ));
-    right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.nVersion)));
+    right_table_->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.nVersion + 1)));
 
     i++;
     right_table_->insertRow(i);
@@ -1727,6 +1733,8 @@ void MainWindow::createRightCA()
         JS_DB_resetProfileExt( &sDBExt );
     }
 
+end :
+    JS_BIN_reset( &binCert );
     JS_CC_resetNameVal( &sNameVal );
     JS_PKI_resetCertInfo( &sCertInfo );
     if( pExtInfoList ) JS_PKI_resetExtensionInfoList( &pExtInfoList );
