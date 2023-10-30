@@ -69,5 +69,6 @@
         <file>ccman.ico</file>
         <file>cm.rc</file>
         <file>Info.plist</file>
+        <file>images/signer.png</file>
     </qresource>
 </RCC>

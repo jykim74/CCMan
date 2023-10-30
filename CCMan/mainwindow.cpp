@@ -831,14 +831,11 @@ void MainWindow::createTreeMenu()
     pConfigItem->setType( ITEM_TYPE_CONFIG );
     pTopItem->appendRow( pConfigItem );
 
-    ManTreeItem *pUserItem = new ManTreeItem( QString("User") );
-    pUserItem->setIcon(QIcon(":/images/user.jpg"));
-    pUserItem->setType( ITEM_TYPE_USER );
-    pTopItem->appendRow( pUserItem );
+
 
     ManTreeItem *pProfileItem = new ManTreeItem( QString("Profile"));
     pProfileItem->setIcon( QIcon(":/images/policy.png"));
-//   pCertProfileItem->setType( ITEM_TYPE_CERT_PROFILE );
+    pProfileItem->setType( ITEM_TYPE_CERT_PROFILE );
     pTopItem->appendRow( pProfileItem );
 
     ManTreeItem *pCertProfileItem = new ManTreeItem( QString("CertProfile"));
@@ -851,20 +848,30 @@ void MainWindow::createTreeMenu()
     pCRLProfileItem->setType( ITEM_TYPE_CRL_PROFILE );
     pProfileItem->appendRow( pCRLProfileItem );
 
+    ManTreeItem *pSignerItem = new ManTreeItem( QString("Signer"));
+    pSignerItem->setIcon( QIcon(":/images/signer.png"));
+    pSignerItem->setType( ITEM_TYPE_REG_SIGNER );
+    pTopItem->appendRow( pSignerItem );
+
     ManTreeItem *pRegSignerItem = new ManTreeItem( QString("RegSigner"));
     pRegSignerItem->setIcon( QIcon(":/images/reg_signer.png"));
     pRegSignerItem->setType( ITEM_TYPE_REG_SIGNER );
-    pTopItem->appendRow( pRegSignerItem );
+    pSignerItem->appendRow( pRegSignerItem );
 
     ManTreeItem *pOCSPSignerItem = new ManTreeItem( QString("OCSPSigner"));
     pOCSPSignerItem->setIcon( QIcon(":/images/ocsp_signer.png"));
     pOCSPSignerItem->setType( ITEM_TYPE_OCSP_SIGNER );
-    pTopItem->appendRow( pOCSPSignerItem );
+    pSignerItem->appendRow( pOCSPSignerItem );
 
     ManTreeItem *pCAItem = new ManTreeItem( QString( "CA" ) );
     pCAItem->setType( ITEM_TYPE_CA );
     pCAItem->setIcon( QIcon(":/images/ca.png"));
     pTopItem->appendRow( pCAItem );
+
+    ManTreeItem *pUserItem = new ManTreeItem( QString("User") );
+    pUserItem->setIcon(QIcon(":/images/user.jpg"));
+    pUserItem->setType( ITEM_TYPE_USER );
+    pCAItem->appendRow( pUserItem );
 
     ManTreeItem *pCertItem = new ManTreeItem( QString("Certificate"));
     pCertItem->setType( ITEM_TYPE_CERT );
