@@ -106,6 +106,7 @@ public slots:
     void about();
     void settings();
     void certInfo();
+    void certCAInfo();
     void crlInfo();
     void certStatus();
     void verifyAudit();

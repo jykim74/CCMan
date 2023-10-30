@@ -64,6 +64,7 @@ void ManTreeView::showContextMenu(QPoint point)
     else if( item->type() == ITEM_TYPE_CA )
     {
         menu.addAction(tr("PublishCACert"), manApplet->mainWindow(), &MainWindow::publishLDAP );
+        menu.addAction( tr("CertCAInfo" ), manApplet->mainWindow(), &MainWindow::certCAInfo );
     }
     else if( item->type() == ITEM_TYPE_LICENSE )
     {

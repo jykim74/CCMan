@@ -2334,6 +2334,23 @@ void MainWindow::certInfo()
     certInfoDlg.exec();
 }
 
+void MainWindow::certCAInfo()
+{
+    BIN binCA = {0,0};
+    JCC_NameVal sNameVal;
+    memset( &sNameVal, 0x00, sizeof(sNameVal));
+
+    manApplet->ccClient()->getCA( &sNameVal );
+    JS_BIN_decodeHex( sNameVal.pValue, &binCA );
+
+    CertInfoDlg certInfoDlg;
+    certInfoDlg.setCertBin( &binCA );
+    certInfoDlg.exec();
+
+    JS_BIN_reset( &binCA );
+    JS_CC_resetNameVal( &sNameVal );
+}
+
 void MainWindow::crlInfo()
 {
     int row = right_table_->currentRow();

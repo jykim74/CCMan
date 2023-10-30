@@ -5,6 +5,7 @@
 #include "js_db.h"
 #include "js_cc.h"
 #include "ui_cert_info_dlg.h"
+#include "js_bin.h"
 
 namespace Ui {
 class CertInfoDlg;
@@ -20,6 +21,7 @@ public:
 
     int getCertNum() { return cert_num_; };
     void setCertNum( int cert_num );
+    void setCertBin( const BIN *pCert );
 
 private slots:
     void showEvent(QShowEvent *event);
@@ -28,6 +30,7 @@ private slots:
 
 private:
     int cert_num_;
+    BIN cert_bin_;
     JCC_CertList* cert_list_;
 
     void initialize();

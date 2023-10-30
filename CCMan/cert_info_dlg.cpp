@@ -16,12 +16,14 @@ CertInfoDlg::CertInfoDlg(QWidget *parent) :
     initUI();
     cert_num_ = -1;
     cert_list_ = NULL;
+    memset( &cert_bin_, 0x00, sizeof(BIN));
     tabWidget->setCurrentIndex(0);
 }
 
 CertInfoDlg::~CertInfoDlg()
 {
     if( cert_list_ ) JS_DB_resetCertList( &cert_list_ );
+    JS_BIN_reset( &cert_bin_ );
 }
 
 void CertInfoDlg::setCertNum(int cert_num)
@@ -29,10 +31,17 @@ void CertInfoDlg::setCertNum(int cert_num)
     cert_num_ = cert_num;
 }
 
+void CertInfoDlg::setCertBin( const BIN *pCert )
+{
+    cert_num_ = -1;
+    JS_BIN_reset( &cert_bin_ );
+    JS_BIN_copy( &cert_bin_, pCert );
+}
+
 void CertInfoDlg::showEvent(QShowEvent *event)
 {
     initialize();
-    pathInit();
+    if( cert_num_ >= 0 ) pathInit();
 }
 
 void CertInfoDlg::initialize()
@@ -40,7 +49,6 @@ void CertInfoDlg::initialize()
     int ret = 0;
     int i = 0;
 
-    BIN binCert = {0,0};
     BIN binFinger = {0,0};
 
     JCertInfo  sCertInfo;
@@ -51,7 +59,7 @@ void CertInfoDlg::initialize()
 
     memset( &sCert, 0x00, sizeof(sCert));
 
-    if( cert_num_ < 0 )
+    if( cert_num_ < 0 && cert_bin_.nLen <= 0)
     {
         manApplet->warningBox( tr( "Select certificate"), this );
         close();
@@ -60,21 +68,24 @@ void CertInfoDlg::initialize()
 
     clearTable();
 
-    manApplet->ccClient()->getCert( cert_num_, &sCert );
+    if( cert_num_ >= 0 )
+    {
+        manApplet->ccClient()->getCert( cert_num_, &sCert );
+        memset( &sCertInfo, 0x00, sizeof(sCertInfo));
+        JS_BIN_reset( &cert_bin_ );
+        JS_BIN_decodeHex( sCert.pCert, &cert_bin_ );
+    }
 
-    memset( &sCertInfo, 0x00, sizeof(sCertInfo));
-    JS_BIN_decodeHex( sCert.pCert, &binCert );
-
-    ret = JS_PKI_getCertInfo( &binCert, &sCertInfo, &pExtInfoList );
+    ret = JS_PKI_getCertInfo( &cert_bin_, &sCertInfo, &pExtInfoList );
     if( ret != 0 )
     {
         manApplet->warningBox( tr("fail to get certificate information"), this );
-        JS_BIN_reset( &binCert );
+        JS_BIN_reset( &cert_bin_ );
         this->hide();
         return;
     }
 
-    JS_PKI_genHash( "SHA1", &binCert, &binFinger );
+    JS_PKI_genHash( "SHA1", &cert_bin_, &binFinger );
 
     mFieldTable->insertRow(i);
     mFieldTable->setRowHeight(i,10);
@@ -187,7 +198,6 @@ void CertInfoDlg::initialize()
     mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(getHexString(binFinger.pVal, binFinger.nLen))));
     i++;
 
-    JS_BIN_reset( &binCert );
     JS_BIN_reset( &binFinger );
 
     JS_PKI_resetCertInfo( &sCertInfo );
