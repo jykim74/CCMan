@@ -638,7 +638,7 @@ void MakeCertProfileDlg::clickUseCSR()
     mSubjectDNText->setEnabled( !bStatus );
 
     if( bStatus )
-        mSubjectDNText->setText( "#CSR" );
+        mSubjectDNText->setText( "#CSR_DN" );
     else {
         mSubjectDNText->setText( "" );
     }

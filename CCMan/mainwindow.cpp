@@ -455,7 +455,7 @@ void MainWindow::logCertProfile( int nNum )
         strNotAfter = getDateTime( sCertProfile.nNotAfter );
     }
 
-    if( strcasecmp( sCertProfile.pDNTemplate, "#CSR" ) == 0 )
+    if( strcasecmp( sCertProfile.pDNTemplate, "#CSR_DN" ) == 0 )
         strDNTemplate = "Use CSR DN";
     else
         strDNTemplate = sCertProfile.pDNTemplate;
@@ -1230,7 +1230,7 @@ void MainWindow::createRightCertProfileList()
             strNotAfter = getDateTime( pCurList->sCertProfile.nNotAfter );
         }
 
-        if( strcasecmp( pCurList->sCertProfile.pDNTemplate, "#CSR" ) == 0 )
+        if( strcasecmp( pCurList->sCertProfile.pDNTemplate, "#CSR_DN" ) == 0 )
             strDNTemplate = "Use CSR DN";
         else
             strDNTemplate = pCurList->sCertProfile.pDNTemplate;
