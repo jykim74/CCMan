@@ -124,5 +124,7 @@ QString getStringFromBIN( const BIN *pBin, int nType, bool bSeenOnly = false );
 
 
 void getInfoValue( const JExtensionInfo *pExtInfo, QString& strVal );
+const QString getProfileExtInfoValue( const QString strSN, const QString& strVal );
+
 
 #endif // COMMON_H

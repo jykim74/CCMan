@@ -478,11 +478,32 @@ void MainWindow::logCertProfile( int nNum )
 
     while( pCurList )
     {
+        int nSeq = pCurList->sProfileExt.nSeq;
+        QString strSN = pCurList->sProfileExt.pSN;
+        QString strValue = pCurList->sProfileExt.pValue;
+        QString strShowValue = getProfileExtInfoValue( strSN, strValue );
+        int bCrit = pCurList->sProfileExt.bCritical;
+
+        manApplet->log( "========================================================================\n" );
+        manApplet->log( QString( "| %1 | %2 | Seq: %3 |\n")
+                            .arg( strSN, -37 )
+                            .arg( bCrit ? "Critical" : "Normal", -10 )
+                            .arg( nSeq, 10 ));
+
+        if( strShowValue.length() > 0 )
+        {
+            manApplet->log( "------------------------------------------------------------------------\n" );
+            manApplet->log( QString( "%1" ).arg( strShowValue ) );
+        }
+
+        manApplet->log( "========================================================================\n" );
+        /*
         manApplet->log( QString( "%1 || %2 || %3 || %4\n")
                 .arg(pCurList->sProfileExt.nSeq)
                 .arg(pCurList->sProfileExt.bCritical )
                 .arg(pCurList->sProfileExt.pSN)
                 .arg(pCurList->sProfileExt.pValue) );
+        */
 
         pCurList = pCurList->pNext;
     }
@@ -536,11 +557,32 @@ void MainWindow::logCRLProfile( int nNum )
 
     while( pCurList )
     {
+        int nSeq = pCurList->sProfileExt.nSeq;
+        QString strSN = pCurList->sProfileExt.pSN;
+        QString strValue = pCurList->sProfileExt.pValue;
+        QString strShowValue = getProfileExtInfoValue( strSN, strValue );
+        int bCrit = pCurList->sProfileExt.bCritical;
+
+        manApplet->log( "========================================================================\n" );
+        manApplet->log( QString( "| %1 | %2 | Seq: %3 |\n")
+                           .arg( strSN, -37 )
+                           .arg( bCrit ? "Critical" : "Normal", -10 )
+                           .arg( nSeq, 10 ));
+
+        if( strShowValue.length() > 0 )
+        {
+            manApplet->log( "------------------------------------------------------------------------\n" );
+            manApplet->log( QString( "%1" ).arg( strShowValue ) );
+        }
+
+        manApplet->log( "========================================================================\n" );
+        /*
         manApplet->log( QString( "%1 || %2 || %3 || %4\n")
                 .arg(pCurList->sProfileExt.nSeq)
                 .arg(pCurList->sProfileExt.bCritical )
                 .arg(pCurList->sProfileExt.pSN)
                 .arg(pCurList->sProfileExt.pValue) );
+        */
 
         pCurList = pCurList->pNext;
     }
