@@ -17,6 +17,7 @@ SettingsDlg::SettingsDlg(QWidget *parent) :
     mLangCombo->addItems(I18NHelper::getInstance()->getLanguages());
 
     initialize();
+    initFontFamily();
 }
 
 SettingsDlg::~SettingsDlg()
@@ -47,6 +48,8 @@ void SettingsDlg::updateSettings()
 
     if( language_changed && manApplet->yesOrNoBox(tr("You have changed language. Restart to apply it?"), this, true))
         manApplet->restartApp();
+
+    mgr->setFontFamily( mFontFamilyCombo->currentText());
 }
 
 void SettingsDlg::accept()
@@ -72,5 +75,15 @@ void SettingsDlg::initialize()
     }
 #endif
 
+    mFontFamilyCombo->setCurrentText( mgr->getFontFamily() );
     mLangCombo->setCurrentIndex(I18NHelper::getInstance()->preferredLanguage());
+}
+
+void SettingsDlg::initFontFamily()
+{
+    SettingsMgr *mgr = manApplet->settingsMgr();
+
+    QFontDatabase fontDB;
+    QStringList fontList = fontDB.families();
+    mFontFamilyCombo->addItems( fontList );
 }

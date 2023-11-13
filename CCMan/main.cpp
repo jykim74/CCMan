@@ -8,6 +8,7 @@
 
 #include "man_applet.h"
 #include "i18n_helper.h"
+#include "settings_mgr.h"
 
 int main(int argc, char *argv[])
 {
@@ -17,25 +18,16 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain( "jssoft.com");
     QCoreApplication::setApplicationName( "CCMan" );
 
-    QFile qss(":/ccman.qss");
-    qss.open( QFile::ReadOnly );
-    app.setStyleSheet(qss.readAll());
-
     I18NHelper::getInstance()->init();
 
     ManApplet mApplet;
     manApplet = &mApplet;
     manApplet->start();
 
-    QFont font;
-#ifdef Q_OS_MAC
-    QString strFont = "Monaco";
-#else
-    QString strFont = "Consolas";
-#endif
-
+    static QFont font;
+    QString strFont = manApplet->settingsMgr()->getFontFamily();
     font.setFamily( strFont );
-    app.setFont( font );
+    app.setFont(font);
 
     return app.exec();
 }

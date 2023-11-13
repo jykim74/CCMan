@@ -18,6 +18,9 @@ public:
     void setTSPSrvCertPath(QString strPath);
     QString getTSPSrvCertPath();
 
+    void setFontFamily( const QString& strFamily );
+    QString getFontFamily();
+
 private:
     Q_DISABLE_COPY(SettingsMgr)
 };

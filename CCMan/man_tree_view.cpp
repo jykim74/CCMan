@@ -1,4 +1,5 @@
 #include <QMenu>
+#include <QFileDialog>
 
 #include "man_tree_view.h"
 #include "man_tree_item.h"
@@ -12,6 +13,11 @@ ManTreeView::ManTreeView( QWidget *parent ) : QTreeView(parent)
     setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect( this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
+
+    QFile qss(":/ccman.qss");
+    qss.open( QFile::ReadOnly );
+    setStyleSheet(qss.readAll());
+    qss.close();
 }
 
 ManTreeItem* ManTreeView::currentItem()
