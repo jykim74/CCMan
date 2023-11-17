@@ -55,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent)
     createActions();
     createStatusBar();
     createTreeMenu();
+    createTableMenu();
 
     setUnifiedTitleAndToolBarOnMac(true);
 }
@@ -224,7 +225,8 @@ void MainWindow::createStatusBar()
 
 void MainWindow::createTableMenu()
 {
-
+    QString style = "QHeaderView::section {background-color:#404040;color:#FFFFFF;}";
+    right_table_->horizontalHeader()->setStyleSheet( style );
 }
 
 void MainWindow::showRightMenu(QPoint point)
