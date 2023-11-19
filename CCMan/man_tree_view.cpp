@@ -6,6 +6,7 @@
 #include "man_tree_model.h"
 #include "mainwindow.h"
 #include "man_applet.h"
+#include "settings_mgr.h"
 
 ManTreeView::ManTreeView( QWidget *parent ) : QTreeView(parent)
 {
@@ -18,6 +19,11 @@ ManTreeView::ManTreeView( QWidget *parent ) : QTreeView(parent)
     qss.open( QFile::ReadOnly );
     setStyleSheet(qss.readAll());
     qss.close();
+
+    static QFont font;
+    QString strFont = manApplet->settingsMgr()->getFontFamily();
+    font.setFamily( strFont );
+    setFont(font);
 }
 
 ManTreeItem* ManTreeView::currentItem()

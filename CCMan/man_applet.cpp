@@ -16,7 +16,6 @@ ManApplet *manApplet;
 
 ManApplet::ManApplet( QObject *parent ) : QObject(parent)
 {
-    main_win_ = new MainWindow;
     settings_mgr_ = new SettingsMgr;
     account_info_ = new AccountInfo;
     cc_client_ = new CCClient;
@@ -35,6 +34,10 @@ ManApplet::~ManApplet()
 #ifdef _AUTO_UPDATE
     AutoUpdateService::instance()->stop();
 #endif
+    if( main_win_ != nullptr ) delete main_win_;
+    if( settings_mgr_ != nullptr ) delete settings_mgr_;
+    if( account_info_ != nullptr ) delete account_info_;
+    if( cc_client_ != nullptr ) delete cc_client_;
 }
 
 void ManApplet::start()
@@ -45,6 +48,7 @@ void ManApplet::start()
     if( ret != QDialog::Accepted )
         return;
 
+    main_win_ = new MainWindow;
     main_win_->show();
 }
 
