@@ -1,3 +1,4 @@
+#include "js_gen.h"
 #include "login_dlg.h"
 #include "js_cc.h"
 #include "js_ssl.h"
@@ -16,7 +17,7 @@ LoginDlg::LoginDlg(QWidget *parent) :
 {
     setupUi(this);
 
-    QString strURL = "http://127.0.0.1:9050";
+    QString strURL = QString( "http://127.0.0.1:%1" ).arg( JS_CC_PORT );
     QString strUserName = "admin";
     QString strPasswd = "admin";
 
