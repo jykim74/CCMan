@@ -49,8 +49,15 @@ void MakeLCNDlg::initialize()
     mExtensionCombo->addItems( kExtList );
     mDaysText->setText( strDays );
 
+    QTime startTime;
+    startTime.setHMS(0,0,0);
+    QTime endTime;
+    endTime.setHMS( 23,59,59);
+
     mIssueDateTime->setDateTime( QDateTime::currentDateTime() );
+    mIssueDateTime->setTime( startTime );
     mExpireDateTime->setDateTime( QDateTime::currentDateTime() );
+    mExpireDateTime->setTime( endTime );
 
     mUseDaysCheck->setChecked(true);
     checkUseDays();
