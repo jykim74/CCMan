@@ -10,7 +10,6 @@
         <file>images/new.png</file>
         <file>images/open.png</file>
         <file>images/paste.png</file>
-        <file>images/penguin_960_720.png</file>
         <file>images/save.png</file>
         <file>images/trash.png</file>
         <file>i18n/ccman_ko_KR.ts</file>
@@ -21,11 +20,9 @@
         <file>images/cert 2.png</file>
         <file>images/cert.png</file>
         <file>images/crl.png</file>
-        <file>images/csr.jpg</file>
         <file>images/done.png</file>
         <file>images/im_cert.png</file>
         <file>images/im_crl.png</file>
-        <file>images/key.jpeg</file>
         <file>images/man.png</file>
         <file>images/ocsp_signer.png</file>
         <file>images/policy.png</file>
@@ -47,9 +44,7 @@
         <file>images/certman.png</file>
         <file>images/crl_profile.png</file>
         <file>images/csr.png</file>
-        <file>images/disk.png</file>
         <file>images/get_ldap.png</file>
-        <file>images/key.png</file>
         <file>images/key_reg.png</file>
         <file>images/kms.png</file>
         <file>images/new_key.png</file>
