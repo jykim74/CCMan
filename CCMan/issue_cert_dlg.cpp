@@ -85,7 +85,7 @@ void IssueCertDlg::accept()
             ret = JS_PKI_ECCGenKeyPair( mOptionCombo->currentText().toStdString().c_str(), &binPub, &binPri );
         }
 
-        ret = JS_PKI_makeCSR( nAlg, "SHA256", strSubjectDn.toStdString().c_str(), NULL, NULL, &binPri, NULL, &binCSR );
+        ret = JS_PKI_makeCSR( "SHA256", strSubjectDn.toStdString().c_str(), NULL, NULL, &binPri, NULL, &binCSR );
 
         JS_BIN_reset( &binPub );
         JS_BIN_reset( &binPri );

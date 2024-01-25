@@ -15,8 +15,8 @@
         <file>i18n/ccman_ko_KR.ts</file>
         <file>images/user_add.png</file>
         <file>images/ca.png</file>
-        <file>images/caman.icns</file>
-        <file>images/caman.png</file>
+        <file>images/ccman.icns</file>
+        <file>images/ccman.png</file>
         <file>images/cert 2.png</file>
         <file>images/cert.png</file>
         <file>images/crl.png</file>
@@ -29,7 +29,6 @@
         <file>images/red_cross.png</file>
         <file>images/reg_signer.png</file>
         <file>images/revoke.png</file>
-        <file>images/user.jpg</file>
         <file>i18n/ccman_ko_KR.qm</file>
         <file>ccman.qss</file>
         <file>images/branch-closed.png</file>
@@ -53,8 +52,6 @@
         <file>images/setting.png</file>
         <file>images/signer_reg.png</file>
         <file>images/statistics.png</file>
-        <file>images/timestamp.jpg</file>
-        <file>images/timestamp.png</file>
         <file>images/user_reg.png</file>
         <file>images/config.png</file>
         <file>images/critical.png</file>
@@ -65,5 +62,6 @@
         <file>cm.rc</file>
         <file>Info.plist</file>
         <file>images/signer.png</file>
+        <file>images/timestamp.png</file>
     </qresource>
 </RCC>
