@@ -18,7 +18,9 @@ find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui)
 find_package(Qt${QT_VERSION_MAJOR} OPTIONAL_COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Sql)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Charts)
+
+# Qt Charts 라이브러리는 GPL 라이센스라서 LGPL-3.0 라이센스로 사용하면 안됨
+# find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Charts)
 # find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core5Compat)
 
 if(APPLE)
@@ -151,13 +153,13 @@ if(WIN32)
     if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
         target_link_directories( ${PROJECT_NAME} PRIVATE
         ../../build-PKILib-Desktop_Qt_5_13_2_MinGW_64_bit-Debug
-        ../../PKILib/lib/win64/debug/openssl3/lib64
+        ../../lib/win64/debug/openssl3/lib64
         ../../PKILib/lib/win64/winsparkle/x64/Release
         "C:/msys64/mingw64/lib" )
     elseif( CMAKE_BUILD_TYPE STREQUAL "Release" )
         target_link_directories( ${PROJECT_NAME} PRIVATE
         ../../build-PKILib-Desktop_Qt_5_13_2_MinGW_64_bit-Release
-        ../../PKILib/lib/win64/openssl3/lib64
+        ../../lib/win64/openssl3/lib64
         ../../PKILib/lib/win64/winsparkle/x64/Release
         "C:/msys64/mingw64/lib" )
     endif()
@@ -165,7 +167,6 @@ if(WIN32)
     target_link_libraries(${PROJECT_NAME} PRIVATE
         Qt${QT_VERSION_MAJOR}::Widgets
         Qt${QT_VERSION_MAJOR}::Sql
-        Qt${QT_VERSION_MAJOR}::Charts
         PKILib crypto ssl ltdl ldap lber ws2_32 WinSparkle )
 
     target_compile_definitions( ${PROJECT_NAME} PRIVATE _AUTO_UPDATE )
@@ -193,19 +194,18 @@ elseif(APPLE)
     if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
         target_link_directories( ${PROJECT_NAME} PRIVATE
         ../../build-PKILib-Desktop_Qt_5_15_2_clang_64bit-Debug
-        ../../PKILib/lib/mac/debug/openssl3/lib
+        ../../lib/mac/debug/openssl3/lib
         /usr/local/lib )
     elseif( CMAKE_BUILD_TYPE STREQUAL "Release" )
         target_link_directories( ${PROJECT_NAME} PRIVATE
         ../../build-PKILib-Desktop_Qt_5_15_2_clang_64bit-Release
-        ../../PKILib/lib/mac/openssl3/lib
+        ../../lib/mac/openssl3/lib
         /usr/local/lib )
     endif()
 
     target_link_libraries(${PROJECT_NAME} PRIVATE
         Qt${QT_VERSION_MAJOR}::Widgets
         Qt${QT_VERSION_MAJOR}::Sql
-        Qt${QT_VERSION_MAJOR}::Charts
         PKILib crypto ssl ltdl ldap lber
         "-framework AppKit"
         "-framework Carbon"
@@ -223,7 +223,7 @@ elseif(LINUX)
     if(Debug)
         target_link_directories( ${PROJECT_NAME} PRIVATE
         ../../build-PKILib-Desktop_Qt_5_13_2_MinGW_64_bit-Debug
-        ../../PKILib/lib/win64/debug/openssl3/lib64
+        ../../lib/win64/debug/openssl3/lib64
         ../../PKILib/lib/win64/winsparkle/x64/Release
         "/usr/local/lib" )
     endif()
@@ -231,7 +231,7 @@ elseif(LINUX)
     if(NOT Debug)
         target_link_directories( ${PROJECT_NAME} PRIVATE
         ../../build-PKILib-Desktop_Qt_5_13_2_MinGW_64_bit-Release
-        ../../PKILib/lib/win64/openssl3/lib64
+        ../../lib/win64/openssl3/lib64
         ../../PKILib/lib/win64/winsparkle/x64/Release
         "/usr/local/lib" )
     endif()
@@ -239,7 +239,6 @@ elseif(LINUX)
     target_link_libraries(${PROJECT_NAME} PRIVATE
         Qt${QT_VERSION_MAJOR}::Widgets
         Qt${QT_VERSION_MAJOR}::Sql
-        Qt${QT_VERSION_MAJOR}::Charts
         PKILib crypto ssl ltdl ldap lber )
 endif()
 

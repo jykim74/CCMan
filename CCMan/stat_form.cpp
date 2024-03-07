@@ -1,3 +1,5 @@
+#ifdef _ENABLE_CHARTS
+
 #include <QtWidgets>
 #include <QTableWidget>
 
@@ -486,3 +488,4 @@ QTableWidget *StatForm::createSimpleBarTable() const
     tableWidget->setVerticalHeaderLabels( unitList );
     return tableWidget;
 }
+#endif

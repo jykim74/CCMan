@@ -48,7 +48,9 @@ public:
     void createRightCRLList();
     void createRightRevokedList();
     void createRightCA();
+#ifdef _ENABLE_CHARTS
     void createRightStatistics();
+#endif
     void createRightKMS();
     void createRightTSP();
     void createRightAudit();
@@ -134,8 +136,9 @@ private:
     QTextEdit*      log_text_;
 //    SearchMenu*     right_menu_;
     SearchForm*      right_menu_;
-
+#ifdef _ENABLE_CHARTS
     QStackedLayout  *stack_;
     StatForm*       stat_;
+#endif
 };
 #endif // MAINWINDOW_H

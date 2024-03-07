@@ -62,7 +62,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-
+#ifdef _ENABLE_CHARTS
+    delete stat_;
+    delete stack_;
+#endif
 }
 
 void MainWindow::showWindow()
@@ -99,6 +102,10 @@ void MainWindow::initialize()
     right_table_->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     QWidget *rightWidget = new QWidget;
+
+    hsplitter_->addWidget(left_tree_);
+
+#ifdef _ENABLE_CHARTS
     stack_ = new QStackedLayout;
     stat_ = new StatForm;
 
@@ -107,8 +114,10 @@ void MainWindow::initialize()
     rightWidget->setLayout( stack_ );
 
     hsplitter_->addWidget(left_tree_);
-//    hsplitter_->addWidget(vsplitter_);
     hsplitter_->addWidget( rightWidget );
+#else
+    hsplitter_->addWidget( vsplitter_ );
+#endif
 
     vsplitter_->addWidget(right_table_);
     vsplitter_->addWidget(right_menu_);
@@ -941,10 +950,12 @@ void MainWindow::createTreeMenu()
     pAuditItem->setType( ITEM_TYPE_AUDIT );
     pTopItem->appendRow( pAuditItem );
 
+#ifdef _ENABLE_CHARTS
     ManTreeItem *pStatisticsItem = new ManTreeItem( QString( "Statistics" ));
     pStatisticsItem->setIcon(QIcon(":/images/statistics.png"));
     pStatisticsItem->setType( ITEM_TYPE_STATISTICS );
     pAuditItem->appendRow( pStatisticsItem );
+#endif
 
     ManTreeItem *pKMSItem = new ManTreeItem( QString( "KMS" ));
     pKMSItem->setIcon(QIcon(":/images/kms.png"));
@@ -968,7 +979,9 @@ void MainWindow::createTreeMenu()
 
 void MainWindow::createRightList(int nItemType)
 {
+#ifdef _ENABLE_CHARTS
     stack_->setCurrentIndex(0);
+#endif
 
     if( nItemType == ITEM_TYPE_CERT_PROFILE ||
             nItemType == ITEM_TYPE_CRL_PROFILE ||
@@ -1007,8 +1020,10 @@ void MainWindow::createRightList(int nItemType)
         createRightKMS();
     else if( nItemType == ITEM_TYPE_TSP )
         createRightTSP();
+#ifdef _ENABLE_CHARTS
     else if( nItemType == ITEM_TYPE_STATISTICS )
         createRightStatistics();
+#endif
     else if( nItemType == ITEM_TYPE_AUDIT )
         createRightAudit();
     else if( nItemType == ITEM_TYPE_LICENSE )
@@ -1743,10 +1758,12 @@ end :
     if( pExtInfoList ) JS_PKI_resetExtensionInfoList( &pExtInfoList );
 }
 
+#ifdef _ENABLE_CHARTS
 void MainWindow::createRightStatistics()
 {
     stack_->setCurrentIndex(1);
 }
+#endif
 
 void MainWindow::createRightKMS()
 {
