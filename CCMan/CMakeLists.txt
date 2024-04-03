@@ -189,6 +189,7 @@ elseif(APPLE)
         MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist )
 
     include_directories( ../../PKILib
+        ../../lib/mac/openssl3/include
         /usr/local/include )
 
     if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
