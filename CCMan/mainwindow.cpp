@@ -854,7 +854,7 @@ void MainWindow::logLCN( int nSeq )
     manApplet->log( QString("Product      : %1\n").arg( sLCN.pProduct));
     manApplet->log( QString("Ref          : %1\n").arg( sLCN.pRef));
     manApplet->log( QString("Ext          : %1\n").arg( sLCN.pExt ));
-    manApplet->log( QString("Key          : %1\n").arg( sLCN.pKey ));
+    manApplet->log( QString("AuthKey      : %1\n").arg( sLCN.pAuthKey ));
     manApplet->log( QString("License      : %1\n").arg( sLCN.pLicense ));
 
 

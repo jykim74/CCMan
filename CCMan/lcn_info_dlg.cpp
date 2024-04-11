@@ -46,7 +46,7 @@ void LCNInfoDlg::initialize()
         mIssuedText->setText( sLCNInfo.sIssued );
         mExpireText->setText( sLCNInfo.sExpire );
         mExtensionText->setText( sLCNInfo.sExt );
-        mKeyText->setText( sLCNInfo.sKey );
+        mAuthKeyText->setText( sLCNInfo.sAuthKey );
         mQuantityText->setText( QString("%1").arg( sLCNInfo.nQTY ));
     }
 
