@@ -635,10 +635,15 @@ void MakeCRLProfileDlg::setIDPUse( JCC_ProfileExt *pProfileExt )
     for( int i=0; i < valList.size(); i++ )
     {
         QString info = valList.at(i);
+        QString strType;
+        QString strData;
 
         QStringList infoList = info.split("$");
-        QString strType = infoList.at(0);
-        QString strData = infoList.at(1);
+        if( infoList.size() > 0)
+            strType = infoList.at(0);
+
+        if( infoList.size() > 1)
+            strData = infoList.at(1);
 
         mIDPTable->insertRow(i);
         mIDPTable->setItem(i, 0, new QTableWidgetItem(strType));
@@ -659,10 +664,16 @@ void MakeCRLProfileDlg::setIANUse( JCC_ProfileExt *pProfileExt )
     for( int i=0; i < valList.size(); i++ )
     {
         QString info = valList.at(i);
+        QString strType;
+        QString strData;
 
         QStringList infoList = info.split("$");
-        QString strType = infoList.at(0);
-        QString strData = infoList.at(1);
+
+        if( infoList.size() > 0 )
+            strType = infoList.at(0);
+
+        if( infoList.size() > 1 )
+            strData = infoList.at(1);
 
         mIANTable->insertRow(i);
         mIANTable->setItem( i, 0, new QTableWidgetItem(strType));
