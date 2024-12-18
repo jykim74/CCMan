@@ -63,5 +63,6 @@
         <file>Info.plist</file>
         <file>images/signer.png</file>
         <file>images/timestamp.png</file>
+        <file>images/csr_profile.png</file>
     </qresource>
 </RCC>
