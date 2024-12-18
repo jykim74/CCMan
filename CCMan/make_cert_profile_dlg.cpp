@@ -140,15 +140,15 @@ void MakeCertProfileDlg::defaultProfile()
     for( int i=0; i < rowCnt; i++ )
         mAIATable->removeRow(0);
 
-    mAIAUseCheck->setChecked(false);
+    mAIAGroup->setChecked(false);
     mAIACriticalCheck->setChecked(false);
 
-    mAKIUseCheck->setChecked(false);
+    mAKIGroup->setChecked(false);
     mAKICriticalCheck->setChecked(false);
     mAKICertIssuerCheck->setChecked(false);
     mAKICertSerialCheck->setChecked(false);
 
-    mBCUseCheck->setChecked(false);
+    mBCGroup->setChecked(false);
     mBCCriticalCheck->setChecked(false);
     mBCPathLenText->setText("");
 
@@ -156,36 +156,36 @@ void MakeCertProfileDlg::defaultProfile()
     for( int i=0; i < rowCnt; i++ )
         mCRLDPTable->removeRow(0);
 
-    mCRLDPUseCheck->setChecked(false);
+    mCRLDPGroup->setChecked(false);
     mCRLDPCriticalCheck->setChecked(false);
 
     mEKUList->clear();
-    mEKUUseCheck->setChecked(false);
+    mEKUGroup->setChecked(false);
     mEKUCriticalCheck->setChecked(false);
 
-    mIANUseCheck->setChecked(false);
+    mIANGroup->setChecked(false);
     mIANCriticalCheck->setChecked(false);
     rowCnt = mIANTable->rowCount();
     for( int i = 0; i < rowCnt; i++ )
         mIANTable->removeRow(0);
 
     mKeyUsageList->clear();
-    mKeyUsageUseCheck->setChecked(false);
+    mKeyUsageGroup->setChecked(false);
     mKeyUsageCriticalCheck->setChecked(false);
 
     rowCnt = mNCTable->rowCount();
     for( int i=0; i < rowCnt; i++ )
         mNCTable->removeRow(0);
-    mNCUseCheck->setChecked(false);
+    mNCGroup->setChecked(false);
     mNCCriticalCheck->setChecked(false);
 
     rowCnt = mPolicyTable->rowCount();
     for( int i=0; i < rowCnt; i++ )
         mPolicyTable->removeRow(0);
-    mPolicyUseCheck->setChecked(false);
+    mPolicyGroup->setChecked(false);
     mPolicyCriticalCheck->setChecked(false);
 
-    mPCUseCheck->setChecked(false);
+    mPCGroup->setChecked(false);
     mPCCriticalCheck->setChecked(false);
     mPCInhibitText->setText("");
     mPCExplicitText->setText("");
@@ -194,16 +194,16 @@ void MakeCertProfileDlg::defaultProfile()
     for( int i=0; i < rowCnt; i++ )
         mPMTable->removeRow(0);
 
-    mPMUseCheck->setChecked(false);
+    mPMGroup->setChecked(false);
     mPMCriticalCheck->setChecked(false);
 
-    mSKIUseCheck->setChecked(false);
+    mSKIGroup->setChecked(false);
     mSKICriticalCheck->setChecked(false);
 
     rowCnt = mSANTable->rowCount();
     for( int i = 0; i < rowCnt; i++ )
         mSANTable->removeRow(0);
-    mSANUseCheck->setChecked(false);
+    mSANGroup->setChecked(false);
     mSANCriticalCheck->setChecked(false);
 
     mUseCSRCheck->setChecked(true);
@@ -279,20 +279,20 @@ void MakeCertProfileDlg::accept()
     }
 
     /* need to set extend fields here */
-    if( mAIAUseCheck->isChecked() ) saveAIAUse( nProfileNum );
-    if( mAKIUseCheck->isChecked() ) saveAKIUse( nProfileNum );
-    if( mBCUseCheck->isChecked() ) saveBCUse( nProfileNum );
-    if( mCRLDPUseCheck->isChecked() ) saveCRLDPUse( nProfileNum );
-    if( mEKUUseCheck->isChecked() ) saveEKUUse( nProfileNum );
-    if( mIANUseCheck->isChecked() ) saveIANUse( nProfileNum );
-    if( mKeyUsageUseCheck->isChecked() ) saveKeyUsageUse( nProfileNum );
-    if( mNCUseCheck->isChecked() ) saveNCUse( nProfileNum );
-    if( mPolicyUseCheck->isChecked() ) savePolicyUse( nProfileNum );
-    if( mPCUseCheck->isChecked() ) savePCUse( nProfileNum );
-    if( mPMUseCheck->isChecked() ) savePMUse( nProfileNum );
-    if( mSKIUseCheck->isChecked() ) saveSKIUse( nProfileNum );
-    if( mSANUseCheck->isChecked() ) saveSANUse( nProfileNum );
-    if( mExtensionsUseCheck->isChecked() ) saveExtensionsUse( nProfileNum );
+    if( mAIAGroup->isChecked() ) saveAIAUse( nProfileNum );
+    if( mAKIGroup->isChecked() ) saveAKIUse( nProfileNum );
+    if( mBCGroup->isChecked() ) saveBCUse( nProfileNum );
+    if( mCRLDPGroup->isChecked() ) saveCRLDPUse( nProfileNum );
+    if( mEKUGroup->isChecked() ) saveEKUUse( nProfileNum );
+    if( mIANGroup->isChecked() ) saveIANUse( nProfileNum );
+    if( mKeyUsageGroup->isChecked() ) saveKeyUsageUse( nProfileNum );
+    if( mNCGroup->isChecked() ) saveNCUse( nProfileNum );
+    if( mPolicyGroup->isChecked() ) savePolicyUse( nProfileNum );
+    if( mPCGroup->isChecked() ) savePCUse( nProfileNum );
+    if( mPMGroup->isChecked() ) savePMUse( nProfileNum );
+    if( mSKIGroup->isChecked() ) saveSKIUse( nProfileNum );
+    if( mSANGroup->isChecked() ) saveSANUse( nProfileNum );
+    if( mExtensionsGroup->isChecked() ) saveExtensionsUse( nProfileNum );
     /* ....... */
 
     manApplet->mainWindow()->createRightCertProfileList();
@@ -420,20 +420,20 @@ void MakeCertProfileDlg::connectExtends()
     connect( mUseCSRCheck, SIGNAL(clicked()), this, SLOT(clickUseCSR()));
     connect( mUseDaysCheck, SIGNAL(clicked()), this, SLOT(clickUseDays()));
 
-    connect( mAIAUseCheck, SIGNAL(clicked()), this, SLOT(clickAIAUse()));
-    connect( mAKIUseCheck, SIGNAL(clicked()), this, SLOT(clickAKIUse()));
-    connect( mBCUseCheck, SIGNAL(clicked()), this, SLOT(clickBCUse()));
-    connect( mCRLDPUseCheck, SIGNAL(clicked()), this, SLOT(clickCRLDPUse()));
-    connect( mEKUUseCheck, SIGNAL(clicked()), this, SLOT(clickEKUUse()));
-    connect( mIANUseCheck, SIGNAL(clicked()), this, SLOT(clickIANUse()));
-    connect( mKeyUsageUseCheck, SIGNAL(clicked()), this, SLOT(clickKeyUsageUse()));
-    connect( mNCUseCheck, SIGNAL(clicked()), this, SLOT( clickNCUse()));
-    connect( mPolicyUseCheck, SIGNAL(clicked()), this, SLOT(clickPolicyUse()));
-    connect( mPCUseCheck, SIGNAL(clicked()), this, SLOT(clickPCUse()));
-    connect( mPMUseCheck, SIGNAL(clicked()), this, SLOT(clickPMUse()));
-    connect( mSKIUseCheck, SIGNAL(clicked()), this, SLOT(clickSKIUse()));
-    connect( mSANUseCheck, SIGNAL(clicked()), this, SLOT(clickSANUse()));
-    connect( mExtensionsUseCheck, SIGNAL(clicked()), this, SLOT(clickExtensionsUse()));
+    connect( mAIAGroup, SIGNAL(clicked()), this, SLOT(clickAIAUse()));
+    connect( mAKIGroup, SIGNAL(clicked()), this, SLOT(clickAKIUse()));
+    connect( mBCGroup, SIGNAL(clicked()), this, SLOT(clickBCUse()));
+    connect( mCRLDPGroup, SIGNAL(clicked()), this, SLOT(clickCRLDPUse()));
+    connect( mEKUGroup, SIGNAL(clicked()), this, SLOT(clickEKUUse()));
+    connect( mIANGroup, SIGNAL(clicked()), this, SLOT(clickIANUse()));
+    connect( mKeyUsageGroup, SIGNAL(clicked()), this, SLOT(clickKeyUsageUse()));
+    connect( mNCGroup, SIGNAL(clicked()), this, SLOT( clickNCUse()));
+    connect( mPolicyGroup, SIGNAL(clicked()), this, SLOT(clickPolicyUse()));
+    connect( mPCGroup, SIGNAL(clicked()), this, SLOT(clickPCUse()));
+    connect( mPMGroup, SIGNAL(clicked()), this, SLOT(clickPMUse()));
+    connect( mSKIGroup, SIGNAL(clicked()), this, SLOT(clickSKIUse()));
+    connect( mSANGroup, SIGNAL(clicked()), this, SLOT(clickSANUse()));
+    connect( mExtensionsGroup, SIGNAL(clicked()), this, SLOT(clickExtensionsUse()));
 
     connect( mKeyUsageAddBtn, SIGNAL(clicked()), this, SLOT(addKeyUsage()));
     connect( mPolicyAddBtn, SIGNAL(clicked()), this, SLOT(addPolicy()));
@@ -677,7 +677,7 @@ void MakeCertProfileDlg::setExtends()
 
 void MakeCertProfileDlg::clickAIAUse()
 {
-    bool bStatus = mAIAUseCheck->isChecked();
+    bool bStatus = mAIAGroup->isChecked();
 
     mAIACriticalCheck->setEnabled(bStatus);
     mAIAClearBtn->setEnabled(bStatus);
@@ -690,7 +690,7 @@ void MakeCertProfileDlg::clickAIAUse()
 
 void MakeCertProfileDlg::clickAKIUse()
 {
-    bool bStatus = mAKIUseCheck->isChecked();
+    bool bStatus = mAKIGroup->isChecked();
 
     mAKICriticalCheck->setEnabled(bStatus);
     mAKICertIssuerCheck->setEnabled(bStatus);
@@ -699,7 +699,7 @@ void MakeCertProfileDlg::clickAKIUse()
 
 void MakeCertProfileDlg::clickBCUse()
 {
-    bool bStatus = mBCUseCheck->isChecked();
+    bool bStatus = mBCGroup->isChecked();
 
     mBCCriticalCheck->setEnabled(bStatus);
     mBCCombo->setEnabled(bStatus);
@@ -708,7 +708,7 @@ void MakeCertProfileDlg::clickBCUse()
 
 void MakeCertProfileDlg::clickCRLDPUse()
 {
-    bool bStatus = mCRLDPUseCheck->isChecked();
+    bool bStatus = mCRLDPGroup->isChecked();
 
     mCRLDPCriticalCheck->setEnabled( bStatus );
     mCRLDPCombo->setEnabled(bStatus);
@@ -720,7 +720,7 @@ void MakeCertProfileDlg::clickCRLDPUse()
 
 void MakeCertProfileDlg::clickEKUUse()
 {
-    bool bStatus = mEKUUseCheck->isChecked();
+    bool bStatus = mEKUGroup->isChecked();
 
     mEKUCriticalCheck->setEnabled( bStatus );
     mEKUCombo->setEnabled(bStatus);
@@ -731,7 +731,7 @@ void MakeCertProfileDlg::clickEKUUse()
 
 void MakeCertProfileDlg::clickIANUse()
 {
-    bool bStatus = mIANUseCheck->isChecked();
+    bool bStatus = mIANGroup->isChecked();
 
     mIANCriticalCheck->setEnabled(bStatus);
     mIANCombo->setEnabled(bStatus);
@@ -743,7 +743,7 @@ void MakeCertProfileDlg::clickIANUse()
 
 void MakeCertProfileDlg::clickKeyUsageUse()
 {
-    bool bStatus = mKeyUsageUseCheck->isChecked();
+    bool bStatus = mKeyUsageGroup->isChecked();
 
     mKeyUsageCriticalCheck->setEnabled( bStatus );
     mKeyUsageCombo->setEnabled( bStatus );
@@ -754,7 +754,7 @@ void MakeCertProfileDlg::clickKeyUsageUse()
 
 void MakeCertProfileDlg::clickNCUse()
 {
-    bool bStatus = mNCUseCheck->isChecked();
+    bool bStatus = mNCGroup->isChecked();
 
     mNCCriticalCheck->setEnabled(bStatus);
     mNCSubCombo->setEnabled(bStatus);
@@ -769,7 +769,7 @@ void MakeCertProfileDlg::clickNCUse()
 
 void MakeCertProfileDlg::clickPolicyUse()
 {
-    bool bStatus = mPolicyUseCheck->isChecked();
+    bool bStatus = mPolicyGroup->isChecked();
 
     mPolicyCriticalCheck->setEnabled( bStatus );
     mPolicyClearBtn->setEnabled( bStatus );
@@ -782,7 +782,7 @@ void MakeCertProfileDlg::clickPolicyUse()
 
 void MakeCertProfileDlg::clickPCUse()
 {
-    bool bStatus = mPCUseCheck->isChecked();
+    bool bStatus = mPCGroup->isChecked();
 
     mPCCriticalCheck->setEnabled(bStatus);
     mPCInhibitText->setEnabled(bStatus);
@@ -791,7 +791,7 @@ void MakeCertProfileDlg::clickPCUse()
 
 void MakeCertProfileDlg::clickPMUse()
 {
-    bool bStatus = mPMUseCheck->isChecked();
+    bool bStatus = mPMGroup->isChecked();
 
     mPMCriticalCheck->setEnabled(bStatus);
     mPMClearBtn->setEnabled( bStatus );
@@ -803,14 +803,14 @@ void MakeCertProfileDlg::clickPMUse()
 
 void MakeCertProfileDlg::clickSKIUse()
 {
-    bool bStatus = mSKIUseCheck->isChecked();
+    bool bStatus = mSKIGroup->isChecked();
 
     mSKICriticalCheck->setEnabled( bStatus );
 }
 
 void MakeCertProfileDlg::clickSANUse()
 {
-    bool bStatus = mSANUseCheck->isChecked();
+    bool bStatus = mSANGroup->isChecked();
 
     mSANCriticalCheck->setEnabled(bStatus);
     mSANCombo->setEnabled(bStatus);
@@ -822,7 +822,7 @@ void MakeCertProfileDlg::clickSANUse()
 
 void MakeCertProfileDlg::clickExtensionsUse()
 {
-    bool bStatus = mExtensionsUseCheck->isChecked();
+    bool bStatus = mExtensionsGroup->isChecked();
 
     mExtensionsAddBtn->setEnabled(bStatus);
     mExtensionsClearBtn->setEnabled(bStatus);
@@ -1379,7 +1379,7 @@ void MakeCertProfileDlg::saveExtensionsUse( int nProfileNum )
 
 void MakeCertProfileDlg::setAIAUse( JCC_ProfileExt *pProfileExt )
 {
-    mAIAUseCheck->setChecked(true);
+    mAIAGroup->setChecked(true);
     mAIACriticalCheck->setChecked( pProfileExt->bCritical );
     clickAIAUse();
 
@@ -1408,7 +1408,7 @@ void MakeCertProfileDlg::setAIAUse( JCC_ProfileExt *pProfileExt )
 
 void MakeCertProfileDlg::setAKIUse( JCC_ProfileExt *pProfileExt )
 {
-    mAKIUseCheck->setChecked(true);
+    mAKIGroup->setChecked(true);
     mAKICriticalCheck->setChecked( pProfileExt->bCritical );
     clickAKIUse();
 
@@ -1423,15 +1423,20 @@ void MakeCertProfileDlg::setAKIUse( JCC_ProfileExt *pProfileExt )
 
 void MakeCertProfileDlg::setBCUse( JCC_ProfileExt *pProfileExt )
 {
-    mBCUseCheck->setChecked(true);
+    mBCGroup->setChecked(true);
     mBCCriticalCheck->setChecked( pProfileExt->bCritical );
     clickBCUse();
 
     QString strVal = pProfileExt->pValue;
+    QString strType;
+    QString strLen;
 
     QStringList valList = strVal.split("#");
-    QString strType= valList.at(0);
-    QString strLen = valList.at(1);
+    if( valList.size() > 0 )
+        strType= valList.at(0);
+
+    if( valList.size() > 1 )
+        strLen = valList.at(1);
 
     mBCCombo->setCurrentText( strType );
     mBCPathLenText->setText( strLen );
@@ -1439,7 +1444,7 @@ void MakeCertProfileDlg::setBCUse( JCC_ProfileExt *pProfileExt )
 
 void MakeCertProfileDlg::setCRLDPUse( JCC_ProfileExt *pProfileExt )
 {
-    mCRLDPUseCheck->setChecked(true);
+    mCRLDPGroup->setChecked(true);
     mCRLDPCriticalCheck->setChecked( pProfileExt->bCritical );
     clickCRLDPUse();
 
@@ -1465,7 +1470,7 @@ void MakeCertProfileDlg::setEKUUse( JCC_ProfileExt *pProfileExt )
 {
     QString strVal = "";
 
-    mEKUUseCheck->setChecked(true);
+    mEKUGroup->setChecked(true);
     mEKUCriticalCheck->setChecked( pProfileExt->bCritical );
     clickEKUUse();
 
@@ -1477,7 +1482,7 @@ void MakeCertProfileDlg::setEKUUse( JCC_ProfileExt *pProfileExt )
 
 void MakeCertProfileDlg::setIANUse( JCC_ProfileExt *pProfileExt )
 {
-    mIANUseCheck->setChecked(true);
+    mIANGroup->setChecked(true);
     mIANCriticalCheck->setChecked( pProfileExt->bCritical );
     clickIANUse();
 
@@ -1501,7 +1506,7 @@ void MakeCertProfileDlg::setIANUse( JCC_ProfileExt *pProfileExt )
 
 void MakeCertProfileDlg::setKeyUsageUse( JCC_ProfileExt *pProfileExt )
 {
-    mKeyUsageUseCheck->setChecked(true);
+    mKeyUsageGroup->setChecked(true);
     mKeyUsageCriticalCheck->setChecked( pProfileExt->bCritical );
     clickKeyUsageUse();
 
@@ -1515,7 +1520,7 @@ void MakeCertProfileDlg::setKeyUsageUse( JCC_ProfileExt *pProfileExt )
 
 void MakeCertProfileDlg::setNCUse( JCC_ProfileExt *pProfileExt )
 {
-    mNCUseCheck->setChecked(true);
+    mNCGroup->setChecked(true);
     mNCCriticalCheck->setChecked( pProfileExt->bCritical );
     clickNCUse();
 
@@ -1548,7 +1553,7 @@ void MakeCertProfileDlg::setNCUse( JCC_ProfileExt *pProfileExt )
 
 void MakeCertProfileDlg::setPolicyUse( JCC_ProfileExt *pProfileExt )
 {
-    mPolicyUseCheck->setChecked(true);
+    mPolicyGroup->setChecked(true);
     mPolicyCriticalCheck->setChecked( pProfileExt->bCritical );
     clickPolicyUse();
 
@@ -1594,7 +1599,7 @@ void MakeCertProfileDlg::setPolicyUse( JCC_ProfileExt *pProfileExt )
 
 void MakeCertProfileDlg::setPCUse( JCC_ProfileExt *pProfileExt )
 {
-    mPCUseCheck->setChecked(true);
+    mPCGroup->setChecked(true);
     mPCCriticalCheck->setChecked( pProfileExt->bCritical );
     clickPCUse();
 
@@ -1618,7 +1623,7 @@ void MakeCertProfileDlg::setPCUse( JCC_ProfileExt *pProfileExt )
 
 void MakeCertProfileDlg::setPMUse( JCC_ProfileExt *pProfileExt )
 {
-    mPMUseCheck->setChecked(true);
+    mPMGroup->setChecked(true);
     mPMCriticalCheck->setChecked( pProfileExt->bCritical );
     clickPMUse();
 
@@ -1644,14 +1649,14 @@ void MakeCertProfileDlg::setPMUse( JCC_ProfileExt *pProfileExt )
 
 void MakeCertProfileDlg::setSKIUse( JCC_ProfileExt *pProfileExt )
 {
-    mSKIUseCheck->setChecked(true);
+    mSKIGroup->setChecked(true);
     mSKICriticalCheck->setChecked( pProfileExt->bCritical );
     clickSKIUse();
 }
 
 void MakeCertProfileDlg::setSANUse( JCC_ProfileExt *pProfileExt )
 {
-    mSANUseCheck->setChecked(true);
+    mSANGroup->setChecked(true);
     mSANCriticalCheck->setChecked( pProfileExt->bCritical );
     clickSANUse();
 
@@ -1675,7 +1680,7 @@ void MakeCertProfileDlg::setSANUse( JCC_ProfileExt *pProfileExt )
 
 void MakeCertProfileDlg::setExtensionsUse( JCC_ProfileExt *pProfileExt )
 {
-    mExtensionsUseCheck->setChecked(true);
+    mExtensionsGroup->setChecked(true);
     clickExtensionsUse();
 
     QString strOID = pProfileExt->pSN;

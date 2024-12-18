@@ -85,7 +85,7 @@ void MainWindow::initialize()
     left_model_ = new ManTreeModel(this);
 //    right_menu_ = new SearchMenu;
     right_menu_ = new SearchForm;
-    log_text_ = new QTextEdit;
+    log_text_ = new CodeEditor;
 
     right_table_ = new ManRightWidget;
 
@@ -338,7 +338,7 @@ void MainWindow::rightTableClick(QModelIndex index )
     int nSeq = item->text().toInt();
     int nType = right_table_->type();
 
-    log_text_->setText( strVal );
+    log_text_->setPlainText( strVal );
 
     if( nType == ITEM_TYPE_ADMIN )
         logAdmin( nSeq );
@@ -2076,7 +2076,7 @@ void MainWindow::logCursorTop()
 
 void MainWindow::removeAllRight()
 {
-    log_text_->setText("");
+    log_text_->setPlainText("");
 
     int rowCnt = right_table_->rowCount();
 

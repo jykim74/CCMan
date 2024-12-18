@@ -141,6 +141,7 @@ add_executable(${PROJECT_NAME}
     search_form.h
     search_form.cpp
     search_form.ui
+    code_editor.cpp code_editor.h
 )
 
 target_link_options( ${PROJECT_NAME} PRIVATE -mwindows -MD )

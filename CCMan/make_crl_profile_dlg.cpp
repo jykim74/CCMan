@@ -120,11 +120,11 @@ void MakeCRLProfileDlg::defaultProfile()
     mNameText->setText("");
 
     mCRLNumText->setText("");
-    mCRLNumUseCheck->setChecked(false);
+    mCRLNumGroup->setChecked(false);
     mCRLNumAutoCheck->setChecked(false);
     mCRLNumCriticalCheck->setChecked(false);
 
-    mAKIUseCheck->setChecked(false);
+    mAKIGroup->setChecked(false);
     mAKICriticalCheck->setChecked(false);
     mAKICertIssuerCheck->setChecked(false);
     mAKICertSerialCheck->setChecked(false);
@@ -132,13 +132,13 @@ void MakeCRLProfileDlg::defaultProfile()
     rowCnt = mIDPTable->rowCount();
     for( int i=0; i < rowCnt; i++ )
         mIDPTable->removeRow(0);
-    mIDPUseCheck->setChecked(false);
+    mIDPGroup->setChecked(false);
     mIDPCriticalCheck->setChecked(false);
 
     rowCnt = mIANTable->rowCount();
     for( int i=0; i < rowCnt; i++ )
         mIANTable->removeRow(0);
-    mIANUseCheck->setChecked(false);
+    mIANGroup->setChecked(false);
     mIANCriticalCheck->setChecked(false);
     mIANText->setText("");
 
@@ -208,10 +208,10 @@ void MakeCRLProfileDlg::accept()
 
     /* need to set extend fields here */
 
-    if( mCRLNumUseCheck->isChecked() ) saveCRLNumUse( nProfileNum );
-    if( mIDPUseCheck->isChecked() ) saveIDPUse( nProfileNum );
-    if( mAKIUseCheck->isChecked() ) saveAKIUse( nProfileNum );
-    if( mIANUseCheck->isChecked() ) saveIANUse( nProfileNum );
+    if( mCRLNumGroup->isChecked() ) saveCRLNumUse( nProfileNum );
+    if( mIDPGroup->isChecked() ) saveIDPUse( nProfileNum );
+    if( mAKIGroup->isChecked() ) saveAKIUse( nProfileNum );
+    if( mIANGroup->isChecked() ) saveIANUse( nProfileNum );
 
     /* ....... */
 
@@ -236,12 +236,12 @@ void MakeCRLProfileDlg::initUI()
 
 void MakeCRLProfileDlg::connectExtends()
 {
-    connect( mCRLNumUseCheck, SIGNAL(clicked()), this, SLOT(clickCRLNum()));
-    connect( mAKIUseCheck, SIGNAL(clicked()), this, SLOT(clickAKI()));
-    connect( mIDPUseCheck, SIGNAL(clicked()), this, SLOT(clickIDP()));
-    connect( mIANUseCheck, SIGNAL(clicked()), this, SLOT(clickIAN()));
+    connect( mCRLNumGroup, SIGNAL(clicked()), this, SLOT(clickCRLNum()));
+    connect( mAKIGroup, SIGNAL(clicked()), this, SLOT(clickAKI()));
+    connect( mIDPGroup, SIGNAL(clicked()), this, SLOT(clickIDP()));
+    connect( mIANGroup, SIGNAL(clicked()), this, SLOT(clickIAN()));
     connect( mUseFromNowCheck, SIGNAL(clicked()), this, SLOT(clickUseFromNow()));
-    connect( mExtensionsUseCheck, SIGNAL(clicked()), this, SLOT(clickExtensionsUse()));
+    connect( mExtensionsGroup, SIGNAL(clicked()), this, SLOT(clickExtensionsUse()));
 
     connect( mIDPAddBtn, SIGNAL(clicked()), this, SLOT(addIDP()));
     connect( mIANAddBtn, SIGNAL(clicked()), this, SLOT(addIAN()));
@@ -352,7 +352,7 @@ void MakeCRLProfileDlg::deleteExtensionsMenu()
 
 void MakeCRLProfileDlg::clickCRLNum()
 {
-    bool bStatus = mCRLNumUseCheck->isChecked();
+    bool bStatus = mCRLNumGroup->isChecked();
 
     mCRLNumCriticalCheck->setEnabled(bStatus);
     mCRLNumText->setEnabled(bStatus);
@@ -361,7 +361,7 @@ void MakeCRLProfileDlg::clickCRLNum()
 
 void MakeCRLProfileDlg::clickAKI()
 {
-    bool bStatus = mAKIUseCheck->isChecked();
+    bool bStatus = mAKIGroup->isChecked();
 
     mAKICriticalCheck->setEnabled(bStatus);
     mAKICertIssuerCheck->setEnabled(bStatus);
@@ -370,7 +370,7 @@ void MakeCRLProfileDlg::clickAKI()
 
 void MakeCRLProfileDlg::clickIDP()
 {
-    bool bStatus = mIDPUseCheck->isChecked();
+    bool bStatus = mIDPGroup->isChecked();
 
     mIDPCriticalCheck->setEnabled(bStatus);
     mIDPClearBtn->setEnabled(bStatus);
@@ -382,7 +382,7 @@ void MakeCRLProfileDlg::clickIDP()
 
 void MakeCRLProfileDlg::clickIAN()
 {
-    bool bStatus = mIANUseCheck->isChecked();
+    bool bStatus = mIANGroup->isChecked();
 
     mIANCriticalCheck->setEnabled(bStatus);
     mIANText->setEnabled(bStatus);
@@ -403,7 +403,7 @@ void MakeCRLProfileDlg::clickUseFromNow()
 
 void MakeCRLProfileDlg::clickExtensionsUse()
 {
-    bool bStatus = mExtensionsUseCheck->isChecked();
+    bool bStatus = mExtensionsGroup->isChecked();
 
     mExtensionsAddBtn->setEnabled(bStatus);
     mExtensionsClearBtn->setEnabled(bStatus);
@@ -599,7 +599,7 @@ void MakeCRLProfileDlg::saveExtensionsUse( int nProfileNum )
 
 void MakeCRLProfileDlg::setCRLNumUse( JCC_ProfileExt *pProfileExt )
 {
-    mCRLNumUseCheck->setChecked(true);
+    mCRLNumGroup->setChecked(true);
     mCRLNumCriticalCheck->setChecked( pProfileExt->bCritical );
     clickCRLNum();
 
@@ -613,7 +613,7 @@ void MakeCRLProfileDlg::setCRLNumUse( JCC_ProfileExt *pProfileExt )
 
 void MakeCRLProfileDlg::setAKIUse( JCC_ProfileExt *pProfileExt )
 {
-    mAKIUseCheck->setChecked(true);
+    mAKIGroup->setChecked(true);
     mAKICriticalCheck->setChecked( pProfileExt->bCritical );
     clickAKI();
 
@@ -625,7 +625,7 @@ void MakeCRLProfileDlg::setAKIUse( JCC_ProfileExt *pProfileExt )
 
 void MakeCRLProfileDlg::setIDPUse( JCC_ProfileExt *pProfileExt )
 {
-    mIDPUseCheck->setChecked(true);
+    mIDPGroup->setChecked(true);
     mIDPCriticalCheck->setChecked( pProfileExt->bCritical );
     clickIDP();
 
@@ -648,7 +648,7 @@ void MakeCRLProfileDlg::setIDPUse( JCC_ProfileExt *pProfileExt )
 
 void MakeCRLProfileDlg::setIANUse( JCC_ProfileExt *pProfileExt )
 {
-    mIANUseCheck->setChecked(true);
+    mIANGroup->setChecked(true);
     mIANCriticalCheck->setChecked( pProfileExt->bCritical );
     clickIAN();
 
@@ -672,7 +672,7 @@ void MakeCRLProfileDlg::setIANUse( JCC_ProfileExt *pProfileExt )
 
 void MakeCRLProfileDlg::setExtensionsUse( JCC_ProfileExt *pProfileExt )
 {
-    mExtensionsUseCheck->setChecked(true);
+    mExtensionsGroup->setChecked(true);
     clickExtensionsUse();
 
     QString strOID = pProfileExt->pSN;

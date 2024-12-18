@@ -206,7 +206,7 @@ void getBINFromString( BIN *pBin, int nType, const QString& strString )
     {
         char *pStr = NULL;
 
-        JS_UTIL_decodeURL( srcString.toStdString().c_str(), &pStr );
+        JS_BIN_decodeURL( srcString.toStdString().c_str(), &pStr );
 
         if( pStr )
         {
@@ -266,7 +266,7 @@ QString getStringFromBIN( const BIN *pBin, int nType, bool bSeenOnly )
     {
         char *pStr = NULL;
         JS_BIN_string( pBin, &pStr );
-        JS_UTIL_encodeURL( pStr, &pOut );
+        JS_BIN_encodeURL( pStr, &pOut );
         strOut = pOut;
         if( pStr ) JS_free( pStr );
     }

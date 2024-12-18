@@ -7,6 +7,7 @@
 #include <QTableWidget>
 #include <QTextEdit>
 #include <QStackedLayout>
+#include "code_editor.h"
 
 class ManTreeView;
 class ManTreeItem;
@@ -133,7 +134,7 @@ private:
     ManTreeModel*   left_model_;
 
     ManRightWidget*  right_table_;
-    QTextEdit*      log_text_;
+    CodeEditor*      log_text_;
 //    SearchMenu*     right_menu_;
     SearchForm*      right_menu_;
 #ifdef _ENABLE_CHARTS
