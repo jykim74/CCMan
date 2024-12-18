@@ -1395,9 +1395,15 @@ void MakeCertProfileDlg::setAIAUse( JCC_ProfileExt *pProfileExt )
         QString strData = "";
 
         QStringList infoList = info.split("$");
-        strMethod = infoList.at(0);
-        strType = infoList.at(1);
-        strData = infoList.at(2);
+
+        if( infoList.size() > 0 )
+            strMethod = infoList.at(0);
+
+        if(infoList.size() > 1)
+            strType = infoList.at(1);
+
+        if( infoList.size() > 2)
+            strData = infoList.at(2);
 
         mAIATable->insertRow(i);
         mAIATable->setItem( i, 0, new QTableWidgetItem(strMethod));
@@ -1455,10 +1461,16 @@ void MakeCertProfileDlg::setCRLDPUse( JCC_ProfileExt *pProfileExt )
     for( int i=0; i < valList.size(); i++ )
     {
         QString info = valList.at(i);
+        QString strType;
+        QString strData;
+
         QStringList typeData = info.split("$");
 
-        QString strType = typeData.at(0);
-        QString strData = typeData.at(1);
+        if( typeData.size() > 0 )
+            strType = typeData.at(0);
+
+        if( typeData.size() > 1)
+            strData = typeData.at(1);
 
         mCRLDPTable->insertRow(i);
         mCRLDPTable->setItem( i, 0, new QTableWidgetItem(strType));
@@ -1493,10 +1505,16 @@ void MakeCertProfileDlg::setIANUse( JCC_ProfileExt *pProfileExt )
     for( int i=0; i < valList.size(); i++ )
     {
         QString info = valList.at(i);
+        QString strType;
+        QString strData;
+
         QStringList infoList = info.split("$");
 
-        QString strType = infoList.at(0);
-        QString strData = infoList.at(1);
+        if( infoList.size() > 0 )
+            strType = infoList.at(0);
+
+        if( infoList.size() > 1 )
+            strData = infoList.at(1);
 
         mIANTable->insertRow(i);
         mIANTable->setItem( i, 0, new QTableWidgetItem(strType));
@@ -1531,11 +1549,21 @@ void MakeCertProfileDlg::setNCUse( JCC_ProfileExt *pProfileExt )
     for( int i=0; i < valList.size(); i++ )
     {
         QString info = valList.at(i);
+        QString strType;
+        QString strKind;
+        QString strData;
+
         QStringList infoList = info.split("$");
 
-        QString strType = infoList.at(0);
-        QString strKind = infoList.at(1);
-        QString strData = infoList.at(2);
+        if( infoList.size() > 0 )
+            strType = infoList.at(0);
+
+        if( infoList.size() > 1 )
+            strKind = infoList.at(1);
+
+        if( infoList.size() > 2 )
+            strData = infoList.at(2);
+
         QString strMin;
         QString strMax;
 
@@ -1609,10 +1637,16 @@ void MakeCertProfileDlg::setPCUse( JCC_ProfileExt *pProfileExt )
     for( int i=0; i < valList.size(); i++ )
     {
         QString info = valList.at(i);
+        QString strType;
+        QString strData;
+
         QStringList infoList = info.split("$");
 
-        QString strType = infoList.at(0);
-        QString strData = infoList.at(1);
+        if( infoList.size() > 0 )
+            strType = infoList.at(0);
+
+        if( infoList.size() > 1 )
+            strData = infoList.at(1);
 
         if( strType == "REP" )
             mPCExplicitText->setText( strData );
@@ -1634,10 +1668,16 @@ void MakeCertProfileDlg::setPMUse( JCC_ProfileExt *pProfileExt )
     for( int i=0; i < valList.size(); i++ )
     {
         QString info = valList.at(i);
+        QString strIDP;
+        QString strSDP;
+
         QStringList infoList = info.split("$");
 
-        QString strIDP = infoList.at(0);
-        QString strSDP = infoList.at(1);
+        if( infoList.size() > 0 )
+            strIDP = infoList.at(0);
+
+        if( infoList.size() > 1 )
+            strSDP = infoList.at(1);
 
         mPMTable->insertRow(i);
         mPMTable->setItem(i,0,new QTableWidgetItem("issuerDomainPolicy"));
@@ -1667,10 +1707,16 @@ void MakeCertProfileDlg::setSANUse( JCC_ProfileExt *pProfileExt )
     for( int i=0; i < valList.size(); i++ )
     {
         QString info = valList.at(i);
+        QString strType;
+        QString strData;
+
         QStringList infoList = info.split("$");
 
-        QString strType = infoList.at(0);
-        QString strData = infoList.at(1);
+        if( infoList.size() > 0 )
+            strType = infoList.at(0);
+
+        if( infoList.size() > 1 )
+            strData = infoList.at(1);
 
         mSANTable->insertRow(i);
         mSANTable->setItem( i, 0, new QTableWidgetItem(strType));
