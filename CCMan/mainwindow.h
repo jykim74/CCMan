@@ -32,6 +32,8 @@ public:
     void initialize();
 
     void log( const QString strLog, QColor cr = QColor(0x00, 0x00, 0x00) );
+    void logLine();
+    void logLine2();
 
     void createActions();
     void createStatusBar();
