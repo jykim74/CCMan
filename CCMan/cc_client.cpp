@@ -683,13 +683,14 @@ int CCClient::getAdminList( JCC_AdminList **ppAdminList )
     return 0;
 }
 
-int CCClient::getCertProfileList( JCC_CertProfileList **ppCertProfileList )
+int CCClient::getCertProfileList( int nType, JCC_CertProfileList **ppCertProfileList )
 {
     int ret = 0;
     int status = 0;
     QString strURL;
 
     JNameValList    *pHeaderList = NULL;
+    JNameValList    *pParamList = NULL;
     QString strToken = manApplet->accountInfo()->token();
 
     char    *pRsp = NULL;
@@ -699,13 +700,19 @@ int CCClient::getCertProfileList( JCC_CertProfileList **ppCertProfileList )
 
     JS_UTIL_createNameValList2( "Token", strToken.toStdString().c_str(), &pHeaderList );
 
+    if( nType >= 0 )
+    {
+        char sVal[32];
+        sprintf( sVal, "%d", nType );
+        JS_UTIL_createNameValList2( "type", sVal, &pParamList );
+    }
 
     ret = JS_HTTP_requestResponse(
                 strURL.toStdString().c_str(),
                 NULL,
                 NULL,
                 JS_HTTP_METHOD_GET,
-                NULL,
+                pParamList,
                 pHeaderList,
                 NULL,
                 &status,
@@ -716,6 +723,8 @@ int CCClient::getCertProfileList( JCC_CertProfileList **ppCertProfileList )
     if( pRsp ) JS_free( pRsp );
 
     if( pHeaderList ) JS_UTIL_resetNameValList( &pHeaderList );
+    if( pParamList ) JS_UTIL_resetNameValList( &pParamList );
+
     return 0;
 }
 

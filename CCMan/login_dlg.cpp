@@ -26,6 +26,11 @@ LoginDlg::LoginDlg(QWidget *parent) :
     mPasswordText->setText( strPasswd );
 
     mPasswordText->setEchoMode(QLineEdit::Password);
+
+#if defined(Q_OS_MAC)
+    layout()->setSpacing(5);
+#endif
+    resize(minimumSizeHint().width(), minimumSizeHint().height());
 }
 
 LoginDlg::~LoginDlg()

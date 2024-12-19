@@ -171,7 +171,7 @@ void IssueCertDlg::initialize()
     JCC_CertProfileList *pCertProfileList = NULL;
     JCC_CertProfileList *pCurList = NULL;
 
-    manApplet->ccClient()->getCertProfileList( &pCertProfileList );
+    manApplet->ccClient()->getCertProfileList( 0, &pCertProfileList );
 
     pCurList = pCertProfileList;
 

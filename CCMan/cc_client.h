@@ -31,7 +31,7 @@ public:
     int modAdmin( int nSeq, JCC_Admin *pAdmin );
     int delAdmin( int nSeq );
     int getAdminList( JCC_AdminList **ppAdminList );
-    int getCertProfileList( JCC_CertProfileList **ppCertProfileList );
+    int getCertProfileList( int nType, JCC_CertProfileList **ppCertProfileList );
     int getCertProfile( int nNum, JCC_CertProfile *pCertProfile );
     int getCertProfileExtList( int nProfileNum, JCC_ProfileExtList **ppProfileExtList );
     int getCRLProfileList( JCC_CRLProfileList **ppCRLProfileList );

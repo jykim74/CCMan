@@ -1206,7 +1206,7 @@ void MainWindow::createRightCertProfileList()
     JDB_CertProfileList  *pCertProfileList = NULL;
     JDB_CertProfileList  *pCurList = NULL;
 
-    QStringList titleList = { tr("Num"), tr("Name"), tr("Version"), tr("NotBefore"), tr("NotAfter"), tr("Hash") };
+    QStringList titleList = { tr("Num"), tr("NotBefore"), tr("NotAfter"), tr("Hash"), tr("Name") };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -1216,14 +1216,13 @@ void MainWindow::createRightCertProfileList()
     right_table_->setHorizontalHeaderLabels( titleList );
     right_table_->verticalHeader()->setVisible(false);
 
-    manApplet->ccClient()->getCertProfileList( &pCertProfileList );
+    manApplet->ccClient()->getCertProfileList( 0, &pCertProfileList );
     pCurList = pCertProfileList;
 
     right_table_->setColumnWidth( 0, 60 );
-    right_table_->setColumnWidth( 1, 300 );
-    right_table_->setColumnWidth( 2, 60 );
-    right_table_->setColumnWidth( 3, 100 );
-    right_table_->setColumnWidth( 4, 100 );
+    right_table_->setColumnWidth( 1, 100 );
+    right_table_->setColumnWidth( 2, 100 );
+    right_table_->setColumnWidth( 3, 80 );
 
 
     while( pCurList )
@@ -1259,11 +1258,10 @@ void MainWindow::createRightCertProfileList()
         right_table_->setRowHeight(i, 10 );
 
         right_table_->setItem( i, 0, seq );
-        right_table_->setItem( i, 1, item );
-        right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( strVersion )));
-        right_table_->setItem( i, 3, new QTableWidgetItem( QString("%1").arg( strNotBefore )));
-        right_table_->setItem( i, 4, new QTableWidgetItem( QString("%1").arg( strNotAfter )));
-        right_table_->setItem( i, 5, new QTableWidgetItem( pCurList->sCertProfile.pHash ));
+        right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( strNotBefore )));
+        right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( strNotAfter )));
+        right_table_->setItem( i, 3, new QTableWidgetItem( pCurList->sCertProfile.pHash ));
+        right_table_->setItem( i, 4, item );
 
         pCurList = pCurList->pNext;
         i++;
@@ -1280,7 +1278,7 @@ void MainWindow::createRightCRLProfileList()
     JDB_CRLProfileList   *pCRLProfileList = NULL;
     JDB_CRLProfileList   *pCurList = NULL;
 
-    QStringList titleList = { tr("Num"), tr("Name"), tr("ThisUpdate"), tr("NextUpdate"), tr("Hash") };
+    QStringList titleList = { tr("Num"), tr("ThisUpdate"), tr("NextUpdate"), tr("Hash"), tr("Name") };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -1294,9 +1292,9 @@ void MainWindow::createRightCRLProfileList()
     pCurList = pCRLProfileList;
 
     right_table_->setColumnWidth( 0, 60 );
-    right_table_->setColumnWidth( 1, 300 );
+    right_table_->setColumnWidth( 1, 100 );
     right_table_->setColumnWidth( 2, 100 );
-    right_table_->setColumnWidth( 3, 100 );
+    right_table_->setColumnWidth( 3, 80 );
 
 
     while( pCurList )
@@ -1326,10 +1324,10 @@ void MainWindow::createRightCRLProfileList()
         right_table_->setRowHeight(i, 10 );
 
         right_table_->setItem( i, 0, seq );
-        right_table_->setItem( i, 1, item );
-        right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( strThisUpdate )) );
-        right_table_->setItem( i, 3, new QTableWidgetItem( QString("%1").arg( strNextUpdate )) );
-        right_table_->setItem( i, 4, new QTableWidgetItem( pCurList->sCRLProfile.pHash) );
+        right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( strThisUpdate )) );
+        right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( strNextUpdate )) );
+        right_table_->setItem( i, 3, new QTableWidgetItem( pCurList->sCRLProfile.pHash) );
+        right_table_->setItem( i, 4, item );
 
         pCurList = pCurList->pNext;
         i++;

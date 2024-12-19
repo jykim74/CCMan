@@ -6,28 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>216</height>
+    <width>402</width>
+    <height>166</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Login dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>UserName</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>CC Server URL</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0" colspan="2">
     <widget class="Line" name="line">
      <property name="orientation">
@@ -38,37 +24,24 @@
    <item row="4" column="1">
     <widget class="QLineEdit" name="mPasswordText"/>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_3">
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>Password</string>
+      <string>JS CC Server Authorization</string>
      </property>
     </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QComboBox" name="mServerURLCombo">
-     <property name="editable">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item row="3" column="1">
     <widget class="QLineEdit" name="mUserNameText"/>
    </item>
-   <item row="7" column="1">
+   <item row="2" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>CC Server URL</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -78,17 +51,37 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QLabel" name="label_4">
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>JS CC Server Authorization</string>
+      <string>Password</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2">
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>UserName</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2">
     <widget class="Line" name="line_2">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QComboBox" name="mServerURLCombo">
+     <property name="minimumSize">
+      <size>
+       <width>300</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="editable">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
