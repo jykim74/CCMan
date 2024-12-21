@@ -1303,3 +1303,27 @@ const QString getProfileExtInfoValue( const QString strSN, const QString& strVal
 
     return strShowVal;
 }
+
+void getPeriodString( long start, long end, QString& strStart, QString& strEnd )
+{
+    if( start == kPeriodDay )
+    {
+        strStart = QObject::tr("CreationTime");
+        strEnd = QString( "%1 Days" ).arg( end );
+    }
+    else if( start == kPeriodMonth )
+    {
+        strStart = QObject::tr("CreationTime");
+        strEnd = QString( "%1 Months" ).arg( end );
+    }
+    else if( start == kPeriodYear )
+    {
+        strStart = QObject::tr("CreationTime");
+        strEnd = QString( "%1 Years" ).arg( end );
+    }
+    else
+    {
+        strStart = getDateTime( start );
+        strEnd = getDateTime( end );
+    }
+}

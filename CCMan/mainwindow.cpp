@@ -467,7 +467,7 @@ void MainWindow::logCertProfile( int nNum )
     QString strDNTemplate;
 
     strVersion = QString( "V%1" ).arg( sCertProfile.nVersion + 1);
-
+/*
     if( sCertProfile.nNotBefore == 0 )
     {
         strNotBefore = "GenTime";
@@ -478,6 +478,9 @@ void MainWindow::logCertProfile( int nNum )
         strNotBefore = getDateTime( sCertProfile.nNotBefore );
         strNotAfter = getDateTime( sCertProfile.nNotAfter );
     }
+*/
+
+    getPeriodString( sCertProfile.nNotBefore, sCertProfile.nNotAfter, strNotBefore, strNotAfter );
 
     if( strcasecmp( sCertProfile.pDNTemplate, "#CSR_DN" ) == 0 )
         strDNTemplate = "Use CSR DN";
@@ -1245,6 +1248,7 @@ void MainWindow::createRightCertProfileList()
 
         strVersion = QString( "V%1" ).arg( pCurList->sCertProfile.nVersion + 1);
 
+        /*
         if( pCurList->sCertProfile.nNotBefore == 0 )
         {
             strNotBefore = "GenTime";
@@ -1255,6 +1259,12 @@ void MainWindow::createRightCertProfileList()
             strNotBefore = getDateTime( pCurList->sCertProfile.nNotBefore );
             strNotAfter = getDateTime( pCurList->sCertProfile.nNotAfter );
         }
+        */
+
+        getPeriodString( pCurList->sCertProfile.nNotBefore,
+                        pCurList->sCertProfile.nNotAfter,
+                        strNotBefore,
+                        strNotAfter );
 
         if( strcasecmp( pCurList->sCertProfile.pDNTemplate, "#CSR_DN" ) == 0 )
             strDNTemplate = "Use CSR DN";

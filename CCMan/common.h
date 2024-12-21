@@ -39,6 +39,11 @@ enum {
 
 const int   kListCount = 15;
 
+const int kPeriodDay = 0;
+const int kPeriodMonth = 1;
+const int kPeriodYear = 2;
+
+
 const QStringList kMechList = { "RSA", "EC" };
 const QStringList kRSAOptionList = { "1024", "2048", "3072", "4096" };
 const QStringList kECCOptionList = {
@@ -125,6 +130,6 @@ QString getStringFromBIN( const BIN *pBin, int nType, bool bSeenOnly = false );
 
 void getInfoValue( const JExtensionInfo *pExtInfo, QString& strVal );
 const QString getProfileExtInfoValue( const QString strSN, const QString& strVal );
-
+void getPeriodString( long start, long end, QString& strStart, QString& strEnd );
 
 #endif // COMMON_H
