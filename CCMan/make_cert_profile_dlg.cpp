@@ -9,6 +9,8 @@
 #include "js_db_data.h"
 #include "man_tree_item.h"
 
+static QStringList kPeriodTypes = { "Day", "Month", "Year" };
+
 
 MakeCertProfileDlg::MakeCertProfileDlg(QWidget *parent) :
     QDialog(parent)
@@ -65,9 +67,10 @@ void MakeCertProfileDlg::loadProfile( int nProfileNum, bool bCopy )
     mHashCombo->setCurrentText( sCertProfile.pHash );
     mSubjectDNText->setText( sCertProfile.pDNTemplate );
 
-    if( sCertProfile.nNotBefore == 0 )
+    if( sCertProfile.nNotBefore >= 0 && sCertProfile.nNotBefore <= 2 )
     {
         mUseDaysCheck->setChecked(true);
+        mDaysTypeCombo->setCurrentIndex( sCertProfile.nNotBefore );
         mDaysText->setText( QString("%1").arg(sCertProfile.nNotAfter));
     }
     else {
@@ -242,7 +245,7 @@ void MakeCertProfileDlg::accept()
 
     if( mUseDaysCheck->isChecked() )
     {
-        nNotBefore = 0;
+        nNotBefore = mDaysTypeCombo->currentIndex();
         nNotAfter = mDaysText->text().toLong();
     }
     else {
@@ -315,6 +318,8 @@ void MakeCertProfileDlg::initUI()
     mNCSubCombo->addItems(kNCSubList);
     mBCCombo->addItems(kBCTypeList);
     mHashCombo->addItems(kHashList);
+
+    mDaysTypeCombo->addItems( kPeriodTypes );
 
     QDateTime   now;
     now.setTime_t(time(NULL));
@@ -648,6 +653,7 @@ void MakeCertProfileDlg::clickUseDays()
 {
     bool bStatus = mUseDaysCheck->isChecked();
 
+    mDaysTypeCombo->setEnabled( bStatus );
     mDaysText->setEnabled(bStatus);
     mNotAfterDateTime->setEnabled(!bStatus);
     mNotBeforeDateTime->setEnabled(!bStatus);
