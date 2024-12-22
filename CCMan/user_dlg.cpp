@@ -20,6 +20,11 @@ UserDlg::UserDlg(QWidget *parent) :
     connect( mDeleteBtn, SIGNAL(clicked()), this ,SLOT(clickDelete()));
 
     initialize();
+
+#if defined(Q_OS_MAC)
+    layout()->setSpacing(5);
+#endif
+    resize(minimumSizeHint().width(), minimumSizeHint().height());
 }
 
 UserDlg::~UserDlg()

@@ -42,6 +42,11 @@ AboutDlg::AboutDlg(QWidget *parent) :
     strAbout += strAppend;
 
     mAboutText->setText( strAbout );
+
+#if defined(Q_OS_MAC)
+    layout()->setSpacing(5);
+#endif
+    resize(minimumSizeHint().width(), minimumSizeHint().height());
 }
 
 AboutDlg::~AboutDlg()

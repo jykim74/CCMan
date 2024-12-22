@@ -30,6 +30,8 @@ SearchForm::SearchForm(QWidget *parent) :
     connect( mRightEndBtn, SIGNAL(clicked()), this, SLOT(rightEndPage()));
     connect( mRightBtn, SIGNAL(clicked()), this, SLOT(rightPage()));
     connect( mSearchBtn, SIGNAL(clicked()), this, SLOT(search()));
+
+
 }
 
 SearchForm::~SearchForm()

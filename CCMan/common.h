@@ -108,6 +108,7 @@ const QString kTableStyle = "QHeaderView::section {background-color:#404040;colo
 
 
 QString getDateTime( time_t tTime );
+const QString dateString( time_t tTime );
 QString getRecStatusName( int nStatus );
 QString getAdminTypeName( int nType );
 QString getStatusName( int nStatus );

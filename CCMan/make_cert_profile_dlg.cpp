@@ -26,6 +26,11 @@ MakeCertProfileDlg::MakeCertProfileDlg(QWidget *parent) :
     profile_num_ = -1;
 
     initialize();
+
+#if defined(Q_OS_MAC)
+    layout()->setSpacing(5);
+#endif
+    resize(minimumSizeHint().width(), minimumSizeHint().height());
 }
 
 MakeCertProfileDlg::~MakeCertProfileDlg()

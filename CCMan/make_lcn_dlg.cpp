@@ -22,6 +22,11 @@ MakeLCNDlg::MakeLCNDlg(QWidget *parent) :
     connect( mUseDaysCheck, SIGNAL(clicked()), this, SLOT(checkUseDays()));
 
     initialize();
+
+#if defined(Q_OS_MAC)
+    layout()->setSpacing(5);
+#endif
+    resize(minimumSizeHint().width(), minimumSizeHint().height());
 }
 
 MakeLCNDlg::~MakeLCNDlg()

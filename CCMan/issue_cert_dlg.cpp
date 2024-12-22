@@ -20,6 +20,11 @@ IssueCertDlg::IssueCertDlg(QWidget *parent) :
 
     initialize();
     setDefault();
+
+#if defined(Q_OS_MAC)
+    layout()->setSpacing(5);
+#endif
+    resize(minimumSizeHint().width(), minimumSizeHint().height());
 }
 
 IssueCertDlg::~IssueCertDlg()

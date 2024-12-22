@@ -13,6 +13,11 @@ QString getDateTime( time_t tTime )
     return dateTime.toString( "yyyy-MM-dd HH:mm:ss");
 }
 
+const QString dateString( time_t tTime )
+{
+    QDateTime dateTime = QDateTime::fromTime_t( tTime );
+    return dateTime.toString( "yy-MM-dd HH:mm" );
+}
 
 QString getRecStatusName( int nStatus )
 {

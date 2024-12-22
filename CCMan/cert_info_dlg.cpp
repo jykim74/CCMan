@@ -18,6 +18,11 @@ CertInfoDlg::CertInfoDlg(QWidget *parent) :
     cert_list_ = NULL;
     memset( &cert_bin_, 0x00, sizeof(BIN));
     tabWidget->setCurrentIndex(0);
+
+#if defined(Q_OS_MAC)
+    layout()->setSpacing(5);
+#endif
+    resize(minimumSizeHint().width(), minimumSizeHint().height());
 }
 
 CertInfoDlg::~CertInfoDlg()

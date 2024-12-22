@@ -393,8 +393,8 @@ void MainWindow::logAdmin( int nSeq )
     log( "== Admin Information\n" );
     logLine();
     log( QString("Seq          : %1\n").arg(sAdmin.nSeq));
-    log( QString("Status       : %1 - %2\n").arg(sAdmin.nStatus).arg(getStatusName(sAdmin.nStatus)));
-    log( QString("Type         : %1 - %2\n").arg(sAdmin.nType).arg(getAdminTypeName(sAdmin.nType)));
+    log( QString("Status       : %1 - %2\n").arg(getStatusName(sAdmin.nStatus)).arg(sAdmin.nStatus));
+    log( QString("Type         : %1 - %2\n").arg(getAdminTypeName(sAdmin.nType)).arg(sAdmin.nType));
     log( QString("Name         : %1\n").arg(sAdmin.pName));
     log( QString("Password     : %1\n").arg(sAdmin.pPassword));
     log( QString("Email        : %1\n").arg(sAdmin.pEmail));
@@ -443,7 +443,7 @@ void MainWindow::logUser( int nSeq )
     manApplet->log( QString("Name          : %1\n").arg(sUser.pName));
     manApplet->log( QString("SSN           : %1\n").arg(sUser.pSSN));
     manApplet->log( QString("Email         : %1\n").arg(sUser.pEmail));
-    manApplet->log( QString("Status        : %1 - %2\n").arg(sUser.nStatus).arg( getUserStatusName(sUser.nStatus)));
+    manApplet->log( QString("Status        : %1 - %2\n").arg( getUserStatusName(sUser.nStatus)).arg(sUser.nStatus));
     manApplet->log( QString("RefNum        : %1\n").arg(sUser.pRefNum));
     manApplet->log( QString("AuthCode      : %1\n").arg(sUser.pAuthCode));
     logLine();
@@ -493,11 +493,11 @@ void MainWindow::logCertProfile( int nNum )
     logLine();
     manApplet->log( QString("Num         : %1\n").arg(sCertProfile.nNum));
     manApplet->log( QString("Name        : %1\n").arg(sCertProfile.pName));
-    manApplet->log( QString("Version     : %1 - %2\n").arg(sCertProfile.nVersion).arg(strVersion));
-    manApplet->log( QString("NotBefore   : %1 - %2\n").arg(sCertProfile.nNotBefore).arg(strNotBefore));
-    manApplet->log( QString("NotAfter    : %1 - %2\n").arg(sCertProfile.nNotAfter).arg(strNotAfter));
+    manApplet->log( QString("Version     : %1 - %2\n").arg(strVersion).arg(sCertProfile.nVersion));
+    manApplet->log( QString("NotBefore   : %1 - %2\n").arg(strNotBefore).arg(sCertProfile.nNotBefore));
+    manApplet->log( QString("NotAfter    : %1 - %2\n").arg(strNotAfter).arg(sCertProfile.nNotAfter));
     manApplet->log( QString("Hash        : %1\n").arg(sCertProfile.pHash));
-    manApplet->log( QString("DNTemplate  : %1 - %2\n").arg(sCertProfile.pDNTemplate).arg(strDNTemplate));
+    manApplet->log( QString("DNTemplate  : %1 - %2\n").arg(strDNTemplate).arg(sCertProfile.pDNTemplate));
     manApplet->log( "======================= Extension Information ==========================\n" );
 
     manApplet->ccClient()->getCertProfileExtList( nNum, &pProfileExtList );
@@ -566,9 +566,9 @@ void MainWindow::logCRLProfile( int nNum )
     logLine();
     manApplet->log( QString("Num          : %1\n").arg(sCRLProfile.nNum));
     manApplet->log( QString("Name         : %1\n").arg(sCRLProfile.pName));
-    manApplet->log( QString("Version      : %1 - %2\n").arg(sCRLProfile.nVersion).arg(strVersion));
-    manApplet->log( QString("ThisUpdate   : %1 - %2\n").arg(sCRLProfile.nThisUpdate).arg(strThisUpdate));
-    manApplet->log( QString("NextUpdate   : %1 - %2\n").arg(sCRLProfile.nNextUpdate).arg(strNextUpdate));
+    manApplet->log( QString("Version      : %1 - %2\n").arg(strVersion).arg(sCRLProfile.nVersion));
+    manApplet->log( QString("ThisUpdate   : %1 - %2\n").arg(strThisUpdate).arg(sCRLProfile.nThisUpdate));
+    manApplet->log( QString("NextUpdate   : %1 - %2\n").arg(strNextUpdate).arg(sCRLProfile.nNextUpdate));
     manApplet->log( QString("Hash         : %1\n").arg(sCRLProfile.pHash));
     manApplet->log( "======================= Extension Information ==========================\n" );
 
@@ -619,11 +619,11 @@ void MainWindow::logSigner(int nNum)
     logLine();
     manApplet->log( QString("Num          : %1\n").arg( sSigner.nNum));
     manApplet->log( QString("RegTime      : %1\n").arg(getDateTime(sSigner.nRegTime)));
-    manApplet->log( QString("Type         : %1 - %2\n").arg( sSigner.nType ).arg(getSignerTypeName(sSigner.nType)));
+    manApplet->log( QString("Type         : %1 - %2\n").arg(getSignerTypeName(sSigner.nType)).arg( sSigner.nType ));
     manApplet->log( QString("DN           : %1\n").arg( sSigner.pDN));
     manApplet->log( QString("DNHash       : %1\n").arg( sSigner.pDNHash));
     manApplet->log( QString("Cert         : %1\n").arg( sSigner.pCert ));
-    manApplet->log( QString("Status       : %1 - %2\n").arg( sSigner.nStatus).arg(getStatusName( sSigner.nStatus )));
+    manApplet->log( QString("Status       : %1 - %2\n").arg(getStatusName( sSigner.nStatus )).arg( sSigner.nStatus));
     manApplet->log( QString("Info         : %1\n").arg( sSigner.pInfo ));
     logLine();
 
@@ -662,14 +662,14 @@ void MainWindow::logCert( int nNum )
     JS_UTIL_getDateTime( sCert.nRegTime, sRegDate );
     manApplet->log( QString("RegDate       : %1\n").arg(sRegDate));
     manApplet->log( QString("KeyNum        : %1\n").arg(sCert.nKeyNum));
-    manApplet->log( QString("UserNum       : %1 - %2\n").arg(sCert.nUserNum ).arg(strUserName));
+    manApplet->log( QString("UserNum       : %1 - %2\n").arg(strUserName).arg(sCert.nUserNum ));
     manApplet->log( QString("SignAlgorithm : %1\n").arg(sCert.pSignAlg));
     manApplet->log( QString("Certificate   : %1\n").arg(sCert.pCert));
     manApplet->log( QString("IsCA          : %1\n").arg(sCert.bCA));
     manApplet->log( QString("IsSelf        : %1\n").arg(sCert.bSelf));
     manApplet->log( QString("SubjectDN     : %1\n").arg(sCert.pSubjectDN));
-    manApplet->log( QString("IssuerNum     : %1 - %2\n").arg(sCert.nIssuerNum).arg(strIssuerName));
-    manApplet->log( QString("Status        : %1 - %2\n").arg(sCert.nStatus).arg(getCertStatusName(sCert.nStatus)));
+    manApplet->log( QString("IssuerNum     : %1 - %2\n").arg(strIssuerName).arg(sCert.nIssuerNum));
+    manApplet->log( QString("Status        : %1 - %2\n").arg(getCertStatusName(sCert.nStatus)).arg(sCert.nStatus));
     manApplet->log( QString("Serial        : %1\n").arg(sCert.pSerial));
     manApplet->log( QString("DNHash        : %1\n").arg(sCert.pDNHash));
     manApplet->log( QString("KeyHash       : %1\n").arg(sCert.pKeyHash));
@@ -706,7 +706,7 @@ void MainWindow::logCRL( int nNum )
     manApplet->log( QString("Num           : %1\n").arg(sCRL.nNum));
     JS_UTIL_getDateTime( sCRL.nRegTime, sRegTime );
     manApplet->log( QString("RegTime       : %1\n").arg(sRegTime));
-    manApplet->log( QString("IssuerNum     : %1 - %2\n").arg(sCRL.nIssuerNum).arg(strIssuerName));
+    manApplet->log( QString("IssuerNum     : %1 - %2\n").arg(strIssuerName).arg(sCRL.nIssuerNum));
     manApplet->log( QString("SignAlgorithm : %1\n").arg(sCRL.pSignAlg));
     manApplet->log( QString("CRLDP         : %1\n").arg(sCRL.pCRLDP));
     manApplet->log( QString("CRL           : %1\n").arg(sCRL.pCRL));
@@ -737,11 +737,11 @@ void MainWindow::logRevoked( int nSeq )
     manApplet->log( "== Revoke Information\n" );
     logLine();
     manApplet->log( QString("Seq          : %1\n").arg( sRevoked.nSeq));
-    manApplet->log( QString("CertNum      : %1 - %2\n").arg( sRevoked.nCertNum).arg(strCertName));
-    manApplet->log( QString("IssuerNum    : %1 - %2\n").arg( sRevoked.nIssuerNum).arg(strIssuerName));
+    manApplet->log( QString("CertNum      : %1 - %2\n").arg(strCertName).arg( sRevoked.nCertNum));
+    manApplet->log( QString("IssuerNum    : %1 - %2\n").arg(strIssuerName).arg( sRevoked.nIssuerNum));
     manApplet->log( QString("Serial       : %1\n").arg( sRevoked.pSerial));
     manApplet->log( QString("RevokeDate   : %1\n").arg( getDateTime( sRevoked.nRevokedDate )));
-    manApplet->log( QString("Reason       : %1 - %2\n").arg( sRevoked.nReason).arg(strReason));
+    manApplet->log( QString("Reason       : %1 - %2\n").arg(strReason).arg( sRevoked.nReason));
     manApplet->log( QString("CRLDP        : %1\n").arg( sRevoked.pCRLDP ));
     logLine();
 
@@ -779,9 +779,9 @@ void MainWindow::logKMS( int nSeq )
     logLine();
     manApplet->log( QString("Seq          : %1\n").arg( sKMS.nSeq));
     manApplet->log( QString("RegTime      : %1\n").arg( getDateTime( sKMS.nRegTime )));
-    manApplet->log( QString("State        : %1 - %2\n").arg( sKMS.nState ).arg( getStatusName( sKMS.nState )));
-    manApplet->log( QString("Type         : %1 - %2\n").arg( sKMS.nType ).arg(strType));
-    manApplet->log( QString("Algorithm    : %1 - %2\n").arg( sKMS.nAlgorithm ).arg(strAlg));
+    manApplet->log( QString("State        : %1 - %2\n").arg( getStatusName( sKMS.nState )).arg( sKMS.nState ));
+    manApplet->log( QString("Type         : %1 - %2\n").arg(strType).arg( sKMS.nType ));
+    manApplet->log( QString("Algorithm    : %1 - %2\n").arg(strAlg).arg( sKMS.nAlgorithm ));
     manApplet->log( QString("ID           : %1\n").arg( sKMS.pID ));
     manApplet->log( QString("Info         : %1\n").arg( sKMS.pInfo ));
     logLine();
@@ -830,8 +830,8 @@ void MainWindow::logAudit( int nSeq )
     logLine();
     manApplet->log( QString("Seq          : %1\n").arg( sAudit.nSeq));
     manApplet->log( QString("RegTime      : %1\n").arg( getDateTime( sAudit.nRegTime )));
-    manApplet->log( QString("Kind         : %1 - %2\n").arg( sAudit.nKind ).arg( strKind ));
-    manApplet->log( QString("Operation    : %1 - %2\n").arg( sAudit.nOperation ).arg( strOper ));
+    manApplet->log( QString("Kind         : %1 - %2\n").arg( strKind ).arg( sAudit.nKind ));
+    manApplet->log( QString("Operation    : %1 - %2\n").arg( strOper ).arg( sAudit.nOperation ));
     manApplet->log( QString("UserName     : %1\n").arg( sAudit.pUserName ));
     manApplet->log( QString("Info         : %1\n").arg( sAudit.pInfo ));
     manApplet->log( QString("MAC          : %1\n").arg( sAudit.pMAC ));
@@ -1151,7 +1151,7 @@ void MainWindow::createRightUserList()
 
     removeAllRight();
 
-    QStringList titleList = { tr("Num"), tr("RegTime"), tr("Name"), tr("SSN"), tr("Email"), tr("Status") };
+    QStringList titleList = { tr("Num"), tr("RegTime"), tr("Status"), tr("Name"), tr("Email")  };
 
 
     right_table_->clear();
@@ -1175,30 +1175,26 @@ void MainWindow::createRightUserList()
 
     pCurList = pDBUserList;
 
-    right_table_->setColumnWidth( 0, 40 );
-    right_table_->setColumnWidth( 1, 140 );
-    right_table_->setColumnWidth( 2, 180 );
-    right_table_->setColumnWidth( 3, 100 );
-    right_table_->setColumnWidth( 4, 180 );
-    right_table_->setColumnWidth( 5, 60 );
+    right_table_->setColumnWidth( 0, 60 );
+    right_table_->setColumnWidth( 1, 130 );
+    right_table_->setColumnWidth( 2, 60 );
+    right_table_->setColumnWidth( 3, 180 );
+
 
     while( pCurList )
     {
-        char sRegTime[64];
         right_table_->insertRow(i);
         right_table_->setRowHeight(i, 10 );
-
-        JS_UTIL_getDateTime( pCurList->sUser.nRegTime, sRegTime );
 
         QTableWidgetItem *item = new QTableWidgetItem( pCurList->sUser.pName );
         item->setIcon(QIcon(":/images/user_reg.png"));
 
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.nNum )));
-        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( sRegTime )));
-        right_table_->setItem(i,2, item );
-        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pSSN )));
+        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( dateString( pCurList->sUser.nRegTime )) ));
+        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( getUserStatusName( pCurList->sUser.nStatus ) )));
+        right_table_->setItem(i,3, item );
         right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sUser.pEmail )));
-        right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( getUserStatusName( pCurList->sUser.nStatus ) )));
+
 
         pCurList = pCurList->pNext;
         i++;
@@ -1367,7 +1363,7 @@ void MainWindow::createRightSignerList( int nItemType )
 
     removeAllRight();
 
-    QStringList titleList = { tr("Num"), tr("RegTime"), tr("Type"), tr("DN"), tr("Status"), tr("DNHash") };
+    QStringList titleList = { tr("Num"), tr("RegTime"), tr("Type"), tr("Status"), tr("DN") };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -1380,19 +1376,18 @@ void MainWindow::createRightSignerList( int nItemType )
     manApplet->ccClient()->getSignerList( nType, &pSignerList );
     pCurList = pSignerList;
 
-    right_table_->setColumnWidth( 0, 40 );
-    right_table_->setColumnWidth( 1, 140 );
+    right_table_->setColumnWidth( 0, 60 );
+    right_table_->setColumnWidth( 1, 130 );
     right_table_->setColumnWidth( 2, 80 );
-    right_table_->setColumnWidth( 3, 200 );
-    right_table_->setColumnWidth( 4, 60 );
+    right_table_->setColumnWidth( 3, 80 );
 
     while( pCurList )
     {
-        char sRegTime[64];
+        QString strDate;
         right_table_->insertRow(i);
         right_table_->setRowHeight(i, 10 );
 
-        JS_UTIL_getDateTime( pCurList->sSigner.nRegTime, sRegTime );
+        strDate = dateString( pCurList->sSigner.nRegTime );
 
         QTableWidgetItem *item = new QTableWidgetItem( pCurList->sSigner.pDN );
 
@@ -1402,11 +1397,10 @@ void MainWindow::createRightSignerList( int nItemType )
             item->setIcon(QIcon(":/images/ocsp_signer.png"));
 
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sSigner.nNum )));
-        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( sRegTime )));
+        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( strDate )));
         right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( getSignerTypeName( pCurList->sSigner.nType ) )));
-        right_table_->setItem(i,3, item );
-        right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( getStatusName(pCurList->sSigner.nStatus) )));
-        right_table_->setItem(i,5, new QTableWidgetItem(QString("%1").arg( pCurList->sSigner.pDNHash )));
+        right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( getStatusName(pCurList->sSigner.nStatus) )));
+        right_table_->setItem(i,4, item );
 
         pCurList = pCurList->pNext;
         i++;
