@@ -1418,7 +1418,6 @@ void MainWindow::createRightCertList()
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
     int nTotalCnt = 0;
-    char    sRegTime[64];
 
 
     QString strTarget = right_menu_->getCondName();
@@ -1448,8 +1447,8 @@ void MainWindow::createRightCertList()
 
     pCurList = pCertList;
 
-    right_table_->setColumnWidth( 0, 40 );
-    right_table_->setColumnWidth( 1, 140 );
+    right_table_->setColumnWidth( 0, 60 );
+    right_table_->setColumnWidth( 1, 130 );
     right_table_->setColumnWidth( 2, 100 );
 
     while( pCurList )
@@ -1466,12 +1465,11 @@ void MainWindow::createRightCertList()
         else
             item->setIcon(QIcon(":/images/cert.png"));
 
-        JS_UTIL_getDateTime( pCurList->sCert.nRegTime, sRegTime );
         right_table_->insertRow(i);
         right_table_->setRowHeight(i, 10 );
 
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCert.nNum) ));
-        right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( sRegTime ) ));
+        right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( dateString( pCurList->sCert.nRegTime ) ) ));
         right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg(pCurList->sCert.pSerial)));
         right_table_->setItem( i, 3, item );
 
@@ -1493,7 +1491,6 @@ void MainWindow::createRightCRLList()
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
     int nTotalCnt = 0;
-    char    sRegTime[64];
 
 
     QString strTarget = right_menu_->getCondName();
@@ -1521,8 +1518,8 @@ void MainWindow::createRightCRLList()
         manApplet->ccClient()->getCRLList( nOffset, nLimit, &pCRLList );
     }
 
-    right_table_->setColumnWidth( 0, 40 );
-    right_table_->setColumnWidth( 1, 140 );
+    right_table_->setColumnWidth( 0, 60 );
+    right_table_->setColumnWidth( 1, 130 );
     right_table_->setColumnWidth( 2, 200 );
 
     pCurList = pCRLList;
@@ -1540,13 +1537,11 @@ void MainWindow::createRightCRLList()
         QTableWidgetItem *item = new QTableWidgetItem( strIssuerName );
         item->setIcon(QIcon(":/images/crl.png"));
 
-        JS_UTIL_getDateTime( pCurList->sCRL.nRegTime, sRegTime );
-
         right_table_->insertRow(i);
         right_table_->setRowHeight(i, 10 );
 
         right_table_->setItem( i, 0, new QTableWidgetItem( QString("%1").arg( pCurList->sCRL.nNum )));
-        right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( sRegTime )));
+        right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( dateString( pCurList->sCRL.nRegTime ) )));
         right_table_->setItem( i, 2, item );
         right_table_->setItem( i, 3, new QTableWidgetItem( pCurList->sCRL.pCRLDP ));
 
@@ -1569,7 +1564,7 @@ void MainWindow::createRightRevokedList()
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
     int nTotalCnt = 0;
-    char    sDateTime[64];
+
     CCClient *ccClient = manApplet->ccClient();
 
 
@@ -1598,9 +1593,9 @@ void MainWindow::createRightRevokedList()
         manApplet->ccClient()->getRevokedList( nOffset, nLimit, &pRevokedList );
     }
 
-    right_table_->setColumnWidth( 0, 40 );
+    right_table_->setColumnWidth( 0, 60 );
     right_table_->setColumnWidth( 1, 120 );
-    right_table_->setColumnWidth( 2, 120 );
+    right_table_->setColumnWidth( 2, 130 );
     right_table_->setColumnWidth( 3, 100 );
 
     pCurList = pRevokedList;
@@ -1616,11 +1611,9 @@ void MainWindow::createRightRevokedList()
         right_table_->insertRow(i);
         right_table_->setRowHeight(i, 10 );
 
-        JS_UTIL_getDateTime( pCurList->sRevoked.nRevokedDate, sDateTime );
-
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.nSeq )));
         right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( pCurList->sRevoked.pSerial )));
-        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( sDateTime )));
+        right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( dateString( pCurList->sRevoked.nRevokedDate ) )));
         right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( JS_PKI_getRevokeReasonName( pCurList->sRevoked.nReason ))));
         right_table_->setItem(i,4, item );
 
@@ -1777,7 +1770,7 @@ void MainWindow::createRightKMS()
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
     int nTotalCnt = 0;
-    char    sDateTime[64];
+
     CCClient* ccClient = manApplet->ccClient();
 
     right_menu_->setTotalCount( nTotalCnt );
@@ -1808,8 +1801,8 @@ void MainWindow::createRightKMS()
 
     pCurList = pKMSList;
 
-    right_table_->setColumnWidth( 0, 40 );
-    right_table_->setColumnWidth( 1, 140 );
+    right_table_->setColumnWidth( 0, 60 );
+    right_table_->setColumnWidth( 1, 130 );
     right_table_->setColumnWidth( 2, 100 );
     right_table_->setColumnWidth( 3, 100 );
     right_table_->setColumnWidth( 4, 100 );
@@ -1823,10 +1816,8 @@ void MainWindow::createRightKMS()
         QString strType = JS_KMS_getObjectTypeName( pCurList->sKMS.nType );
         QString strAlg = JS_PKI_getKeyTypeName( pCurList->sKMS.nAlgorithm );
 
-        JS_UTIL_getDateTime( pCurList->sKMS.nRegTime, sDateTime );
-
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sKMS.nSeq )));
-        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( sDateTime )));
+        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( dateString( pCurList->sKMS.nRegTime ) )));
         right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( getStatusName( pCurList->sKMS.nState ))));
         right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( strType )));
         right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( strAlg )));
@@ -1853,7 +1844,7 @@ void MainWindow::createRightTSP()
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
     int nTotalCnt = 0;
-    char    sDateTime[64];
+
 
     right_menu_->setTotalCount( nTotalCnt );
     QString strTarget = right_menu_->getCondName();
@@ -1881,8 +1872,8 @@ void MainWindow::createRightTSP()
         manApplet->ccClient()->getTSPList( nOffset, nLimit, &pTSPList );
     }
 
-    right_table_->setColumnWidth( 0, 40 );
-    right_table_->setColumnWidth( 1, 140 );
+    right_table_->setColumnWidth( 0, 60 );
+    right_table_->setColumnWidth( 1, 130 );
     right_table_->setColumnWidth( 2, 100 );
     right_table_->setColumnWidth( 3, 200 );
 
@@ -1893,10 +1884,8 @@ void MainWindow::createRightTSP()
         right_table_->insertRow(i);
         right_table_->setRowHeight(i, 10 );
 
-        JS_UTIL_getDateTime( pCurList->sTSP.nRegTime, sDateTime );
-
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sTSP.nSeq )));
-        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( sDateTime )));
+        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( dateString(pCurList->sTSP.nRegTime) )));
         right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( pCurList->sTSP.nSerial )));
         right_table_->setItem(i,3, new QTableWidgetItem(QString("%1").arg( pCurList->sTSP.pSrcHash )));
         right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sTSP.pPolicy )));
@@ -1922,7 +1911,6 @@ void MainWindow::createRightAudit()
     int nPage = right_menu_->curPage();
     int nOffset = nPage * nLimit;
     int nTotalCnt = 0;
-    char    sDateTime[64];
 
     QString strTarget = right_menu_->getCondName();
     QString strWord = right_menu_->getInputWord();
@@ -1951,8 +1939,8 @@ void MainWindow::createRightAudit()
 
     pCurList = pAuditList;
 
-    right_table_->setColumnWidth( 0, 40 );
-    right_table_->setColumnWidth( 1, 140 );
+    right_table_->setColumnWidth( 0, 60 );
+    right_table_->setColumnWidth( 1, 130 );
     right_table_->setColumnWidth( 2, 100 );
     right_table_->setColumnWidth( 3, 100 );
     right_table_->setColumnWidth( 4, 100 );
@@ -1969,10 +1957,8 @@ void MainWindow::createRightAudit()
         QTableWidgetItem *item = new QTableWidgetItem( strOper );
         item->setIcon(QIcon(":/images/audit.png"));
 
-        JS_UTIL_getDateTime( pCurList->sAudit.nRegTime, sDateTime );
-
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.nSeq )));
-        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( sDateTime )));
+        right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( dateString(pCurList->sAudit.nRegTime) )));
         right_table_->setItem(i,2, new QTableWidgetItem(QString("%1").arg( strKind )));
         right_table_->setItem(i,3, item );
         right_table_->setItem(i,4, new QTableWidgetItem(QString("%1").arg( pCurList->sAudit.pUserName )));
