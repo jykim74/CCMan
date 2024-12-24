@@ -756,9 +756,11 @@ void MainWindow::logCA( int row )
 
 
     logClear();
-    log( leftItem->text() );
-    log( "\n\n" );
-    log( rightItem->text() );
+    logLine();
+    log( QString("%1\n").arg( leftItem->text() ) );
+    logLine();
+    log( QString("%1\n").arg( rightItem->text() ) );
+    logLine();
     logCursorTop();
 }
 
