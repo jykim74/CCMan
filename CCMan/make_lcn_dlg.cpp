@@ -36,8 +36,8 @@ MakeLCNDlg::~MakeLCNDlg()
 
 void MakeLCNDlg::initialize()
 {
-    QString strSID = "jykim74@gmail.com";
-    QString strUser = "JSInc";
+    QString strSID = "SID";
+    QString strUser = "jykim74@gmail.com";
     QString strProduct = "BerEditor|CertMan|CryptokiMan";
     QString strQuantity = "1";
     QString strExtension = "Base";
