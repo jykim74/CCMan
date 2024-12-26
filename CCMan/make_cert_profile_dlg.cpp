@@ -71,6 +71,7 @@ void MakeCertProfileDlg::loadProfile( int nProfileNum, bool bCopy )
     mVersionCombo->setCurrentIndex( sCertProfile.nVersion );
     mHashCombo->setCurrentText( sCertProfile.pHash );
     mSubjectDNText->setText( sCertProfile.pDNTemplate );
+    mExtUsageCombo->setCurrentIndex( sCertProfile.nExtUsage );
 
     if( sCertProfile.nNotBefore >= 0 && sCertProfile.nNotBefore <= 2 )
     {
@@ -271,7 +272,7 @@ void MakeCertProfileDlg::accept()
                          mVersionCombo->currentIndex(),
                          nNotBefore,
                          nNotAfter,
-                          0,
+                         mExtUsageCombo->currentIndex(),
                          mHashCombo->currentText().toStdString().c_str(),
                          strSubjectDN.toStdString().c_str() );
 
@@ -310,6 +311,13 @@ void MakeCertProfileDlg::accept()
 
 void MakeCertProfileDlg::initUI()
 {
+    static QStringList kExtUsageList = {
+        tr("The Certificate Extension Only"),
+        tr("The CSR Extension Only"),
+        tr("Both Certificate and CSR and the The certificate first"),
+        tr("Both Certificate and CSR and the CSR first")
+    };
+
     mKeyUsageCombo->addItems(kKeyUsageList);
     mEKUCombo->addItems(kExtKeyUsageList);
     mVersionCombo->addItems(kCertVersionList);
@@ -331,6 +339,8 @@ void MakeCertProfileDlg::initUI()
 
     mNotBeforeDateTime->setDateTime(now);
     mNotAfterDateTime->setDateTime(now);
+
+    mExtUsageCombo->addItems( kExtUsageList );
 }
 
 void MakeCertProfileDlg::setTableMenus()
