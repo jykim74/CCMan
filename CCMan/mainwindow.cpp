@@ -1049,7 +1049,7 @@ void MainWindow::createRightAdminList()
     JDB_AdminList  *pAdminList = NULL;
     JDB_AdminList  *pCurList = NULL;
 
-    QStringList titleList = { tr("Seq"), tr("Status"), tr("Type"), tr("Name"), tr("Password"), tr("Email") };
+    QStringList titleList = { tr("Seq"), tr("Status"), tr("Type"), tr("Name"), tr("Email") };
 
     right_table_->clear();
     right_table_->horizontalHeader()->setStretchLastSection(true);
@@ -1063,10 +1063,9 @@ void MainWindow::createRightAdminList()
     pCurList = pAdminList;
 
     right_table_->setColumnWidth( 0, 60 );
-    right_table_->setColumnWidth( 1, 60 );
-    right_table_->setColumnWidth( 2, 60 );
+    right_table_->setColumnWidth( 1, 80 );
+    right_table_->setColumnWidth( 2, 80 );
     right_table_->setColumnWidth( 3, 160 );
-    right_table_->setColumnWidth( 4, 160 );
 
     while( pCurList )
     {
@@ -1081,8 +1080,7 @@ void MainWindow::createRightAdminList()
         right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( getStatusName( pCurList->sAdmin.nStatus ) ) ));
         right_table_->setItem( i, 2, new QTableWidgetItem( QString("%1").arg( getAdminTypeName( pCurList->sAdmin.nType ) )));
         right_table_->setItem( i, 3, item );
-        right_table_->setItem( i, 4, new QTableWidgetItem( QString("%1").arg( pCurList->sAdmin.pPassword )));
-        right_table_->setItem( i, 5, new QTableWidgetItem( pCurList->sAdmin.pEmail ));
+        right_table_->setItem( i, 4, new QTableWidgetItem( pCurList->sAdmin.pEmail ));
 
         pCurList = pCurList->pNext;
         i++;
