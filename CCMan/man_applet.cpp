@@ -34,10 +34,11 @@ ManApplet::~ManApplet()
 #ifdef _AUTO_UPDATE
     AutoUpdateService::instance()->stop();
 #endif
-    if( main_win_ != nullptr ) delete main_win_;
+
     if( settings_mgr_ != nullptr ) delete settings_mgr_;
     if( account_info_ != nullptr ) delete account_info_;
     if( cc_client_ != nullptr ) delete cc_client_;
+    if( main_win_ != nullptr ) delete main_win_;
 }
 
 void ManApplet::start()
