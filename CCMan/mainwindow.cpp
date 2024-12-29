@@ -1111,7 +1111,7 @@ void MainWindow::createRightConfigList()
 
     right_table_->setColumnWidth( 0, 60 );
     right_table_->setColumnWidth( 1, 60 );
-    right_table_->setColumnWidth( 2, 60 );
+    right_table_->setColumnWidth( 2, 160 );
 
 
     while( pCurList )
