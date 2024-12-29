@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>580</width>
-    <height>663</height>
+    <height>812</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="mCertTab">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="mBaseTab">
       <attribute name="title">
@@ -694,7 +694,7 @@
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>100</height>
+           <height>0</height>
           </size>
          </property>
          <property name="title">

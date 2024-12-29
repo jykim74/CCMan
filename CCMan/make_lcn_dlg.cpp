@@ -122,10 +122,10 @@ void MakeLCNDlg::clickMake()
         if( strMethod == "Normal" )
         {
             dateTime.setTime_t( now_t );
-            strIssueDate = dateTime.toString( JS_LCN_TIME_FORMAT );
+            strIssueDate = dateTime.toUTC().toString( JS_LCN_TIME_FORMAT );
 
             dateTime.setTime_t( now_t + strValidPeriod.toInt() * 86400 );
-            strExpireDate = dateTime.toString( JS_LCN_TIME_FORMAT );
+            strExpireDate = dateTime.toUTC().toString( JS_LCN_TIME_FORMAT );
         }
         else
         {
@@ -135,8 +135,8 @@ void MakeLCNDlg::clickMake()
     }
     else
     {
-        strIssueDate = mIssueDateTime->dateTime().toString( JS_LCN_TIME_FORMAT );
-        strExpireDate = mExpireDateTime->dateTime().toString( JS_LCN_TIME_FORMAT );
+        strIssueDate = mIssueDateTime->dateTime().toUTC().toString( JS_LCN_TIME_FORMAT );
+        strExpireDate = mExpireDateTime->dateTime().toUTC().toString( JS_LCN_TIME_FORMAT );
     }
 
     JS_DB_setLCN( &sLCN,
