@@ -27,6 +27,7 @@ private slots:
     void showEvent(QShowEvent *event);
     void clickField( QModelIndex index );
     void clickCheck();
+    void changeFieldType( int index );
 
 private:
     int cert_num_;

@@ -24,15 +24,22 @@
    <item row="0" column="0" colspan="2">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="mCRLTab">
       <attribute name="title">
        <string>CRL</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QTableWidget" name="mCRLListTable"/>
+        <widget class="QTableWidget" name="mCRLListTable">
+         <property name="minimumSize">
+          <size>
+           <width>400</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPlainTextEdit" name="mCRLDetailText">
@@ -46,13 +53,20 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2">
+     <widget class="QWidget" name="mRevokeTab">
       <attribute name="title">
        <string>Revoke</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QTableWidget" name="mRevokeListTable"/>
+        <widget class="QTableWidget" name="mRevokeListTable">
+         <property name="minimumSize">
+          <size>
+           <width>400</width>
+           <height>160</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QTableWidget" name="mRevokeDetailTable">

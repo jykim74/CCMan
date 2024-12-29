@@ -8,6 +8,15 @@
 #include "cc_client.h"
 #include "common.h"
 
+enum {
+    FIELD_ALL = 0,
+    FIELD_VERSION1_ONLY,
+    FIELD_EXTENSION_ONLY,
+    FIELD_CRITICAL_ONLY,
+    FIELD_ATTRIBUTE_ONLY
+};
+
+
 CertInfoDlg::CertInfoDlg(QWidget *parent) :
     QDialog(parent)
 {
@@ -21,6 +30,11 @@ CertInfoDlg::CertInfoDlg(QWidget *parent) :
 
 #if defined(Q_OS_MAC)
     layout()->setSpacing(5);
+
+    mInfoTab->layout()->setSpacing(5);
+    mInfoTab->layout()->setMargin(5);
+    mPathTab->layout()->setSpacing(5);
+    mPathTab->layout()->setMargin(5);
 #endif
     resize(minimumSizeHint().width(), minimumSizeHint().height());
 }
@@ -49,6 +63,11 @@ void CertInfoDlg::showEvent(QShowEvent *event)
     if( cert_num_ >= 0 ) pathInit();
 }
 
+void CertInfoDlg::changeFieldType( int index )
+{
+
+}
+
 void CertInfoDlg::initialize()
 {
     int ret = 0;
@@ -61,6 +80,8 @@ void CertInfoDlg::initialize()
     JExtensionInfoList *pExtInfoList = NULL;
     char    sNotBefore[64];
     char    sNotAfter[64];
+
+    int nType = mFieldTypeCombo->currentIndex();
 
     memset( &sCert, 0x00, sizeof(sCert));
 
@@ -92,116 +113,127 @@ void CertInfoDlg::initialize()
 
     JS_PKI_genHash( "SHA1", &cert_bin_, &binFinger );
 
-    mFieldTable->insertRow(i);
-    mFieldTable->setRowHeight(i,10);
-    mFieldTable->setItem( i, 0, new QTableWidgetItem( QString("Version")));
-    mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.nVersion + 1)));
-    i++;
-
-    if( sCertInfo.pSerial )
+    if( nType == FIELD_ALL || nType == FIELD_VERSION1_ONLY )
     {
-        mFieldTable->insertRow(i);
-        mFieldTable->setRowHeight(i,10);
-        mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("Serial")));
-        mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSerial)));
-        i++;
-    }
-
-    JS_UTIL_getDateTime( sCertInfo.uNotBefore, sNotBefore );
-    mFieldTable->insertRow(i);
-    mFieldTable->setRowHeight(i,10);
-    mFieldTable->setItem( i, 0, new QTableWidgetItem( QString("NotBefore")));
-    mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sNotBefore)));
-    i++;
-
-    JS_UTIL_getDateTime( sCertInfo.uNotAfter, sNotAfter );
-    mFieldTable->insertRow(i);
-    mFieldTable->setRowHeight(i,10);
-    mFieldTable->setItem( i, 0, new QTableWidgetItem( QString("NotAfter")));
-    mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sNotAfter)));
-    i++;
-
-    if( sCertInfo.pSubjectName )
-    {
-        QString name = QString::fromUtf8( sCertInfo.pSubjectName );
 
         mFieldTable->insertRow(i);
         mFieldTable->setRowHeight(i,10);
-        mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("SubjectName")));
-        mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg( name )));
+        mFieldTable->setItem( i, 0, new QTableWidgetItem( QString("Version")));
+        mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.nVersion + 1)));
         i++;
-    }
 
-    if( sCertInfo.pPublicKey )
-    {
-        mFieldTable->insertRow(i);
-        mFieldTable->setRowHeight(i,10);
-        mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("PublicKey")));
-        mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pPublicKey)));
-        i++;
-    }
-
-    if( sCertInfo.pIssuerName )
-    {
-        mFieldTable->insertRow(i);
-        mFieldTable->setRowHeight(i,10);
-        mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("IssuerName")));
-        mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pIssuerName)));
-        i++;
-    }
-
-    if( sCertInfo.pSignAlgorithm )
-    {
-        mFieldTable->insertRow(i);
-        mFieldTable->setRowHeight(i,10);
-        mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("SigAlgorithm")));
-        mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSignAlgorithm)));
-        i++;
-    }
-
-    if( sCertInfo.pSignature )
-    {
-        mFieldTable->insertRow(i);
-        mFieldTable->setRowHeight(i,10);
-        mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("Signature")));
-        mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSignature)));
-        i++;
-    }
-
-    if( pExtInfoList )
-    {
-        JExtensionInfoList *pCurList = pExtInfoList;
-
-        while( pCurList )
+        if( sCertInfo.pSerial )
         {
-            QString strValue;
-            QString strSN = pCurList->sExtensionInfo.pOID;
-            bool bCrit = pCurList->sExtensionInfo.bCritical;
-            getInfoValue( &pCurList->sExtensionInfo, strValue );
+            mFieldTable->insertRow(i);
+            mFieldTable->setRowHeight(i,10);
+            mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("Serial")));
+            mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSerial)));
+            i++;
+        }
 
-            QTableWidgetItem *item = new QTableWidgetItem( strValue );
-            if( bCrit )
-                item->setIcon(QIcon(":/images/critical.png"));
-            else
-                item->setIcon(QIcon(":/images/normal.png"));
+        JS_UTIL_getDateTime( sCertInfo.uNotBefore, sNotBefore );
+        mFieldTable->insertRow(i);
+        mFieldTable->setRowHeight(i,10);
+        mFieldTable->setItem( i, 0, new QTableWidgetItem( QString("NotBefore")));
+        mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sNotBefore)));
+        i++;
+
+        JS_UTIL_getDateTime( sCertInfo.uNotAfter, sNotAfter );
+        mFieldTable->insertRow(i);
+        mFieldTable->setRowHeight(i,10);
+        mFieldTable->setItem( i, 0, new QTableWidgetItem( QString("NotAfter")));
+        mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sNotAfter)));
+        i++;
+
+        if( sCertInfo.pSubjectName )
+        {
+            QString name = QString::fromUtf8( sCertInfo.pSubjectName );
 
             mFieldTable->insertRow(i);
             mFieldTable->setRowHeight(i,10);
-            mFieldTable->setItem(i,0, new QTableWidgetItem( QString("%1").arg(strSN)));
-            mFieldTable->setItem(i, 1, item );
+            mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("SubjectName")));
+            mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg( name )));
+            i++;
+        }
 
+        if( sCertInfo.pPublicKey )
+        {
+            mFieldTable->insertRow(i);
+            mFieldTable->setRowHeight(i,10);
+            mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("PublicKey")));
+            mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pPublicKey)));
+            i++;
+        }
 
-            pCurList = pCurList->pNext;
+        if( sCertInfo.pIssuerName )
+        {
+            mFieldTable->insertRow(i);
+            mFieldTable->setRowHeight(i,10);
+            mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("IssuerName")));
+            mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pIssuerName)));
+            i++;
+        }
+
+        if( sCertInfo.pSignAlgorithm )
+        {
+            mFieldTable->insertRow(i);
+            mFieldTable->setRowHeight(i,10);
+            mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("SigAlgorithm")));
+            mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSignAlgorithm)));
+            i++;
+        }
+
+        if( sCertInfo.pSignature )
+        {
+            mFieldTable->insertRow(i);
+            mFieldTable->setRowHeight(i,10);
+            mFieldTable->setItem(i, 0, new QTableWidgetItem(QString("Signature")));
+            mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(sCertInfo.pSignature)));
             i++;
         }
     }
 
+    if( nType == FIELD_ALL || nType == FIELD_EXTENSION_ONLY || nType == FIELD_CRITICAL_ONLY )
+    {
 
-    mFieldTable->insertRow(i);
-    mFieldTable->setRowHeight(i,10);
-    mFieldTable->setItem(i, 0, new QTableWidgetItem(tr("FingerPrint")));
-    mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(getHexString(binFinger.pVal, binFinger.nLen))));
-    i++;
+        if( pExtInfoList )
+        {
+            JExtensionInfoList *pCurList = pExtInfoList;
+
+            while( pCurList )
+            {
+                QString strValue;
+                QString strSN = pCurList->sExtensionInfo.pOID;
+                bool bCrit = pCurList->sExtensionInfo.bCritical;
+                getInfoValue( &pCurList->sExtensionInfo, strValue );
+
+                QTableWidgetItem *item = new QTableWidgetItem( strValue );
+                if( bCrit )
+                    item->setIcon(QIcon(":/images/critical.png"));
+                else
+                    item->setIcon(QIcon(":/images/normal.png"));
+
+                mFieldTable->insertRow(i);
+                mFieldTable->setRowHeight(i,10);
+                mFieldTable->setItem(i,0, new QTableWidgetItem( QString("%1").arg(strSN)));
+                mFieldTable->setItem(i, 1, item );
+
+
+                pCurList = pCurList->pNext;
+                i++;
+            }
+        }
+    }
+
+
+    if( nType == FIELD_ALL || nType == FIELD_ATTRIBUTE_ONLY )
+    {
+        mFieldTable->insertRow(i);
+        mFieldTable->setRowHeight(i,10);
+        mFieldTable->setItem(i, 0, new QTableWidgetItem(tr("FingerPrint")));
+        mFieldTable->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(getHexString(binFinger.pVal, binFinger.nLen))));
+        i++;
+    }
 
     JS_BIN_reset( &binFinger );
 
@@ -271,6 +303,9 @@ void CertInfoDlg::pathInit()
 void CertInfoDlg::initUI()
 {
     QStringList sBaseLabels = { tr("Field"), tr("Value") };
+    QStringList sFieldTypes = { tr("All"), tr("Version1 Only"), tr("Extension Only"), tr("Critical Extension Only"), tr("Attribute Only") };
+
+    mFieldTypeCombo->addItems( sFieldTypes );
 
     mFieldTable->clear();
     mFieldTable->horizontalHeader()->setStretchLastSection(true);
@@ -284,6 +319,7 @@ void CertInfoDlg::initUI()
     connect( mCloseBtn, SIGNAL(clicked()), this, SLOT(close()));
     connect( mFieldTable, SIGNAL(clicked(QModelIndex)), this, SLOT(clickField(QModelIndex)));
     connect( mCheckBtn, SIGNAL(clicked()), this, SLOT(clickCheck()));
+    connect( mFieldTypeCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(changeFieldType(int)));
 }
 
 
