@@ -1110,7 +1110,7 @@ void MainWindow::createRightConfigList()
     pCurList = pConfigList;
 
     right_table_->setColumnWidth( 0, 60 );
-    right_table_->setColumnWidth( 1, 60 );
+    right_table_->setColumnWidth( 1, 100 );
     right_table_->setColumnWidth( 2, 160 );
 
 
@@ -1122,9 +1122,11 @@ void MainWindow::createRightConfigList()
         QTableWidgetItem *seq = new QTableWidgetItem( QString("%1").arg( pCurList->sConfig.nNum ));
         seq->setIcon(QIcon(":/images/config.png"));
 
+        QString strKind = JS_GEN_getKindName( pCurList->sConfig.nKind );
+
         right_table_->setRowHeight(i, 10 );
         right_table_->setItem( i, 0, seq );
-        right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( pCurList->sConfig.nKind ) ));
+        right_table_->setItem( i, 1, new QTableWidgetItem( QString("%1").arg( strKind ) ));
         right_table_->setItem( i, 2, item );
         right_table_->setItem( i, 3, new QTableWidgetItem( QString("%1").arg( pCurList->sConfig.pValue )));
 
