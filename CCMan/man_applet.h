@@ -36,6 +36,7 @@ public:
     QString getBrand();
     void restartApp();
 
+    void exitApp( int nNum = 0 );
 private:
 
 public slots:

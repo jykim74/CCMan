@@ -47,10 +47,22 @@ void ManApplet::start()
     int ret = loginDlg.exec();
 
     if( ret != QDialog::Accepted )
+    {
+        exitApp();
         return;
+    }
 
     main_win_ = new MainWindow;
     main_win_->show();
+}
+
+void ManApplet::exitApp( int nNum )
+{
+    if ( QCoreApplication::closingDown()) {
+        return;
+    }
+
+    QCoreApplication::exit(nNum);
 }
 
 void ManApplet::log( const QString strLog, QColor cr )
