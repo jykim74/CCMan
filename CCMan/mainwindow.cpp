@@ -498,7 +498,9 @@ void MainWindow::logCertProfile( int nNum )
     manApplet->log( QString("NotAfter    : %1 - %2\n").arg(strNotAfter).arg(sCertProfile.nNotAfter));
     manApplet->log( QString("Hash        : %1\n").arg(sCertProfile.pHash));
     manApplet->log( QString("DNTemplate  : %1 - %2\n").arg(strDNTemplate).arg(sCertProfile.pDNTemplate));
-    manApplet->log( "======================= Extension Information ==========================\n" );
+    logLine();
+    manApplet->log( "== Extension Information\n" );
+    logLine();
 
     manApplet->ccClient()->getCertProfileExtList( nNum, &pProfileExtList );
     pCurList = pProfileExtList;
@@ -570,7 +572,9 @@ void MainWindow::logCRLProfile( int nNum )
     manApplet->log( QString("ThisUpdate   : %1 - %2\n").arg(strThisUpdate).arg(sCRLProfile.nThisUpdate));
     manApplet->log( QString("NextUpdate   : %1 - %2\n").arg(strNextUpdate).arg(sCRLProfile.nNextUpdate));
     manApplet->log( QString("Hash         : %1\n").arg(sCRLProfile.pHash));
-    manApplet->log( "======================= Extension Information ==========================\n" );
+    logLine();
+    manApplet->log( "== Extension Information\n" );
+    logLine();
 
     manApplet->ccClient()->getCRLProfileExtList( nNum, &pProfileExtList );
     pCurList = pProfileExtList;
