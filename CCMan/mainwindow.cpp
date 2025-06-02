@@ -668,7 +668,6 @@ void MainWindow::logCert( int nNum )
     manApplet->log( QString("KeyNum        : %1\n").arg(sCert.nKeyNum));
     manApplet->log( QString("UserNum       : %1 - %2\n").arg(strUserName).arg(sCert.nUserNum ));
     manApplet->log( QString("SignAlgorithm : %1\n").arg(sCert.pSignAlg));
-    manApplet->log( QString("Certificate   : %1\n").arg(sCert.pCert));
     manApplet->log( QString("IsCA          : %1\n").arg(sCert.bCA));
     manApplet->log( QString("IsSelf        : %1\n").arg(sCert.bSelf));
     manApplet->log( QString("SubjectDN     : %1\n").arg(sCert.pSubjectDN));
@@ -678,6 +677,7 @@ void MainWindow::logCert( int nNum )
     manApplet->log( QString("DNHash        : %1\n").arg(sCert.pDNHash));
     manApplet->log( QString("KeyHash       : %1\n").arg(sCert.pKeyHash));
     manApplet->log( QString("CRLDP         : %1\n").arg(sCert.pCRLDP));
+    manApplet->log( QString("Certificate   : %1\n").arg(sCert.pCert));
     logLine();
 
     logCursorTop();
@@ -697,21 +697,29 @@ void MainWindow::logCRL( int nNum )
     memset( &sIssuer, 0x00, sizeof(sIssuer));
 
     char    sRegTime[64];
+    char    sThisUpdate[64];
+    char    sNextUpdate[64];
 
     manApplet->ccClient()->getCRL( nNum, &sCRL );
     manApplet->ccClient()->getCert( sCRL.nIssuerNum, &sIssuer );
 
+
     QString strIssuerName = sIssuer.pSubjectDN;
+
+    JS_UTIL_getDateTime( sCRL.nRegTime, sRegTime );
+    JS_UTIL_getDateTime( sCRL.nThisUpdate, sThisUpdate );
+    JS_UTIL_getDateTime( sCRL.nNextUpdate, sNextUpdate );
 
     manApplet->mainWindow()->logClear();
     logLine();
     manApplet->log( "== CRL Information\n" );
     logLine();
     manApplet->log( QString("Num           : %1\n").arg(sCRL.nNum));
-    JS_UTIL_getDateTime( sCRL.nRegTime, sRegTime );
     manApplet->log( QString("RegTime       : %1\n").arg(sRegTime));
     manApplet->log( QString("IssuerNum     : %1 - %2\n").arg(strIssuerName).arg(sCRL.nIssuerNum));
     manApplet->log( QString("SignAlgorithm : %1\n").arg(sCRL.pSignAlg));
+    manApplet->log( QString("ThisUpdate    : %1\n").arg(sThisUpdate));
+    manApplet->log( QString("NextUpdate    : %1\n").arg(sNextUpdate));
     manApplet->log( QString("CRLDP         : %1\n").arg(sCRL.pCRLDP));
     manApplet->log( QString("CRL           : %1\n").arg(sCRL.pCRL));
     logLine();
