@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>318</width>
-    <height>194</height>
+    <width>424</width>
+    <height>233</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -136,7 +136,7 @@
     <widget class="QLineEdit" name="mValueText">
      <property name="minimumSize">
       <size>
-       <width>300</width>
+       <width>400</width>
        <height>0</height>
       </size>
      </property>
