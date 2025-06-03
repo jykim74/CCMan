@@ -2409,7 +2409,7 @@ void MainWindow::certStatus()
         goto end;
     }
 
-    if( sCert.nStatus == JS_CERT_STATUS_REVOKE )
+    if( sCert.nStatus == JS_CERT_STATUS_REVOKE || sCert.nStatus == JS_CERT_STATUS_HOLD )
     {
         ret = manApplet->ccClient()->getCertStatus( sCert.pSerial, &sCertStatus );
         if( ret != 0 )
@@ -2425,6 +2425,10 @@ void MainWindow::certStatus()
     else if( sCert.nStatus == JS_CERT_STATUS_GOOD )
     {
         strStatus = "Good";
+    }
+    else
+    {
+        strStatus = "Unknown";
     }
 
     manApplet->messageBox( strStatus, this );
