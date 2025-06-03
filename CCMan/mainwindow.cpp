@@ -2409,22 +2409,22 @@ void MainWindow::certStatus()
         goto end;
     }
 
-    ret = manApplet->ccClient()->getCertStatus( sCert.pSerial, &sCertStatus );
-    if( ret != 0 )
+    if( sCert.nStatus == JS_CERT_STATUS_REVOKE )
     {
-        manApplet->warningBox( tr("fail to get certificate status"), this );
-        goto end;
-    }
+        ret = manApplet->ccClient()->getCertStatus( sCert.pSerial, &sCertStatus );
+        if( ret != 0 )
+        {
+            manApplet->warningBox( tr("fail to get certificate status"), this );
+            goto end;
+        }
 
-    if( sCertStatus.nStatus == 0 )
-    {
-        strStatus = "Good";
-    }
-    else
-    {
         JS_UTIL_getDateTime( sCertStatus.nRevokedDate, sRevokedDate );
         pReason = JS_PKI_getRevokeReasonName( sCertStatus.nReason );
         strStatus = QString( "Revoked Reason:%1 RevokedDate: %2" ).arg( pReason ).arg( sRevokedDate );
+    }
+    else if( sCert.nStatus == JS_CERT_STATUS_GOOD )
+    {
+        strStatus = "Good";
     }
 
     manApplet->messageBox( strStatus, this );
