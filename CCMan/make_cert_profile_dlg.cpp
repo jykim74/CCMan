@@ -130,17 +130,17 @@ void MakeCertProfileDlg::loadProfile( int nProfileNum, bool bCopy )
     mSubjectDNText->setText( sCertProfile.pDNTemplate );
     mExtUsageCombo->setCurrentIndex( sCertProfile.nExtUsage );
 
-    if( sCertProfile.nNotBefore >= 0 && sCertProfile.nNotBefore <= 2 )
+    if( sCertProfile.tNotBefore >= 0 && sCertProfile.tNotBefore <= 2 )
     {
         mUseDaysCheck->setChecked(true);
-        mDaysTypeCombo->setCurrentIndex( sCertProfile.nNotBefore );
-        mDaysText->setText( QString("%1").arg(sCertProfile.nNotAfter));
+        mDaysTypeCombo->setCurrentIndex( sCertProfile.tNotBefore );
+        mDaysText->setText( QString("%1").arg(sCertProfile.tNotAfter));
     }
     else {
         mUseDaysCheck->setChecked(false);
 
-        notBefore.setTime_t( sCertProfile.nNotBefore );
-        notAfter.setTime_t( sCertProfile.nNotAfter );
+        notBefore.setTime_t( sCertProfile.tNotBefore );
+        notAfter.setTime_t( sCertProfile.tNotAfter );
 
         mNotBeforeDateTime->setDateTime( notBefore );
         mNotAfterDateTime->setDateTime( notAfter );
