@@ -92,6 +92,12 @@ void TSTInfoDlg::initialize()
     mInfoTable->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sTSTInfo.nSerial)));
     i++;
 
+    mInfoTable->insertRow(i);
+    mInfoTable->setRowHeight( i, 10 );
+    mInfoTable->setItem( i, 0, new QTableWidgetItem(QString("GenTime")));
+    mInfoTable->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sTSTInfo.tGenTime)));
+    i++;
+
     if( sTSTInfo.pPolicy )
     {
         mInfoTable->insertRow(i);
@@ -107,15 +113,6 @@ void TSTInfoDlg::initialize()
         mInfoTable->setRowHeight( i, 10 );
         mInfoTable->setItem( i, 0, new QTableWidgetItem(QString("GenName")));
         mInfoTable->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sTSTInfo.pGenName)));
-        i++;
-    }
-
-    if( sTSTInfo.pGenTime )
-    {
-        mInfoTable->insertRow(i);
-        mInfoTable->setRowHeight( i, 10 );
-        mInfoTable->setItem( i, 0, new QTableWidgetItem(QString("GenTime")));
-        mInfoTable->setItem( i, 1, new QTableWidgetItem(QString("%1").arg(sTSTInfo.pGenTime)));
         i++;
     }
 

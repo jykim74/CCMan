@@ -181,7 +181,7 @@ void CRLInfoDlg::initialize()
             mRevokeListTable->insertRow(k);
             mRevokeListTable->setRowHeight(i,10);
             mRevokeListTable->setItem( k, 0, new QTableWidgetItem(QString("%1").arg( pCurRevList->sRevokeInfo.pSerial)));
-            mRevokeListTable->setItem( k, 1, new QTableWidgetItem(QString("%1").arg( pCurRevList->sRevokeInfo.uRevokeDate)));
+            mRevokeListTable->setItem( k, 1, new QTableWidgetItem(QString("%1").arg( pCurRevList->sRevokeInfo.tRevokeDate)));
 
             pCurRevList = pCurRevList->pNext;
             k++;

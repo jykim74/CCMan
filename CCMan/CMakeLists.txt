@@ -7,6 +7,8 @@ project(CCMan
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+set( OPENSSL "openssl35" )
+
 # Set up AUTOMOC and some sensible defaults for runtime execution
 # When using Qt 6.3, you can replace the code block below with
 # qt_standard_project_setup()
@@ -154,13 +156,13 @@ if(WIN32)
     if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
         target_link_directories( ${PROJECT_NAME} PRIVATE
         ../../PKILib/build/Desktop_Qt_5_15_2_MinGW_64_bit-Debug
-        ../../lib/win64/debug/openssl3/lib64
+        ../../lib/win64/debug/${OPENSSL}/lib64
         ../../lib/win64/winsparkle/lib
         ../../lib/win64 )
     elseif( CMAKE_BUILD_TYPE STREQUAL "Release" )
         target_link_directories( ${PROJECT_NAME} PRIVATE
         ../../PKILib/build/Desktop_Qt_5_15_2_MinGW_64_bit-Release
-        ../../lib/win64/openssl3/lib64
+        ../../lib/win64/${OPENSSL}/lib64
         ../../lib/win64/winsparkle/lib
         ../../lib/win64 )
     endif()
@@ -190,18 +192,18 @@ elseif(APPLE)
         MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist )
 
     include_directories( ../../PKILib
-        ../../lib/mac/openssl3/include
+        ../../lib/mac/${OPENSSL}/include
         /usr/local/include )
 
     if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
         target_link_directories( ${PROJECT_NAME} PRIVATE
         ../../build-PKILib-Desktop_Qt_5_15_2_clang_64bit-Debug
-        ../../lib/mac/debug/openssl3/lib
+        ../../lib/mac/debug/${OPENSSL}/lib
         /usr/local/lib )
     elseif( CMAKE_BUILD_TYPE STREQUAL "Release" )
         target_link_directories( ${PROJECT_NAME} PRIVATE
         ../../build-PKILib-Desktop_Qt_5_15_2_clang_64bit-Release
-        ../../lib/mac/openssl3/lib
+        ../../lib/mac/${OPENSSL}/lib
         /usr/local/lib )
     endif()
 
@@ -225,7 +227,7 @@ elseif(LINUX)
     if(Debug)
         target_link_directories( ${PROJECT_NAME} PRIVATE
         ../../build-PKILib-Desktop_Qt_5_13_2_MinGW_64_bit-Debug
-        ../../lib/win64/debug/openssl3/lib64
+        ../../lib/win64/debug/${OPENSSL}/lib64
         ../../PKILib/lib/win64/winsparkle/x64/Release
         "/usr/local/lib" )
     endif()
@@ -233,7 +235,7 @@ elseif(LINUX)
     if(NOT Debug)
         target_link_directories( ${PROJECT_NAME} PRIVATE
         ../../build-PKILib-Desktop_Qt_5_13_2_MinGW_64_bit-Release
-        ../../lib/win64/openssl3/lib64
+        ../../lib/win64/${OPENSSL}/lib64
         ../../PKILib/lib/win64/winsparkle/x64/Release
         "/usr/local/lib" )
     endif()

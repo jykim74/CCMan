@@ -786,7 +786,7 @@ void MainWindow::logKMS( int nSeq )
     ccClient->getKMS( nSeq, &sKMS );
 
     QString strType = JS_KMS_getObjectTypeName( sKMS.nType );
-    QString strAlg = JS_PKI_getKeyTypeName( sKMS.nAlgorithm );
+    QString strAlg = JS_PKI_getKeyAlgName( sKMS.nAlgorithm );
 
     manApplet->mainWindow()->logClear();
     logLine();
@@ -1829,7 +1829,7 @@ void MainWindow::createRightKMS()
         right_table_->setRowHeight(i, 10 );
 
         QString strType = JS_KMS_getObjectTypeName( pCurList->sKMS.nType );
-        QString strAlg = JS_PKI_getKeyTypeName( pCurList->sKMS.nAlgorithm );
+        QString strAlg = JS_PKI_getKeyAlgName( pCurList->sKMS.nAlgorithm );
 
         right_table_->setItem(i,0, new QTableWidgetItem(QString("%1").arg( pCurList->sKMS.nSeq )));
         right_table_->setItem(i,1, new QTableWidgetItem(QString("%1").arg( dateString( pCurList->sKMS.tRegTime ) )));
@@ -2418,7 +2418,7 @@ void MainWindow::certStatus()
             goto end;
         }
 
-        JS_UTIL_getDateTime( sCertStatus.nRevokedDate, sRevokedDate );
+        JS_UTIL_getDateTime( sCertStatus.tRevokedDate, sRevokedDate );
         pReason = JS_PKI_getRevokeReasonName( sCertStatus.nReason );
         strStatus = QString( "Revoked Reason:%1 RevokedDate: %2" ).arg( pReason ).arg( sRevokedDate );
     }

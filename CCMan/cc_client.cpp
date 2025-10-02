@@ -66,6 +66,7 @@ int CCClient::getCount(int nType)
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeNameVal( pRsp, &sNameVal );
@@ -127,6 +128,7 @@ int CCClient::searchCount(int nType, const QString strTarget, const QString strW
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeNameVal( pRsp, &sNameVal );
@@ -182,6 +184,7 @@ int CCClient::getNum(int nType)
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeNameVal( pRsp, &sNameVal );
@@ -226,6 +229,7 @@ QString CCClient::getName( int nNum, const char *pTable )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeNameVal( pRsp, &sNameVal );
@@ -269,6 +273,7 @@ QString CCClient::getDN( int nCertNum )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeNameVal( pRsp, &sNameVal );
@@ -313,6 +318,7 @@ int CCClient::getUserList( int nOffset, int nLimit, JCC_UserList **ppUserList )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeUserList( pRsp, ppUserList );
@@ -361,6 +367,7 @@ int CCClient::searchUserList( const QString strTarget, const QString strWord, in
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeUserList( pRsp, ppUserList );
@@ -398,6 +405,7 @@ int CCClient::getUser( int nNum, JCC_User *pUser )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeUser( pRsp, pUser );
@@ -434,6 +442,7 @@ int CCClient::delUser(int nNum)
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -475,6 +484,7 @@ int CCClient::modUser( int nNum, JCC_User *pUser )
                 pHeaderList,
                 pReq,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -512,6 +522,7 @@ int CCClient::getAdmin( int nSeq, JCC_Admin *pAdmin )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeAdmin( pRsp, pAdmin );
@@ -552,6 +563,7 @@ int CCClient::addAdmin( JCC_Admin *pAdmin )
                 pHeaderList,
                 pReq,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -594,6 +606,7 @@ int CCClient::modAdmin( int nSeq, JCC_Admin *pAdmin )
                 pHeaderList,
                 pReq,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -636,6 +649,7 @@ int CCClient::delAdmin(int nSeq)
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -673,6 +687,7 @@ int CCClient::getAdminList( JCC_AdminList **ppAdminList )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeAdminList( pRsp, ppAdminList );
@@ -716,6 +731,7 @@ int CCClient::getCertProfileList( int nType, JCC_CertProfileList **ppCertProfile
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCertProfileList( pRsp, ppCertProfileList );
@@ -753,6 +769,7 @@ int CCClient::getCertProfile(int nNum, JCC_CertProfile *pCertProfile)
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCertProfile( pRsp, pCertProfile );
@@ -788,6 +805,7 @@ int CCClient::getCertProfileExtList( int nProfileNum, JCC_ProfileExtList **ppPro
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeProfileExtList( pRsp, ppProfileExtList );
@@ -824,6 +842,7 @@ int CCClient::getCRLProfileList( JCC_CRLProfileList **ppCRLProfileList )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCRLProfileList( pRsp, ppCRLProfileList );
@@ -859,6 +878,7 @@ int CCClient::getCRLProfile(int nNum, JCC_CRLProfile *pCRLProfile)
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCRLProfile( pRsp, pCRLProfile );
@@ -893,6 +913,7 @@ int CCClient::getCRLProfileExtList( int nProfileNum, JCC_ProfileExtList **ppProf
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeProfileExtList( pRsp, ppProfileExtList );
@@ -927,6 +948,7 @@ int CCClient::getSigner( int nNum, JCC_Signer *pSigner )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeSigner( pRsp, pSigner );
@@ -968,6 +990,7 @@ int CCClient::getSignerList( int nType, JCC_SignerList **ppSignerList )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeSignerList( pRsp, ppSignerList );
@@ -1005,6 +1028,7 @@ int CCClient::getCert( int nNum, JCC_Cert *pCert )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCert( pRsp, pCert );
@@ -1048,6 +1072,7 @@ int CCClient::getCertList( int nOffset, int nLimit, JCC_CertList **ppCertList )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     fprintf( stderr, "Rsp : %s\n", pRsp );
@@ -1098,6 +1123,7 @@ int CCClient::searchCertList( const QString strTarget, const QString strWord, in
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     fprintf( stderr, "Rsp : %s\n", pRsp );
@@ -1137,6 +1163,7 @@ int CCClient::getCRL( int nNum, JCC_CRL *pCRL )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCRL( pRsp, pCRL );
@@ -1179,6 +1206,7 @@ int CCClient::getCRLList( int nOffset, int nLimit, JCC_CRLList **ppCRLList )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCRLList( pRsp, ppCRLList );
@@ -1227,6 +1255,7 @@ int CCClient::searchCRLList( const QString strTarget, const QString strWord, int
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCRLList( pRsp, ppCRLList );
@@ -1264,6 +1293,7 @@ int CCClient::getRevoked( int nSeq, JCC_Revoked *pRevoked )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeRevoked( pRsp, pRevoked );
@@ -1307,6 +1337,7 @@ int CCClient::getRevokedList( int nOffset, int nLimit, JCC_RevokedList **ppRevok
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeRevokedList( pRsp, ppRevokedList );
@@ -1355,6 +1386,7 @@ int CCClient::searchRevokedList( const QString strTarget, const QString strWord,
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeRevokedList( pRsp, ppRevokedList );
@@ -1392,6 +1424,7 @@ int CCClient::getKMS( int nNum, JCC_KMS *pKMS )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeKMS( pRsp, pKMS );
@@ -1435,6 +1468,7 @@ int CCClient::getKMSList( int nOffset, int nLimit, JCC_KMSList **ppKMSList )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeKMSList( pRsp, ppKMSList );
@@ -1483,6 +1517,7 @@ int CCClient::searchKMSList( const QString strTarget, const QString strWord, int
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeKMSList( pRsp, ppKMSList );
@@ -1520,6 +1555,7 @@ int CCClient::getTSP( int nNum, JCC_TSP *pTSP )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeTSP( pRsp, pTSP );
@@ -1563,6 +1599,7 @@ int CCClient::getTSPList( int nOffset, int nLimit, JCC_TSPList **ppTSPList )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeTSPList( pRsp, ppTSPList );
@@ -1611,6 +1648,7 @@ int CCClient::searchTSPList( const QString strTarget, const QString strWord, int
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeTSPList( pRsp, ppTSPList );
@@ -1648,6 +1686,7 @@ int CCClient::getAudit( int nNum, JCC_Audit *pAudit )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeAudit( pRsp, pAudit );
@@ -1691,6 +1730,7 @@ int CCClient::getAuditList( int nOffset, int nLimit, JCC_AuditList **ppAuditList
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeAuditList( pRsp, ppAuditList );
@@ -1739,6 +1779,7 @@ int CCClient::searchAuditList( const QString strTarget, const QString strWord, i
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeAuditList( pRsp, ppAuditList );
@@ -1790,6 +1831,7 @@ int CCClient::getStatisticsCount( int nStart, int nEnd, const char *pTable )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeNameVal( pRsp, &sNameVal );
@@ -1830,6 +1872,7 @@ int CCClient::addCRLProfile( JCC_CRLProfile *pCRLProfile )
                 pHeaderList,
                 pReq,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -1871,6 +1914,7 @@ int CCClient::modCRLProfile( int nNum, JCC_CRLProfile *pCRLProfile )
                 pHeaderList,
                 pReq,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -1912,6 +1956,7 @@ int CCClient::delCRLProfileExts( int nProfileNum )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -1953,6 +1998,7 @@ int CCClient::delCRLProfile( int nNum )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -1994,6 +2040,7 @@ int CCClient::addCRLProfileExt( int nProfileNum, JCC_ProfileExt *pProfileExt )
                 pHeaderList,
                 pReq,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -2037,6 +2084,7 @@ int CCClient::addCertProfile( JCC_CertProfile *pCertProfile )
                 pHeaderList,
                 pReq,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -2078,6 +2126,7 @@ int CCClient::modCertProfile( int nNum, JCC_CertProfile *pCertProfile )
                 pHeaderList,
                 pReq,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -2120,6 +2169,7 @@ int CCClient::delCertProfile( int nNum )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -2161,6 +2211,7 @@ int CCClient::delCertProfileExts( int nProfileNum )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -2204,6 +2255,7 @@ int CCClient::addCertProfileExt( int nProfileNum, JCC_ProfileExt *pProfileExt )
                 pHeaderList,
                 pReq,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -2247,6 +2299,7 @@ int CCClient::addSigner(JCC_Signer *pSigner)
                 pHeaderList,
                 pReq,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -2289,6 +2342,7 @@ int CCClient::delSigner(int nNum)
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -2331,6 +2385,7 @@ int CCClient::addRevoked(JCC_Revoked *pRevoked)
                 pHeaderList,
                 pReq,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -2373,6 +2428,7 @@ int CCClient::delRevoked(int nSeq)
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -2482,6 +2538,7 @@ int CCClient::getConfig( int nNum, JCC_Config *pConfig )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeConfig( pRsp, pConfig );
@@ -2522,6 +2579,7 @@ int CCClient::addConfig( JCC_Config *pConfig )
                 pHeaderList,
                 pReq,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -2564,6 +2622,7 @@ int CCClient::modConfig( int nNum, JCC_Config *pConfig )
                 pHeaderList,
                 pReq,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -2606,6 +2665,7 @@ int CCClient::delConfig( int nNum )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -2643,6 +2703,7 @@ int CCClient::getConfigList( JCC_ConfigList **ppConfigList )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeConfigList( pRsp, ppConfigList );
@@ -2684,6 +2745,7 @@ int CCClient::addLCN( JCC_LCN *pLCN )
                 pHeaderList,
                 pReq,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -2721,6 +2783,7 @@ int CCClient::getLCN( int nSeq, JCC_LCN *pLCN )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeLCN( pRsp, pLCN );
@@ -2757,6 +2820,7 @@ int CCClient::delLCN( int nSeq )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     JS_CC_decodeCodeMsg( pRsp, &sCodeMsg );
@@ -2802,6 +2866,7 @@ int CCClient::getLCNList( int nOffset, int nLimit, JCC_LCNList **ppLCNList )
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     fprintf( stderr, "Rsp : %s\n", pRsp );
@@ -2852,6 +2917,7 @@ int CCClient::searchLCNList( const QString strTarget, const QString strWord, int
                 pHeaderList,
                 NULL,
                 &status,
+                NULL,
                 &pRsp );
 
     fprintf( stderr, "Rsp : %s\n", pRsp );
