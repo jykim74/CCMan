@@ -648,6 +648,9 @@ void MainWindow::logCert( int nNum )
     memset( &sIssuer, 0x00, sizeof(sIssuer));
 
     char    sRegDate[64];
+    char    sNotBefore[64];
+    char    sNotAfter[64];
+
     QString strUserName;
     QString strIssuerName;
 
@@ -659,13 +662,19 @@ void MainWindow::logCert( int nNum )
     strUserName = ccClient->getName( sCert.nUserNum, "user" );
     strIssuerName = sIssuer.pSubjectDN;
 
+    JS_UTIL_getDateTime( sCert.tRegTime, sRegDate );
+    JS_UTIL_getDateTime( sCert.tNotBefore, sNotBefore );
+    JS_UTIL_getDateTime( sCert.tNotAfter, sNotAfter );
+
     manApplet->mainWindow()->logClear();
     logLine();
     manApplet->log( "== Certificate Information\n" );
     logLine();
     manApplet->log( QString("Num           : %1\n").arg(sCert.nNum));
-    JS_UTIL_getDateTime( sCert.tRegTime, sRegDate );
+
     manApplet->log( QString("RegDate       : %1\n").arg(sRegDate));
+    manApplet->log( QString("NotBefore     : %1\n").arg(sNotBefore));
+    manApplet->log( QString("NotAfter      : %1\n").arg(sNotAfter));
     manApplet->log( QString("KeyNum        : %1\n").arg(sCert.nKeyNum));
     manApplet->log( QString("UserNum       : %1 - %2\n").arg(strUserName).arg(sCert.nUserNum ));
     manApplet->log( QString("SignAlgorithm : %1\n").arg(sCert.pSignAlg));
